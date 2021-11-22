@@ -7,7 +7,7 @@
 kwresearch(queries = NULL)
 }
 \arguments{
-\item{queries}{Queries to import as a data frame with at leas two colums: query (string) and volume (numeric).}
+\item{queries}{Queries to import as a data frame with at leas two colums: query (string) and volume (numeric). Optionally the data frame can contain three additional columns: cpc (double), input (char) and source (char).}
 }
 \value{
 An object of the kwresearch class.
