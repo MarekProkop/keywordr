@@ -19,10 +19,14 @@ Imports MarketingMiner CSV file(s)
 }
 \examples{
 # Import 2 files:
+\dontrun{
 queries <- kwr_import_mm(c("f1.csv", "f2.csv"))
+}
 
 # Import all CSV files in th data-raw folder
 # and create a kwresearch object with them
+\dontrun{
 kwr <- kwr_import_mm("data-raw") |>
   kwresearch()
+}
 }

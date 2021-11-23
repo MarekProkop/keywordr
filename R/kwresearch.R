@@ -32,8 +32,62 @@ kwresearch <- function(queries = NULL) {
         cpc = dplyr::last(cpc),
         .groups = "drop"
       )
-    #result$cleanData <- .kwr_cleanMM_(result$sourceData)
+    result$cleanData <- clean_source_data(result$sourceData)
     result$status <- "data"
   }
   result
 }
+
+
+# Private functions -------------------------------------------------------
+
+
+clean_source_data <- function(sourceData) {
+  sourceData |>
+    dplyr::mutate(
+      query_normalized = normalize_queries(accentize_queries(query, volume), volume),
+      .after = query
+    ) |>
+    aggregate_clean_data()
+}
+
+accentize_queries <- function(x, vol) {
+  tibble::tibble(
+    x,
+    ascii = stringi::stri_trans_general(x, "Latin-ASCII"),
+    dist = vol * ((stringdist::stringdist(x, ascii) + 1) ** 3),
+    r = 1:length(x)
+  ) |>
+    dplyr::arrange(ascii, dplyr::desc(dist), dplyr::desc(vol)) |>
+    dplyr::group_by(ascii) |>
+    dplyr::mutate(accentized = dplyr::first(x)) |>
+    dplyr::arrange(r) |>
+    dplyr::pull(accentized)
+}
+
+normalize_queries <- function(x, value) {
+  tibble::tibble(
+    x,
+    value,
+    sorted = stringr::str_split(x, stringr::boundary("word")) |>
+      purrr::map_chr(~ stringr::str_c(stringr::str_sort(.x), collapse = " "))
+  ) |>
+    dplyr::group_by(sorted) |>
+    dplyr::mutate(normalized = x[which.max(value)]) |>
+    dplyr::pull(normalized)
+}
+
+aggregate_clean_data <- function(mmData) {
+  mmData |>
+    dplyr::group_by(query_normalized) |>
+    dplyr::summarise(
+      n_queries = dplyr::n(),
+      volume = sum(volume),
+      cpc = max(cpc),
+      query_original = stringr::str_c(unique(query), collapse = ","),
+      input = stringr::str_c(unique(input), collapse = ","),
+      source = stringr::str_c(unique(source), collapse = ",")
+    ) |>
+    dplyr::arrange(dplyr::desc(volume), query_normalized)
+}
+

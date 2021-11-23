@@ -8,12 +8,16 @@
 #'
 #' @examples
 #' # Import 2 files:
+#' \dontrun{
 #' queries <- kwr_import_mm(c("f1.csv", "f2.csv"))
+#' }
 #'
 #' # Import all CSV files in th data-raw folder
 #' # and create a kwresearch object with them
+#' \dontrun{
 #' kwr <- kwr_import_mm("data-raw") |>
 #'   kwresearch()
+#' }
 kwr_import_mm <- function(path, quiet = FALSE) {
   if (length(path) == 1 && file.info(path)$isdir) {
     path <- list.files(path = path, full.names = TRUE, pattern = "\\.csv$")
@@ -27,8 +31,6 @@ kwr_import_mm <- function(path, quiet = FALSE) {
 #' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A tibble with columns: query, volume, cpc, input, source. Rows are just copied from the CSV file without deduplication or any other modification.
-#'
-#' @examples
 import_mm_file <- function(path, quiet = FALSE) {
   if (!quiet) { message("Importing ", path) }
   readr::read_csv(path, col_types = readr::cols(
@@ -53,7 +55,7 @@ import_mm_file <- function(path, quiet = FALSE) {
     janitor::clean_names() |>
     dplyr::filter(!is.na(keyword)) |>
     dplyr::mutate(
-      cpc = as.numeric(stringr::str_replace(cpc, stringr::fixed(" Kč"), "")),
+      cpc = as.numeric(stringr::str_replace(cpc, stringr::fixed(" K\u010D"), "")),
       source = dplyr::recode(source, Sklik = "Seznam", AdWords = "Google")
     ) |>
     dplyr::rename(volume = search_volume, query = keyword) |>
