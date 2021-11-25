@@ -5,6 +5,7 @@ test_that("kwresearch() creates an empty kwresearch object", {
   expect_length(kwr, 1)
   expect_named(kwr, "status")
   expect_equal(kwr$status, "empty")
+  expect_null(kwr$classifiedData)
 })
 
 test_that("kwresearch(df) cretaes a kwresearch object with an initial data set", {
@@ -48,7 +49,7 @@ test_that("normalize_queries() works as axpected", {
   input_query <- c("a b", "b a", "c d", "d c")
   input_volume <- c(100, 10, 10, 100)
   output <- c("a b", "a b", "d c", "d c")
-  expect_identical(normalize_queries(input_query, input_volume), output)
+  expect_equal(normalize_queries(input_query, input_volume), output)
 })
 
 test_that("aggregate_clean_data() works as expected", {
@@ -69,7 +70,7 @@ test_that("aggregate_clean_data() works as expected", {
     input = c("i1", "i1,i2", "i1"),
     source = c("x,y", "x,y", "x")
   )
-  expect_identical(aggregate_clean_data(input), output)
+  expect_equal(aggregate_clean_data(input), output)
 })
 
 test_that("clean_source_data() works as expected", {
@@ -90,4 +91,36 @@ test_that("clean_source_data() works as expected", {
     source = c("x,y", "x,y", "x")
   )
   expect_identical(clean_source_data(input), output)
+})
+
+test_that("kwr_source_queries() returns a correct data set", {
+  input_df <- data.frame(
+    query = c("seo", "seo", "keyword research"),
+    volume = c(1000, 900, 500)
+  )
+  expected_df <- tibble::tibble(
+    query = c("keyword research", "seo"),
+    input = NA_character_,
+    source = NA_character_,
+    volume = c(500, 900),
+    cpc = NA_real_
+  )
+  expect_equal(kwresearch(input_df) |> kwr_source_queries(), expected_df)
+})
+
+test_that("kwr_clean_queries() returns a correct data set", {
+  input_df <- data.frame(
+    query = c("seo", "seo", "keyword research"),
+    volume = c(1000, 900, 500)
+  )
+  expected_df <- tibble::tibble(
+    query_normalized = c("seo", "keyword research"),
+    n_queries = c(1, 1),
+    volume = c(900, 500),
+    cpc = NA_real_,
+    query_original = c("seo", "keyword research"),
+    input = NA_character_,
+    source = NA_character_
+  )
+  expect_equal(kwresearch(input_df) |> kwr_clean_queries(), expected_df)
 })

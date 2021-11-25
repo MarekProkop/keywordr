@@ -33,10 +33,48 @@ kwresearch <- function(queries = NULL) {
         .groups = "drop"
       )
     result$cleanData <- clean_source_data(result$sourceData)
+    result$classifiedData <- NULL
     result$status <- "data"
   }
   result
 }
+
+#' Outputs raw, source queries
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble.
+#' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr |> kwr_source_queries()
+kwr_source_queries <- function(kwr) {
+  kwr$sourceData
+}
+
+#' Outputs cleaned (normalized and accentized) queries
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble.
+#' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr |> kwr_clean_queries()
+kwr_clean_queries <- function(kwr) {
+  kwr$cleanData
+}
+
 
 
 # Private functions -------------------------------------------------------
