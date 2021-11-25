@@ -2,7 +2,7 @@
 % Please edit documentation in R/classify.R
 \name{join_labels}
 \alias{join_labels}
-\title{Deduplicates and jouns multiple label values}
+\title{Deduplicates and joins multiple label values}
 \usage{
 join_labels(x, y, sep = ",")
 }
@@ -17,5 +17,5 @@ join_labels(x, y, sep = ",")
 Character vector of the same length as x. Unique label values of x and y joined together.
 }
 \description{
-Deduplicates and jouns multiple label values
+Deduplicates and joins multiple label values
 }

@@ -20,7 +20,7 @@ kwr_classify <- function(kwr, recipe_file, quiet = FALSE) {
   recipes <- yaml::yaml.load_file(recipe_file)
   classified <- recipes |>
     purrr::reduce(process_recipe, .init = dataset, quiet) |>
-    relocate(n_queries:source, .after = last_col())
+    dplyr::relocate(n_queries:source, .after = last_col())
   kwr$classifiedData <- classified
   kwr$status <- "classified"
   kwr
@@ -126,7 +126,7 @@ set_label <- function(df, name, pattern, value = NULL) {
   }
 }
 
-#' Deduplicates and jouns multiple label values
+#' Deduplicates and joins multiple label values
 #'
 #' @param x A character vector.
 #' @param y A character vector.
