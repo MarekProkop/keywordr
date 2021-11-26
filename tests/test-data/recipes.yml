@@ -1,0 +1,20 @@
+- type: flag
+  name: flag
+  negate: no
+  patterns:
+  - aaa
+  - ccc
+- type: label
+  name: label_1
+  patterns:
+  - aaa
+  - ddd
+- type: label
+  name: label_2
+  values:
+  - value: A
+    patterns: aaa
+  - value: B/C
+    patterns:
+    - bbb
+    - ccc

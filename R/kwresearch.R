@@ -75,6 +75,28 @@ kwr_clean_queries <- function(kwr) {
   kwr$cleanData
 }
 
+#' Outputs classified queries
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble.
+#' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#' \dontrun{
+#' kwr |>
+#'   kwr_classify("C:/Dev/R/Public/keyworder/tests/test-data/recipes.yml") |>
+#'   kwr_classified_queries()
+#' }
+kwr_classified_queries <- function(kwr) {
+  stopifnot(!is.null(kwr$classifiedData))
+  kwr$classifiedData
+}
 
 
 # Private functions -------------------------------------------------------

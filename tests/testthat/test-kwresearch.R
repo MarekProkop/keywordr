@@ -124,3 +124,25 @@ test_that("kwr_clean_queries() returns a correct data set", {
   )
   expect_equal(kwresearch(input_df) |> kwr_clean_queries(), expected_df)
 })
+
+test_that("kwr_classified_queries() returns a correct data set (or error)", {
+  tibble_in <- tibble::tibble(
+    query = c("aaa", "bbb", "ccc", "ddd"),
+    volume = c(10, 20, 30, 40)
+  )
+  tibble_expected <- tibble::tibble(
+    query_normalized = c("ddd", "ccc", "bbb", "aaa"),
+    flag = c(FALSE, TRUE, FALSE, TRUE),
+    label_1 = c("ddd", NA_character_, NA_character_, "aaa"),
+    label_2 = c(NA_character_, "B/C", "B/C", "A"),
+    n_queries = 1,
+    volume = c(40, 30, 20, 10),
+    cpc = NA_real_,
+    query_original = c("ddd", "ccc", "bbb", "aaa"),
+    input = NA_character_,
+    source = NA_character_
+  )
+  kwr <- kwresearch(tibble_in)
+  expect_error(kwr |> kwr_classified_queries())
+  expect_equal(kwr |> kwr_classify("../test-data/recipes.yml") |> kwr_classified_queries(), tibble_expected)
+})

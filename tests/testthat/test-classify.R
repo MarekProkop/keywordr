@@ -172,3 +172,25 @@ test_that("process_recipe() handles multiple recipes correctly", {
   tibble_out <- recipes |> purrr::reduce(process_recipe, .init = tibble_in)
   expect_equal(tibble_out, tibble_expected)
 })
+
+test_that("kwr_classify() works as expected", {
+  tibble_in <- tibble::tibble(
+    query = c("aaa", "bbb", "ccc", "ddd"),
+    volume = c(10, 20, 30, 40)
+  )
+  tibble_expected <- tibble::tibble(
+    query_normalized = c("ddd", "ccc", "bbb", "aaa"),
+    flag = c(FALSE, TRUE, FALSE, TRUE),
+    label_1 = c("ddd", NA_character_, NA_character_, "aaa"),
+    label_2 = c(NA_character_, "B/C", "B/C", "A"),
+    n_queries = 1,
+    volume = c(40, 30, 20, 10),
+    cpc = NA_real_,
+    query_original = c("ddd", "ccc", "bbb", "aaa"),
+    input = NA_character_,
+    source = NA_character_
+  )
+  kwr <- kwresearch(tibble_in) |>
+    kwr_classify("../test-data/recipes.yml")
+  expect_equal(kwr$classifiedData, tibble_expected)
+})
