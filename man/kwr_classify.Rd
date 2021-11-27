@@ -14,7 +14,8 @@ kwr_classify(kwr, recipe_file, quiet = FALSE)
 \item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
-A kwr object where the queries are classified. Existing classification is preserved or updated, new is added.
+A kwr object where the queries are classified. Existing
+classification is preserved or updated, new is added.
 }
 \description{
 Classifies queries based on rules in a YAML file

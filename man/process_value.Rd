@@ -7,7 +7,8 @@
 process_value(df, value, name, quiet = TRUE)
 }
 \arguments{
-\item{df}{A data frame from a kwr object (either cleanData, or classifiedData).}
+\item{df}{A data frame from a kwr object (either clean_data, or
+classified_data).}
 
 \item{value}{A label value (character).}
 

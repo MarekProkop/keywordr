@@ -1,6 +1,7 @@
 #' Imports MarketingMiner CSV file(s)
 #'
-#' @param path Either a single character string containing a path to a folder, or a character vector, where each item is a path to a CSV file.
+#' @param path Either a single character string containing a path to a folder,
+#' or a character vector, where each item is a path to a CSV file.
 #' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A tibble in a form suitable for creating a kwresearch object.
@@ -30,9 +31,13 @@ kwr_import_mm <- function(path, quiet = FALSE) {
 #' @param path Full path and name of the imported file.
 #' @param quiet If TRUE prints no messgaes.
 #'
-#' @return A tibble with columns: query, volume, cpc, input, source. Rows are just copied from the CSV file without deduplication or any other modification.
+#' @return A tibble with columns: query, volume, cpc, input, source. Rows are
+#' just copied from the CSV file without deduplication or any other
+#' modification.
 import_mm_file <- function(path, quiet = FALSE) {
-  if (!quiet) { message("Importing ", path) }
+  if (!quiet) {
+    message("Importing ", path)
+  }
   readr::read_csv(path, col_types = readr::cols(
     Input = readr::col_character(),
     Keyword = readr::col_character(),
@@ -53,11 +58,15 @@ import_mm_file <- function(path, quiet = FALSE) {
     `Monthly December` = readr::col_double()
   )) |>
     janitor::clean_names() |>
-    dplyr::filter(!is.na(keyword)) |>
+    dplyr::filter(!is.na(.data$keyword)) |>
     dplyr::mutate(
-      cpc = as.numeric(stringr::str_replace(cpc, stringr::fixed(" K\u010D"), "")),
-      source = dplyr::recode(source, Sklik = "Seznam", AdWords = "Google")
+      cpc = as.numeric(
+        stringr::str_replace(.data$cpc, stringr::fixed(" K\u010D"), "")
+      ),
+      source = dplyr::recode(.data$source, Sklik = "Seznam", AdWords = "Google")
     ) |>
-    dplyr::rename(volume = search_volume, query = keyword) |>
-    dplyr::select(query, input, source, volume, cpc)
+    dplyr::rename(volume = .data$search_volume, query = .data$keyword) |>
+    dplyr::select(
+      .data$query, .data$input, .data$source, .data$volume, .data$cpc
+    )
 }

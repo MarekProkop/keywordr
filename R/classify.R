@@ -4,7 +4,8 @@
 #' @param recipe_file A path to a YAML file with classification rules.
 #' @param quiet If TRUE prints no messgaes.
 #'
-#' @return A kwr object where the queries are classified. Existing classification is preserved or updated, new is added.
+#' @return A kwr object where the queries are classified. Existing
+#' classification is preserved or updated, new is added.
 #' @export
 #'
 #' @examples
@@ -13,15 +14,15 @@
 #' }
 kwr_classify <- function(kwr, recipe_file, quiet = FALSE) {
   if (kwr$status == "classified") {
-    dataset <- kwr$classifiedData
+    dataset <- kwr$classified_data
   } else {
-    dataset <- kwr$cleanData
+    dataset <- kwr$clean_data
   }
   recipes <- yaml::yaml.load_file(recipe_file)
   classified <- recipes |>
     purrr::reduce(process_recipe, .init = dataset, quiet) |>
-    dplyr::relocate(n_queries:source, .after = last_col())
-  kwr$classifiedData <- classified
+    dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
+  kwr$classified_data <- classified
   kwr$status <- "classified"
   kwr
 }
@@ -32,7 +33,8 @@ kwr_classify <- function(kwr, recipe_file, quiet = FALSE) {
 
 #' Processes a single recipe
 #'
-#' @param df A data frame from a kwr object (either cleanData, or classifiedData).
+#' @param df A data frame from a kwr object (either clean_data, or
+#' classified_data).
 #' @param recipe A single classification recipe.
 #' @param quiet If TRUE prints no messgaes.
 #'
@@ -51,7 +53,9 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
     if (is.null(recipe$values)) {
       df |> set_label(recipe$name, join_patterns(recipe$patterns))
     } else {
-      recipe$values |> purrr::reduce(process_value, name = recipe$name, .init = df, quiet)
+      recipe$values |> purrr::reduce(
+        process_value, name = recipe$name, .init = df, quiet
+      )
     }
   } else {
     stop(paste("Unknown recipe type", recipe$type))
@@ -60,7 +64,8 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
 
 #' Processes a single value of a recipe of the type label
 #'
-#' @param df A data frame from a kwr object (either cleanData, or classifiedData).
+#' @param df A data frame from a kwr object (either clean_data, or
+#' classified_data).
 #' @param value A label value (character).
 #' @param name A label name (character).
 #' @param quiet If TRUE prints no messgaes.
@@ -85,23 +90,28 @@ join_patterns <- function(patterns) {
 
 #' Sets a classification flag (logical value)
 #'
-#' @param df A data frame from a kwr object (either cleanData, or classifiedData).
+#' @param df A data frame from a kwr object (either clean_data, or
+#' classified_data).
 #' @param name A name of the flag.
 #' @param pattern A regex pattern (character vector of length 1).
-#' @param negate If TRUE, queries that don't match the pattern will be flagged as TRUE.
-#'
-#' @return
-#' @export
+#' @param negate If TRUE, queries that don't match the pattern will be flagged
+#' as TRUE.
 #'
 #' @return A data frame with the flag updated.
+#' @importFrom rlang :=
 set_flag <- function(df, name, pattern, negate = FALSE) {
   df |>
-    dplyr::mutate("{name}" := stringr::str_detect(query_normalized, pattern, negate = negate))
+    dplyr::mutate(
+      "{name}" := stringr::str_detect(
+        .data$query_normalized, pattern, negate = negate
+      )
+    )
 }
 
 #' Sets a classification label (character)
 #'
-#' @param df A data frame from a kwr object (either cleanData, or classifiedData).
+#' @param df A data frame from a kwr object (either clean_data, or
+#' classified_data).
 #' @param name A name of the label.
 #' @param pattern A regex pattern (character vector of length 1).
 #' @param value An optional value of the label (character).
@@ -110,7 +120,9 @@ set_flag <- function(df, name, pattern, negate = FALSE) {
 set_label <- function(df, name, pattern, value = NULL) {
   if (is.null(value)) {
     df |>
-      dplyr::mutate("{name}" := extract_pattern(query_normalized, pattern))
+      dplyr::mutate(
+        "{name}" := extract_pattern(.data$query_normalized, pattern)
+      )
   } else {
     if (!name %in% names(df)) {
       df <- df |> tibble::add_column("{name}" := NA_character_)
@@ -118,7 +130,7 @@ set_label <- function(df, name, pattern, value = NULL) {
     df |>
       dplyr::mutate(
         "{name}" := dplyr::if_else(
-          stringr::str_detect(query_normalized, pattern),
+          stringr::str_detect(.data$query_normalized, pattern),
           join_labels(.data[[name]], value),
           .data[[name]]
         )
@@ -132,13 +144,17 @@ set_label <- function(df, name, pattern, value = NULL) {
 #' @param y A character vector.
 #' @param sep A character vector of length 1.
 #'
-#' @return Character vector of the same length as x. Unique label values of x and y joined together.
+#' @return Character vector of the same length as x. Unique label values
+#' of x and y joined together.
 join_labels <- function(x, y, sep = ",") {
   purrr::map2_chr(x, y, function(x, y) {
     if (is.na(x)) {
       y
     } else {
-      stringr::str_c(unique(c(stringr::str_split(x, stringr::fixed(","))[[1]], y)), collapse = ",")
+      stringr::str_c(
+        unique(c(stringr::str_split(x, stringr::fixed(","))[[1]], y)),
+        collapse = ","
+      )
     }
   })
 }

@@ -5,10 +5,10 @@ test_that("kwresearch() creates an empty kwresearch object", {
   expect_length(kwr, 1)
   expect_named(kwr, "status")
   expect_equal(kwr$status, "empty")
-  expect_null(kwr$classifiedData)
+  expect_null(kwr$classified_data)
 })
 
-test_that("kwresearch(df) cretaes a kwresearch object with an initial data set", {
+test_that("kwresearch(df) cretaes includes an initial data set", {
   df_minimal <- data.frame(
     query = c("seo", "seo", "keyword research"),
     volume = c(1000, 900, 500)
@@ -21,7 +21,7 @@ test_that("kwresearch(df) cretaes a kwresearch object with an initial data set",
     cpc = NA_real_
   )
   kwr <- kwresearch(df_minimal)
-  expect_equal(kwr$sourceData, df_minimal_expected)
+  expect_equal(kwr$source_data, df_minimal_expected)
   expect_equal(kwr$status, "data")
 })
 
@@ -35,7 +35,7 @@ test_that("kwr_import_mm(.) |> kwresearch() creates kwresearch from MM files", {
   )
   kwr <- kwr_import_mm("../test-data/", TRUE) |>
     kwresearch()
-  expect_equal(kwr$sourceData, expected)
+  expect_equal(kwr$source_data, expected)
 })
 
 test_that("accentize_queries() works as expected", {
@@ -144,5 +144,8 @@ test_that("kwr_classified_queries() returns a correct data set (or error)", {
   )
   kwr <- kwresearch(tibble_in)
   expect_error(kwr |> kwr_classified_queries())
-  expect_equal(kwr |> kwr_classify("../test-data/recipes.yml") |> kwr_classified_queries(), tibble_expected)
+  expect_equal(
+    kwr |> kwr_classify("../test-data/recipes.yml") |> kwr_classified_queries(),
+    tibble_expected
+  )
 })

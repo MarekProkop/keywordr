@@ -12,7 +12,9 @@ import_mm_file(path, quiet = FALSE)
 \item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
-A tibble with columns: query, volume, cpc, input, source. Rows are just copied from the CSV file without deduplication or any other modification.
+A tibble with columns: query, volume, cpc, input, source. Rows are
+just copied from the CSV file without deduplication or any other
+modification.
 }
 \description{
 Imports a single MarketingMiner CSV file

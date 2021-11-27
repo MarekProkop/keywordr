@@ -23,11 +23,11 @@ tibble_3 <- tibble::tibble(
 )
 
 test_that("set_flag() sets a flag correctly", {
-  flagName <- "flag"
+  flad_name <- "flag"
   pattern <- "bbb|ddd"
 
-  expect_equal(set_flag(tibble_1, flagName, pattern), tibble_2)
-  expect_equal(set_flag(tibble_1, flagName, pattern, negate = TRUE), tibble_3)
+  expect_equal(set_flag(tibble_1, flad_name, pattern), tibble_2)
+  expect_equal(set_flag(tibble_1, flad_name, pattern, negate = TRUE), tibble_3)
 })
 
 test_that("process_recipe() sets a flag correctly", {
@@ -38,7 +38,7 @@ test_that("process_recipe() sets a flag correctly", {
     patterns = c("bbb", "ddd")
   )
   recipe_2 <- recipe_1
-  recipe_2$negate = TRUE
+  recipe_2$negate <- TRUE
 
   expect_identical(process_recipe(tibble_1, recipe_1), tibble_2)
   expect_identical(process_recipe(tibble_1, recipe_2), tibble_3)
@@ -142,7 +142,7 @@ test_that("process_recipe() handles multiple recipes correctly", {
     label_1 = c("aaa", NA_character_, NA_character_, "ddd"),
     label_2 = c("A", "B/C", "B/C", NA_character_)
   )
-  recipes = list(
+  recipes <- list(
     list(
       type = "flag",
       name = "flag",
@@ -192,5 +192,5 @@ test_that("kwr_classify() works as expected", {
   )
   kwr <- kwresearch(tibble_in) |>
     kwr_classify("../test-data/recipes.yml")
-  expect_equal(kwr$classifiedData, tibble_expected)
+  expect_equal(kwr$classified_data, tibble_expected)
 })

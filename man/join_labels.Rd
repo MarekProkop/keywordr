@@ -14,7 +14,8 @@ join_labels(x, y, sep = ",")
 \item{sep}{A character vector of length 1.}
 }
 \value{
-Character vector of the same length as x. Unique label values of x and y joined together.
+Character vector of the same length as x. Unique label values
+of x and y joined together.
 }
 \description{
 Deduplicates and joins multiple label values

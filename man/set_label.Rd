@@ -7,7 +7,8 @@
 set_label(df, name, pattern, value = NULL)
 }
 \arguments{
-\item{df}{A data frame from a kwr object (either cleanData, or classifiedData).}
+\item{df}{A data frame from a kwr object (either clean_data, or
+classified_data).}
 
 \item{name}{A name of the label.}
 

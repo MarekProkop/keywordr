@@ -7,7 +7,8 @@
 process_recipe(df, recipe, quiet = FALSE)
 }
 \arguments{
-\item{df}{A data frame from a kwr object (either cleanData, or classifiedData).}
+\item{df}{A data frame from a kwr object (either clean_data, or
+classified_data).}
 
 \item{recipe}{A single classification recipe.}
 

@@ -19,5 +19,9 @@ test_that("kwr_import_mm(files) imports multiple files", {
     cpc = c(1.0, 2.0, 2.0, 1.0, 3.0)
   )
   expect_equal(kwr_import_mm("../test-data/", TRUE), expected)
-  expect_equal(kwr_import_mm(c("../test-data/mm-test-1.csv", "../test-data/mm-test-2.csv"), quiet = TRUE), expected)
+  expect_equal(
+    kwr_import_mm(
+      c("../test-data/mm-test-1.csv", "../test-data/mm-test-2.csv"),
+      quiet = TRUE
+    ), expected)
 })

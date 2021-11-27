@@ -1,8 +1,12 @@
 #' @title Creates an object of the kwresearch class
 #'
-#' @description An object of the kwresearch class is a home to your keyword research. You can import datasets into it, research queries, clasify them and export the final keyword analysis.
+#' @description An object of the kwresearch class is a home to your keyword
+#' research. You can import datasets into it, research queries, clasify them
+#' and export the final keyword analysis.
 #'
-#' @param queries Queries to import as a data frame with at leas two colums: query (string) and volume (numeric). Optionally the data frame can contain three additional columns: cpc (double), input (char) and source (char).
+#' @param queries Queries to import as a data frame with at leas two colums:
+#' query (string) and volume (numeric). Optionally the data frame can contain
+#' three additional columns: cpc (double), input (char) and source (char).
 #'
 #' @return An object of the kwresearch class.
 #' @export
@@ -22,18 +26,22 @@ kwresearch <- function(queries = NULL) {
   )
   if (!is.null(queries)) {
     empty_df <- tibble::tibble(
-      query = character(), volume = integer(), cpc = double(), input = character(), source = character()
+      query = character(),
+      volume = integer(),
+      cpc = double(),
+      input = character(),
+      source = character()
     )
-    result$sourceData <- queries |>
+    result$source_data <- queries |>
       dplyr::bind_rows(empty_df) |>
-      dplyr::group_by(query, input, source) |>
+      dplyr::group_by(.data$query, .data$input, .data$source) |>
       dplyr::summarise(
-        volume = dplyr::last(volume),
-        cpc = dplyr::last(cpc),
+        volume = dplyr::last(.data$volume),
+        cpc = dplyr::last(.data$cpc),
         .groups = "drop"
       )
-    result$cleanData <- clean_source_data(result$sourceData)
-    result$classifiedData <- NULL
+    result$clean_data <- clean_source_data(result$source_data)
+    result$classified_data <- NULL
     result$status <- "data"
   }
   result
@@ -54,7 +62,7 @@ kwresearch <- function(queries = NULL) {
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_source_queries()
 kwr_source_queries <- function(kwr) {
-  kwr$sourceData
+  kwr$source_data
 }
 
 #' Outputs cleaned (normalized and accentized) queries
@@ -72,7 +80,7 @@ kwr_source_queries <- function(kwr) {
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_clean_queries()
 kwr_clean_queries <- function(kwr) {
-  kwr$cleanData
+  kwr$clean_data
 }
 
 #' Outputs classified queries
@@ -94,35 +102,45 @@ kwr_clean_queries <- function(kwr) {
 #'   kwr_classified_queries()
 #' }
 kwr_classified_queries <- function(kwr) {
-  stopifnot(!is.null(kwr$classifiedData))
-  kwr$classifiedData
+  stopifnot(!is.null(kwr$classified_data))
+  kwr$classified_data
 }
 
 
 # Private functions -------------------------------------------------------
 
 
-clean_source_data <- function(sourceData) {
-  sourceData |>
+clean_source_data <- function(source_data) {
+  source_data |>
     dplyr::mutate(
-      query_normalized = normalize_queries(accentize_queries(query, volume), volume),
-      .after = query
+      query_normalized = normalize_queries(
+        accentize_queries(.data$query, .data$volume), .data$volume
+      ),
+      .after = .data$query
     ) |>
     aggregate_clean_data()
 }
 
+#' Tries to add accents (´ˇ¨ etc.) where they should be
+#'
+#' @param x Character vector of queries.
+#' @param vol Character vector of search volumes corresponding to queries in x.
+#'
+#' @return Character vector of all queries in x, with accents added to some
+#' of them.
+#' @importFrom rlang .data
 accentize_queries <- function(x, vol) {
   tibble::tibble(
     x,
     ascii = stringi::stri_trans_general(x, "Latin-ASCII"),
-    dist = vol * ((stringdist::stringdist(x, ascii) + 1) ** 3),
-    r = 1:length(x)
+    dist = vol * ((stringdist::stringdist(x, .data$ascii) + 1) ** 3),
+    r = seq_len(length(x))
   ) |>
-    dplyr::arrange(ascii, dplyr::desc(dist), dplyr::desc(vol)) |>
-    dplyr::group_by(ascii) |>
+    dplyr::arrange(.data$ascii, dplyr::desc(.data$dist), dplyr::desc(vol)) |>
+    dplyr::group_by(.data$ascii) |>
     dplyr::mutate(accentized = dplyr::first(x)) |>
-    dplyr::arrange(r) |>
-    dplyr::pull(accentized)
+    dplyr::arrange(.data$r) |>
+    dplyr::pull(.data$accentized)
 }
 
 normalize_queries <- function(x, value) {
@@ -132,22 +150,21 @@ normalize_queries <- function(x, value) {
     sorted = stringr::str_split(x, stringr::boundary("word")) |>
       purrr::map_chr(~ stringr::str_c(stringr::str_sort(.x), collapse = " "))
   ) |>
-    dplyr::group_by(sorted) |>
-    dplyr::mutate(normalized = x[which.max(value)]) |>
-    dplyr::pull(normalized)
+    dplyr::group_by(.data$sorted) |>
+    dplyr::mutate(normalized = x[which.max(.data$value)]) |>
+    dplyr::pull(.data$normalized)
 }
 
-aggregate_clean_data <- function(mmData) {
-  mmData |>
-    dplyr::group_by(query_normalized) |>
+aggregate_clean_data <- function(mm_data) {
+  mm_data |>
+    dplyr::group_by(.data$query_normalized) |>
     dplyr::summarise(
       n_queries = dplyr::n(),
-      volume = sum(volume),
-      cpc = max(cpc),
-      query_original = stringr::str_c(unique(query), collapse = ","),
-      input = stringr::str_c(unique(input), collapse = ","),
-      source = stringr::str_c(unique(source), collapse = ",")
+      volume = sum(.data$volume),
+      cpc = max(.data$cpc),
+      query_original = stringr::str_c(unique(.data$query), collapse = ","),
+      input = stringr::str_c(unique(.data$input), collapse = ","),
+      source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
-    dplyr::arrange(dplyr::desc(volume), query_normalized)
+    dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
 }
-

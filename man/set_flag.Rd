@@ -7,17 +7,17 @@
 set_flag(df, name, pattern, negate = FALSE)
 }
 \arguments{
-\item{df}{A data frame from a kwr object (either cleanData, or classifiedData).}
+\item{df}{A data frame from a kwr object (either clean_data, or
+classified_data).}
 
 \item{name}{A name of the flag.}
 
 \item{pattern}{A regex pattern (character vector of length 1).}
 
-\item{negate}{If TRUE, queries that don't match the pattern will be flagged as TRUE.}
+\item{negate}{If TRUE, queries that don't match the pattern will be flagged
+as TRUE.}
 }
 \value{
-
-
 A data frame with the flag updated.
 }
 \description{

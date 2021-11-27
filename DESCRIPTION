@@ -22,4 +22,5 @@ Imports:
     purrr,
     stringdist,
     stringi,
-    yaml
+    yaml,
+    rlang

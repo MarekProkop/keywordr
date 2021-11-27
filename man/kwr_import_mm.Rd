@@ -7,7 +7,8 @@
 kwr_import_mm(path, quiet = FALSE)
 }
 \arguments{
-\item{path}{Either a single character string containing a path to a folder, or a character vector, where each item is a path to a CSV file.}
+\item{path}{Either a single character string containing a path to a folder,
+or a character vector, where each item is a path to a CSV file.}
 
 \item{quiet}{If TRUE prints no messgaes.}
 }
