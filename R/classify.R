@@ -98,14 +98,11 @@ join_patterns <- function(patterns) {
 #' as TRUE.
 #'
 #' @return A data frame with the flag updated.
-#' @importFrom rlang :=
 set_flag <- function(df, name, pattern, negate = FALSE) {
-  df |>
-    dplyr::mutate(
-      "{name}" := stringr::str_detect(
-        .data$query_normalized, pattern, negate = negate
-      )
-    )
+  df[[name]] <- stringr::str_detect(
+    df$query_normalized, pattern, negate = negate
+  )
+  df
 }
 
 #' Sets a classification label (character)
@@ -119,23 +116,18 @@ set_flag <- function(df, name, pattern, negate = FALSE) {
 #' @return A data frame with the label updated.
 set_label <- function(df, name, pattern, value = NULL) {
   if (is.null(value)) {
-    df |>
-      dplyr::mutate(
-        "{name}" := extract_pattern(.data$query_normalized, pattern)
-      )
+    df[[name]] <- extract_pattern(df$query_normalized, pattern)
   } else {
     if (!name %in% names(df)) {
-      df <- df |> tibble::add_column("{name}" := NA_character_)
+      df[[name]] <- NA_character_
     }
-    df |>
-      dplyr::mutate(
-        "{name}" := dplyr::if_else(
-          stringr::str_detect(.data$query_normalized, pattern),
-          join_labels(.data[[name]], value),
-          .data[[name]]
-        )
-      )
+    df[[name]] <- dplyr::if_else(
+      stringr::str_detect(df$query_normalized, pattern),
+      join_labels(df[[name]], value),
+      df[[name]]
+    )
   }
+  df
 }
 
 #' Deduplicates and joins multiple label values
