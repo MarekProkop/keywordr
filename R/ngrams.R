@@ -1,8 +1,5 @@
 #' Generates n-grams from queries
 #'
-#' @description N-grams fully contained in another n-gram (number of queries
-#'   must be the same) are filter out from the result.
-#'
 #' @param kwr A kwresearch object, which clean queries will be n-grams
 #'   calculated from.
 #' @param max_words Maximum number of words in n-grams.
@@ -11,6 +8,9 @@
 #'   number of queries will be included.
 #' @param min_volume Minimum search volume per n-gram. Only the n-grams with at
 #'   least this volume will be included.
+#' @param remove_nested If TRUE, n-grams fully contained in another n-gram
+#'   (number of queries must be the same) are filtered out from the result. May
+#'   be slower.
 #'
 #' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
 #'   search volumes). The n-grams are orderd descendingly by number of queries
@@ -25,9 +25,11 @@
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_ngrams()
 kwr_ngrams <- function(
-  kwr, max_words = 4, min_words = 1, min_n = 1, min_volume = 0
+  kwr,
+  max_words = 4, min_words = 1, min_n = 1, min_volume = 0,
+  remove_nested = TRUE
 ) {
-  kwr |>
+  ngrams <- kwr |>
     kwr_clean_queries() |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
@@ -36,15 +38,17 @@ kwr_ngrams <- function(
     ) |>
     dplyr::group_by(.data$token) |>
     dplyr::summarize(volume = sum(.data$volume), n = dplyr::n()) |>
-    dplyr::arrange(.data$token) |>
     dplyr::filter(
-      !(stringr::str_detect(
-        dplyr::lead(.data$token, default = ""), stringr::fixed(.data$token)
-      ) & .data$n == dplyr::lead(.data$n)),
       .data$volume >= min_volume,
       .data$n >= min_n
     ) |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
+  if (remove_nested) {
+    ngrams |>
+      remove_nested_ngrams()
+  } else {
+    ngrams
+  }
 }
 
 #' Generates n-grams from queries and filter only those that equals any existing
@@ -89,9 +93,6 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
 #' Finds collocations, i.e. multiword phrases that are more likely than their
 #' single words
 #'
-#' @description N-grams fully contained in another n-gram (number of queries
-#'   must be the same) are filter out from the result.
-#'
 #' @param kwr A kwresearch object, which clean queries will be used.
 #' @param min_volume_prop Minimum proportion.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
@@ -132,11 +133,7 @@ kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
       n_prop = max(.data$n_prop)
     ) |>
     dplyr::ungroup() |>
-    dplyr::arrange(.data$token) |>
     dplyr::filter(
-      !(stringr::str_detect(
-        dplyr::lead(.data$token, default = ""), stringr::fixed(.data$token)
-      ) & .data$n == dplyr::lead(.data$n)),
       .data$volume_prop >= min_volume_prop,
       .data$n >= min_n
     ) |>
@@ -144,4 +141,22 @@ kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
       .data$token, .data$volume, .data$n, .data$volume_prop, .data$n_prop
     ) |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
+}
+
+
+# Private functions -------------------------------------------------------
+
+remove_nested_ngrams <- function(df) {
+  is_nested_ngram <- function(ngrams, ngram, nn) {
+    nrow(dplyr::filter(
+      ngrams,
+      stringr::str_detect(.data$token, stringr::fixed(ngram))
+      & .data$token != ngram & .data$n == nn
+    )) > 0
+  }
+
+  df |>
+    dplyr::rowwise() |>
+    dplyr::filter(!is_nested_ngram(df, .data$token, .data$n)) |>
+    dplyr::ungroup()
 }

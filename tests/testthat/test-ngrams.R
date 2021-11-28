@@ -8,7 +8,7 @@ test_that("kwr_ngrams() works", {
     kwr_ngrams()
   expect_s3_class(ngrams, "tbl_df")
   expect_named(ngrams, c("token", "volume", "n"))
-  expect_equal(nrow(ngrams), 5)
+  expect_equal(nrow(ngrams), 4)
 })
 
 test_that("kwr_subqueries() works", {

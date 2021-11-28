@@ -21,6 +21,6 @@ search volumes). The n-grams are orderd descendingly by number of queries
 and search volume. Use dplyr::arrange to change order.
 }
 \description{
-N-grams fully contained in another n-gram (number of queries
-must be the same) are filter out from the result.
+Finds collocations, i.e. multiword phrases that are more likely than their
+single words
 }
