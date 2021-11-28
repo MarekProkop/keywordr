@@ -4,19 +4,11 @@
 \alias{kwr_ngrams}
 \title{Generate n-grams from queries}
 \usage{
-kwr_ngrams(
-  queries,
-  max_words = 4,
-  min_words = 1,
-  min_n = 1,
-  min_volume = 1,
-  order = volume
-)
+kwr_ngrams(kwr, max_words = 4, min_words = 1, min_n = 1, min_volume = 1)
 }
 \arguments{
-\item{queries}{A data frame containing queries and their search volumes.
-Should be the result of functions kwr_source_queries, kwr_clean_queries,
-kwr_classified_queries, or kwr_valid_queries.}
+\item{kwr}{A kwresearch object, which clean queries will be n-grams
+calculated from.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 
@@ -27,12 +19,11 @@ number of queries will be included.}
 
 \item{min_volume}{Minimum search volume per n-gram. Only the n-grams with at
 least this volume will be included.}
-
-\item{order}{A column the result will be reverse ordered by.}
 }
 \value{
 A tibble of n-grams with a basic stats (nuber of queries and sum of
-search volumes).
+search volumes). The n-grams are orderd descendingly by number of queries
+and search volume. Use dplyr::arrange to change order.
 }
 \description{
 Generate n-grams from queries
@@ -43,6 +34,5 @@ queries <- data.frame(
   volume = c(1000, 500)
 )
 kwr <- kwresearch(queries)
-kwr |> kwr_clean_queries() |>
-  kwr_ngrams()
+kwr |> kwr_ngrams()
 }
