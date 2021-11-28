@@ -23,4 +23,5 @@ Imports:
     stringdist,
     stringi,
     yaml,
-    rlang
+    rlang,
+    tidytext
