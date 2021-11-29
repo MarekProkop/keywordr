@@ -6,6 +6,7 @@ test_that("kwresearch() creates an empty kwresearch object", {
   expect_named(kwr, "status")
   expect_equal(kwr$status, "empty")
   expect_null(kwr$classified_data)
+  expect_null(kwr$stopwords)
 })
 
 test_that("kwresearch(df) cretaes includes an initial data set", {
@@ -148,4 +149,10 @@ test_that("kwr_classified_queries() returns a correct data set (or error)", {
     kwr |> kwr_classify("../test-data/recipes.yml") |> kwr_classified_queries(),
     tibble_expected
   )
+})
+
+test_that("kwr_use_stopwords() works", {
+  kwr <- kwresearch() |>
+    kwr_use_stopwords(kwr_stopwords())
+  expect_type(kwr$stopwords, "character")
 })

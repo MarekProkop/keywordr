@@ -43,6 +43,7 @@ kwresearch <- function(queries = NULL) {
     result$clean_data <- clean_source_data(result$source_data)
     result$classified_data <- NULL
     result$status <- "data"
+    result$stopwords <- NULL
   }
   result
 }
@@ -106,6 +107,19 @@ kwr_classified_queries <- function(kwr) {
   kwr$classified_data
 }
 
+#' Set a stopword list to use with n-gram functions
+#'
+#' @param kwr A kwresearch object.
+#' @param stopwords Stopwords as a character vector. You can use the
+#'   kwr_stopwords() function. These words will be removed from unigram
+#'   listings.
+#'
+#' @return A kwresearch object with stopwords set.
+#' @export
+kwr_use_stopwords <- function(kwr, stopwords) {
+  kwr$stopwords <- stopwords
+  kwr
+}
 
 # Private functions -------------------------------------------------------
 

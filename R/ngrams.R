@@ -44,11 +44,14 @@ kwr_ngrams <- function(
     ) |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
   if (remove_nested) {
-    ngrams |>
+    ngrams <- ngrams |>
       remove_nested_ngrams()
-  } else {
-    ngrams
   }
+  if (!is.null(kwr$stopwords)) {
+    ngrams <- ngrams |>
+      dplyr::filter(!.data$token %in% kwr$stopwords)
+  }
+  ngrams
 }
 
 #' Generates n-grams from queries and filter only those that equals any existing
