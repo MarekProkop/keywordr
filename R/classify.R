@@ -18,7 +18,7 @@ kwr_classify <- function(kwr, recipe_file, quiet = FALSE) {
   } else {
     dataset <- kwr$clean_data
   }
-  recipes <- yaml::yaml.load_file(recipe_file)
+  recipes <- read_recipes(recipe_file)
   classified <- recipes |>
     purrr::reduce(process_recipe, .init = dataset, quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
@@ -30,6 +30,15 @@ kwr_classify <- function(kwr, recipe_file, quiet = FALSE) {
 
 # Private functions -------------------------------------------------------
 
+#' Reads classification recipes from a YAML file
+#'
+#' @param path Path to YAML file.
+#'
+#' @return Classification recipes (a list).
+#' @export
+read_recipes <- function(path) {
+  yaml::yaml.load_file(path)
+}
 
 #' Processes a single recipe
 #'
