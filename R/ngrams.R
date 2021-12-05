@@ -14,7 +14,8 @@
 #'
 #' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
 #'   search volumes). The n-grams are orderd descendingly by number of queries
-#'   and search volume. Use dplyr::arrange to change order.
+#'   and search volume. Use dplyr::arrange to change order. If stop words are
+#'   set with the kwr_use_stopwords, they are removed from unigrams.
 #' @export
 #'
 #' @examples
@@ -29,20 +30,32 @@ kwr_ngrams <- function(
   max_words = 4, min_words = 1, min_n = 1, min_volume = 0,
   remove_nested = TRUE
 ) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_int(min_words, lower = 1, upper = 10)
+  checkmate::assert_int(max_words, lower = min_words, upper = 10)
+  checkmate::assert_count(min_n)
+  checkmate::assert_count(min_volume)
+  checkmate::assert_flag(remove_nested)
+
   ngrams <- kwr |>
     kwr_clean_queries() |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
       n = max_words, n_min = min_words, drop = FALSE
-    ) |>
+    )
+  if (min_n == 1 & !is.null(kwr$stopwords)) {
+    ngrams <- ngrams |>
+      dplyr::filter(!.data$token %in% kwr$stopwords)
+  }
+  ngrams <- ngrams |>
     dplyr::group_by(.data$token) |>
-    dplyr::summarize(volume = sum(.data$volume), n = dplyr::n()) |>
+    dplyr::summarize(n = dplyr::n(), volume = sum(.data$volume)) |>
     dplyr::filter(
       .data$volume >= min_volume,
       .data$n >= min_n
     ) |>
-    dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
+    dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume), .data$token)
   if (remove_nested) {
     ngrams <- ngrams |>
       remove_nested_ngrams()

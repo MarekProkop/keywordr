@@ -34,7 +34,8 @@ be slower.}
 \value{
 A tibble of n-grams with a basic stats (nuber of queries and sum of
 search volumes). The n-grams are orderd descendingly by number of queries
-and search volume. Use dplyr::arrange to change order.
+and search volume. Use dplyr::arrange to change order. If stop words are
+set with the kwr_use_stopwords, they are removed from unigrams.
 }
 \description{
 Generates n-grams from queries

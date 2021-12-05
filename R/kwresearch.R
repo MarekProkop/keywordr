@@ -142,11 +142,16 @@ kwr_classified_queries <- function(kwr) {
 #' @param kwr A kwresearch object.
 #' @param stopwords Stopwords as a character vector. You can use the
 #'   kwr_stopwords() function. These words will be removed from unigram
-#'   listings.
+#'   listings. If NULL (default), no stopwords are used.
 #'
 #' @return A kwresearch object with stopwords set.
 #' @export
-kwr_use_stopwords <- function(kwr, stopwords) {
+kwr_use_stopwords <- function(kwr, stopwords = NULL) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert(
+    checkmate::check_null(stopwords),
+    checkmate::check_character(stopwords)
+  )
   kwr$stopwords <- stopwords
   kwr
 }

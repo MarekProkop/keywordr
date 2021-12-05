@@ -4,14 +4,14 @@
 \alias{kwr_use_stopwords}
 \title{Set a stopword list to use with n-gram functions}
 \usage{
-kwr_use_stopwords(kwr, stopwords)
+kwr_use_stopwords(kwr, stopwords = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
 
 \item{stopwords}{Stopwords as a character vector. You can use the
 kwr_stopwords() function. These words will be removed from unigram
-listings.}
+listings. If NULL (default), no stopwords are used.}
 }
 \value{
 A kwresearch object with stopwords set.
