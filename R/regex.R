@@ -26,7 +26,9 @@ kwr_test_regex <- function(kwr, pattern) {
         stringr::str_replace(.data$schema, ".*\\* ", ""), ".*\\*.*", ""
       )
     ) |>
-    dplyr::select(!.data$schema)
+    dplyr::select(
+      .data$query_normalized, .data$pred, .data$word, .data$succ, .data$match
+    )
   around <- full |>
     tidyr::pivot_longer(
       cols = c(.data$pred, .data$succ), values_to = "around"
