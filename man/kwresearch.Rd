@@ -4,12 +4,20 @@
 \alias{kwresearch}
 \title{Creates an object of the kwresearch class}
 \usage{
-kwresearch(queries = NULL)
+kwresearch(queries = NULL, accentize = TRUE, normalize = TRUE)
 }
 \arguments{
-\item{queries}{Queries to import as a data frame with at leas two colums:
+\item{queries}{Queries to import as a data frame with at least two colums:
 query (string) and volume (numeric). Optionally the data frame can contain
-three additional columns: cpc (double), input (char) and source (char).}
+three additional columns: cpc (double), input (char) and source (char). If
+you don't provide this argument, you can import queries later with
+kwr_import or kwr_import_mm.}
+
+\item{accentize}{The import functions tries to add correct accents (diakritic
+marks) to queries without them.}
+
+\item{normalize}{The import funkctions tries to unite queries, which differ
+only by order of words.}
 }
 \value{
 An object of the kwresearch class.

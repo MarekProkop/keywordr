@@ -1,0 +1,30 @@
+---
+title: "workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(keywordr)
+```
+
+# A minimal pipeline
+
+```{r eval=FALSE}
+kwr <- kwresearch(accentize = TRUE, normalize = TRUE) |> 
+  kwr_import_mm("...") |> 
+  kwr_use_recipes("...") |> 
+  kwr_classify() |> 
+  kwr_export("...")
+```
+

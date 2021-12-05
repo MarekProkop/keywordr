@@ -1,3 +1,75 @@
+test_that("kwr_use_recipes() adds a recipe file to an empty kwresearch", {
+  expected_recipes <- list(
+    list(
+      type = "flag",
+      name = "flag",
+      negate = FALSE,
+      patterns = c("aaa", "ccc")
+    ),
+    list(
+      type = "label",
+      name = "label_1",
+      patterns = c("aaa", "ddd")
+    ),
+    list(
+      type = "label",
+      name = "label_2",
+      values = list(
+        list(
+          value = "A",
+          patterns = "aaa"
+        ),
+        list(
+          value = "B/C",
+          patterns = c("bbb", "ccc")
+        )
+      )
+    )
+  )
+  kwr <- kwresearch() |> kwr_use_recipes("../test-data/recipes-1.yml")
+  expect_type(kwr$recipes, "list")
+  expect_equal(kwr$recipes, expected_recipes)
+})
+
+test_that("kwr_use_recipes() adds 2 recipe files to an empty kwresearch", {
+  expected_recipes <- list(
+    list(
+      type = "flag",
+      name = "flag",
+      negate = FALSE,
+      patterns = c("aaa", "ccc")
+    ),
+    list(
+      type = "label",
+      name = "label_1",
+      patterns = c("aaa", "ddd")
+    ),
+    list(
+      type = "label",
+      name = "label_2",
+      values = list(
+        list(
+          value = "A",
+          patterns = "aaa"
+        ),
+        list(
+          value = "B/C",
+          patterns = c("bbb", "ccc")
+        )
+      )
+    ),
+    list(
+      type = "label",
+      name = "label_3",
+      patterns = "eee"
+    )
+  )
+  kwr <- kwresearch() |>
+    kwr_use_recipes("../test-data/recipes-1.yml") |>
+    kwr_use_recipes("../test-data/recipes-2.yml")
+  expect_equal(kwr$recipes, expected_recipes)
+})
+
 test_that("join_patterns(x) joins regex patterns", {
   input <- c("aaa", "bbb", "aaa", "ccc")
   output <- "aaa|bbb|ccc"
@@ -191,6 +263,7 @@ test_that("kwr_classify() works as expected", {
     source = NA_character_
   )
   kwr <- kwresearch(tibble_in) |>
-    kwr_classify("../test-data/recipes.yml")
+    kwr_use_recipes("../test-data/recipes-1.yml") |>
+    kwr_classify()
   expect_equal(kwr$classified_data, tibble_expected)
 })

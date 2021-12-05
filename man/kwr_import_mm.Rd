@@ -2,32 +2,34 @@
 % Please edit documentation in R/import_mm.R
 \name{kwr_import_mm}
 \alias{kwr_import_mm}
-\title{Imports MarketingMiner CSV file(s)}
+\title{Imports MarketingMiner CSV file(s) to an empty kwresearch object}
 \usage{
-kwr_import_mm(path, quiet = FALSE)
+kwr_import_mm(kwr, path, quiet = FALSE)
 }
 \arguments{
+\item{kwr}{An empty kwresearch object.}
+
 \item{path}{Either a single character string containing a path to a folder,
 or a character vector, where each item is a path to a CSV file.}
 
 \item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
-A tibble in a form suitable for creating a kwresearch object.
+The provided kwresearch object with imported queries.
 }
 \description{
-Imports MarketingMiner CSV file(s)
+Imports MarketingMiner CSV file(s) to an empty kwresearch object
 }
 \examples{
 # Import 2 files:
 \dontrun{
-queries <- kwr_import_mm(c("f1.csv", "f2.csv"))
+kwr <- kwresearch() |>
+  kwr_import_mm(c("f1.csv", "f2.csv"))
 }
 
 # Import all CSV files in th data-raw folder
-# and create a kwresearch object with them
 \dontrun{
-kwr <- kwr_import_mm("data-raw") |>
-  kwresearch()
+kwr <- kwresearch() |>
+  kwr_import_mm("data-raw")
 }
 }

@@ -1,12 +1,18 @@
 #' @title Creates an object of the kwresearch class
 #'
 #' @description An object of the kwresearch class is a home to your keyword
-#' research. You can import datasets into it, research queries, clasify them
-#' and export the final keyword analysis.
+#'   research. You can import datasets into it, research queries, clasify them
+#'   and export the final keyword analysis.
 #'
-#' @param queries Queries to import as a data frame with at leas two colums:
-#' query (string) and volume (numeric). Optionally the data frame can contain
-#' three additional columns: cpc (double), input (char) and source (char).
+#' @param queries Queries to import as a data frame with at least two colums:
+#'   query (string) and volume (numeric). Optionally the data frame can contain
+#'   three additional columns: cpc (double), input (char) and source (char). If
+#'   you don't provide this argument, you can import queries later with
+#'   kwr_import or kwr_import_mm.
+#' @param accentize The import functions tries to add correct accents (diakritic
+#'   marks) to queries without them.
+#' @param normalize The import funkctions tries to unite queries, which differ
+#'   only by order of words.
 #'
 #' @return An object of the kwresearch class.
 #' @export
@@ -19,34 +25,58 @@
 #'   volume = c(1000, 500)
 #' )
 #' kwr <- kwresearch(queries)
-kwresearch <- function(queries = NULL) {
+kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
+  checkmate::assert_flag(accentize)
+  checkmate::assert_flag(normalize)
   result <- structure(
-    list(status = "empty"),
+    list(
+      status = "empty",
+      options = list(
+        accentize = accentize,
+        normalize = normalize
+      )
+    ),
     class = "kwresearch"
   )
   if (!is.null(queries)) {
-    empty_df <- tibble::tibble(
-      query = character(),
-      volume = integer(),
-      cpc = double(),
-      input = character(),
-      source = character()
-    )
-    result$source_data <- queries |>
-      dplyr::bind_rows(empty_df) |>
-      dplyr::group_by(.data$query, .data$input, .data$source) |>
-      dplyr::summarise(
-        volume = dplyr::last(.data$volume),
-        cpc = dplyr::last(.data$cpc),
-        .groups = "drop"
-      )
-    result$clean_data <- clean_source_data(result$source_data)
-    result$classified_data <- NULL
-    result$status <- "data"
-    result$stopwords <- NULL
+    result <- result |>
+      kwr_import(queries)
   }
   result
 }
+
+#' Imports queries to a kwresearch object
+#'
+#' @param kwr An empty kwresearch object.
+#' @param queries A data frame with at least one column query and possibly with
+#'   additional colums volume, cpc, imput and source.
+#'
+#' @return The provided kwresearch object with imported queries.
+#' @export
+kwr_import <- function(kwr, queries) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_string(kwr$status, pattern = "^empty$")
+  checkmate::assert_data_frame(queries)
+  empty_df <- tibble::tibble(
+    query = character(),
+    volume = integer(),
+    cpc = double(),
+    input = character(),
+    source = character()
+  )
+  kwr$source_data <- queries |>
+    dplyr::bind_rows(empty_df) |>
+    dplyr::group_by(.data$query, .data$input, .data$source) |>
+    dplyr::summarise(
+      volume = dplyr::last(.data$volume),
+      cpc = dplyr::last(.data$cpc),
+      .groups = "drop"
+    )
+  kwr$clean_data <- clean_source_data(kwr$source_data)
+  kwr$status <- "data"
+  kwr
+}
+
 
 #' Outputs raw, source queries
 #'

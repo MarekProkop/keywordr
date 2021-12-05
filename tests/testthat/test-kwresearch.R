@@ -2,14 +2,37 @@ test_that("kwresearch() creates an empty kwresearch object", {
   kwr <- kwresearch()
   expect_type(kwr, "list")
   expect_s3_class(kwr, "kwresearch")
-  expect_length(kwr, 1)
-  expect_named(kwr, "status")
+  expect_length(kwr, 2)
+  expect_named(kwr, c("status", "options"))
   expect_equal(kwr$status, "empty")
+  expect_true(kwr$options$accentize)
+  expect_true(kwr$options$normalize)
+  expect_null(kwr$source_data)
+  expect_null(kwr$clean_data)
   expect_null(kwr$classified_data)
+  expect_null(kwr$recipes)
   expect_null(kwr$stopwords)
 })
 
-test_that("kwresearch(df) cretaes includes an initial data set", {
+test_that("kwr_import() works", {
+  df_minimal <- data.frame(
+    query = c("seo", "seo", "keyword research"),
+    volume = c(1000, 900, 500)
+  )
+  df_minimal_expected <- tibble::tibble(
+    query = c("keyword research", "seo"),
+    input =  NA_character_,
+    source = NA_character_,
+    volume = c(500, 900),
+    cpc = NA_real_
+  )
+  kwr <- kwresearch() |>
+    kwr_import(df_minimal)
+  expect_equal(kwr$source_data, df_minimal_expected)
+  expect_equal(kwr$status, "data")
+})
+
+test_that("kwresearch(df) cretaes an object and imports an initial data set", {
   df_minimal <- data.frame(
     query = c("seo", "seo", "keyword research"),
     volume = c(1000, 900, 500)
@@ -34,8 +57,8 @@ test_that("kwr_import_mm(.) |> kwresearch() creates kwresearch from MM files", {
     volume = c(10, 10, 20, 20, 30),
     cpc = c(1.0, 1.0, 2.0, 2.0, 3.0)
   )
-  kwr <- kwr_import_mm("../test-data/", TRUE) |>
-    kwresearch()
+  kwr <- kwresearch() |>
+    kwr_import_mm("../test-data/", TRUE)
   expect_equal(kwr$source_data, expected)
 })
 
@@ -146,7 +169,10 @@ test_that("kwr_classified_queries() returns a correct data set (or error)", {
   kwr <- kwresearch(tibble_in)
   expect_error(kwr |> kwr_classified_queries())
   expect_equal(
-    kwr |> kwr_classify("../test-data/recipes.yml") |> kwr_classified_queries(),
+    kwr |>
+      kwr_use_recipes("../test-data/recipes-1.yml") |>
+      kwr_classify() |>
+      kwr_classified_queries(),
     tibble_expected
   )
 })

@@ -1,0 +1,14 @@
+- type: label
+  name: tema
+  values:
+  - value: analýza
+    patterns: anal[ýy]z
+  - value: hledání
+    patterns: hled[áa]n[íi]
+- type: label
+  name: sluzba
+  values:
+  - value: školení
+    patterns:
+    - '[šs]kolen[íi]'
+    - kurz

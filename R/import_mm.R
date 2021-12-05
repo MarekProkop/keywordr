@@ -1,29 +1,39 @@
-#' Imports MarketingMiner CSV file(s)
+#' Imports MarketingMiner CSV file(s) to an empty kwresearch object
 #'
+#' @param kwr An empty kwresearch object.
 #' @param path Either a single character string containing a path to a folder,
-#' or a character vector, where each item is a path to a CSV file.
+#'   or a character vector, where each item is a path to a CSV file.
 #' @param quiet If TRUE prints no messgaes.
 #'
-#' @return A tibble in a form suitable for creating a kwresearch object.
+#' @return The provided kwresearch object with imported queries.
 #' @export
 #'
 #' @examples
 #' # Import 2 files:
 #' \dontrun{
-#' queries <- kwr_import_mm(c("f1.csv", "f2.csv"))
+#' kwr <- kwresearch() |>
+#'   kwr_import_mm(c("f1.csv", "f2.csv"))
 #' }
 #'
 #' # Import all CSV files in th data-raw folder
-#' # and create a kwresearch object with them
 #' \dontrun{
-#' kwr <- kwr_import_mm("data-raw") |>
-#'   kwresearch()
+#' kwr <- kwresearch() |>
+#'   kwr_import_mm("data-raw")
 #' }
-kwr_import_mm <- function(path, quiet = FALSE) {
+kwr_import_mm <- function(kwr, path, quiet = FALSE) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_string(kwr$status, pattern = "^empty$")
+  checkmate::assert(
+    checkmate::check_file_exists(path, access = "r"),
+    checkmate::check_directory_exists(path, access = "r"),
+    checkmate::check_character(path)
+  )
+  checkmate::assert_flag(quiet)
   if (length(path) == 1 && file.info(path)$isdir) {
     path <- list.files(path = path, full.names = TRUE, pattern = "\\.csv$")
   }
-  path |> purrr::map_dfr(import_mm_file, quiet)
+  queries <- path |> purrr::map_dfr(import_mm_file, quiet)
+  kwr |> kwr_import(queries)
 }
 
 #' Imports a single MarketingMiner CSV file

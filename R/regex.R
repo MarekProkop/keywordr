@@ -12,14 +12,25 @@ kwr_test_regex <- function(kwr, pattern) {
     dplyr::filter(stringr::str_detect(.data$query_normalized, pattern)) |>
     dplyr::mutate(
       match = stringr::str_extract(.data$query_normalized, pattern),
-      word = stringr::str_extract(.data$query_normalized, stringr::str_c("[\\B]*?", pattern, ".*?\\b")),
-      schema = stringr::str_replace(.data$query_normalized, stringr::str_c("[\\B]*?", pattern, ".*?\\b"), "*"),
-      pred = stringr::str_replace(stringr::str_replace(.data$schema, " \\*.*", ""), ".*\\*.*", ""),
-      succ = stringr::str_replace(stringr::str_replace(.data$schema, ".*\\* ", ""), ".*\\*.*", "")
+      word = stringr::str_extract(
+        .data$query_normalized, stringr::str_c("[\\B]*?", pattern, ".*?\\b")
+      ),
+      schema = stringr::str_replace(
+        .data$query_normalized,
+        stringr::str_c("[\\B]*?", pattern, ".*?\\b"), "*"
+      ),
+      pred = stringr::str_replace(
+        stringr::str_replace(.data$schema, " \\*.*", ""), ".*\\*.*", ""
+      ),
+      succ = stringr::str_replace(
+        stringr::str_replace(.data$schema, ".*\\* ", ""), ".*\\*.*", ""
+      )
     ) |>
     dplyr::select(!.data$schema)
   around <- full |>
-    tidyr::pivot_longer(cols = c(.data$pred, .data$succ), values_to = "around") |>
+    tidyr::pivot_longer(
+      cols = c(.data$pred, .data$succ), values_to = "around"
+    ) |>
     dplyr::filter(.data$around != "") |>
     dplyr::count(.data$around, sort = TRUE)
   around_ngrams <- around |>

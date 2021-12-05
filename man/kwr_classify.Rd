@@ -2,14 +2,13 @@
 % Please edit documentation in R/classify.R
 \name{kwr_classify}
 \alias{kwr_classify}
-\title{Classifies queries based on rules in a YAML file}
+\title{Classifies queries based on recipes}
 \usage{
-kwr_classify(kwr, recipe_file, quiet = FALSE)
+kwr_classify(kwr, quiet = FALSE)
 }
 \arguments{
-\item{kwr}{A kwr object containg queries to be classified.}
-
-\item{recipe_file}{A path to a YAML file with classification rules.}
+\item{kwr}{A kwr object containg queries to be classified, and classification
+recipes.}
 
 \item{quiet}{If TRUE prints no messgaes.}
 }
@@ -18,10 +17,10 @@ A kwr object where the queries are classified. Existing
 classification is preserved or updated, new is added.
 }
 \description{
-Classifies queries based on rules in a YAML file
+Classifies queries based on recipes
 }
 \examples{
 \dontrun{
-kwr <- kwr |> kwr_classify("recipe.yml")
+kwr <- kwr |> kwr_classify()
 }
 }
