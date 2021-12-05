@@ -6,6 +6,10 @@
 #' @return A list of data frames.
 #' @export
 kwr_test_regex <- function(kwr, pattern) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_string(pattern)
+
   full <- kwr |>
     kwr_clean_queries() |>
     dplyr::select(.data$query_normalized) |>

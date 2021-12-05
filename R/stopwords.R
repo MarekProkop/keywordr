@@ -5,7 +5,8 @@
 #' @return Character vector of stopwords.
 #' @export
 kwr_stopwords <- function(lang = "cs") {
-  stopifnot(lang == "cs")
+  checkmate::assert_true(lang == "cs")
+
   c(
     "a", "v", "se", "na", "je", "že", "o", "s", "z", "do", "i", "to", "k",
     "ve", "pro", "za", "by", "ale", "si", "po", "jako", "podle", "od", "jsem",

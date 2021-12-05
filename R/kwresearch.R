@@ -26,8 +26,13 @@
 #' )
 #' kwr <- kwresearch(queries)
 kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
+  checkmate::assert(
+    checkmate::check_null(queries),
+    checkmate::check_data_frame(queries)
+  )
   checkmate::assert_flag(accentize)
   checkmate::assert_flag(normalize)
+
   result <- structure(
     list(
       status = "empty",
@@ -57,6 +62,7 @@ kwr_import <- function(kwr, queries) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_string(kwr$status, pattern = "^empty$")
   checkmate::assert_data_frame(queries)
+
   empty_df <- tibble::tibble(
     query = character(),
     volume = integer(),
@@ -93,6 +99,9 @@ kwr_import <- function(kwr, queries) {
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_source_queries()
 kwr_source_queries <- function(kwr) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_true(kwr$status == "data")
+
   kwr$source_data
 }
 
@@ -111,6 +120,9 @@ kwr_source_queries <- function(kwr) {
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_clean_queries()
 kwr_clean_queries <- function(kwr) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_true(kwr$status == "data")
+
   kwr$clean_data
 }
 
@@ -133,7 +145,9 @@ kwr_clean_queries <- function(kwr) {
 #'   kwr_classified_queries()
 #' }
 kwr_classified_queries <- function(kwr) {
-  stopifnot(!is.null(kwr$classified_data))
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_true(kwr$status == "classified")
+
   kwr$classified_data
 }
 
@@ -141,8 +155,8 @@ kwr_classified_queries <- function(kwr) {
 #'
 #' @param kwr A kwresearch object.
 #' @param stopwords Stopwords as a character vector. You can use the
-#'   kwr_stopwords() function. These words will be removed from unigram
-#'   listings. If NULL (default), no stopwords are used.
+#'   kwr_stopwords() function for Czech stopwords. These words will be removed
+#'   from unigram listings. If NULL (default), no stopwords are used.
 #'
 #' @return A kwresearch object with stopwords set.
 #' @export
@@ -152,6 +166,7 @@ kwr_use_stopwords <- function(kwr, stopwords = NULL) {
     checkmate::check_null(stopwords),
     checkmate::check_character(stopwords)
   )
+
   kwr$stopwords <- stopwords
   kwr
 }

@@ -22,7 +22,7 @@
 #' }
 kwr_import_mm <- function(kwr, path, quiet = FALSE) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_string(kwr$status, pattern = "^empty$")
+  checkmate::assert_true(kwr$status == "empty")
   checkmate::assert(
     checkmate::check_file_exists(path, access = "r"),
     checkmate::check_directory_exists(path, access = "r"),
@@ -35,6 +35,10 @@ kwr_import_mm <- function(kwr, path, quiet = FALSE) {
   queries <- path |> purrr::map_dfr(import_mm_file, quiet)
   kwr |> kwr_import(queries)
 }
+
+
+# Private functions -------------------------------------------------------
+
 
 #' Imports a single MarketingMiner CSV file
 #'
