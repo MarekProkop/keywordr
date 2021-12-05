@@ -147,6 +147,7 @@ kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
       .data$volume_prop >= min_volume_prop,
       .data$n >= min_n
     ) |>
+    remove_nested_ngrams() |>
     dplyr::select(
       .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
     ) |>

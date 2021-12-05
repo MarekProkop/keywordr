@@ -35,7 +35,8 @@ kwr_test_regex <- function(kwr, pattern) {
     dplyr::count(.data$around, sort = TRUE)
   around_ngrams <- around |>
     tidytext::unnest_ngrams("token", "around", n = 4, n_min = 1) |>
-    dplyr::count(.data$token, sort = TRUE)
+    dplyr::count(.data$token, sort = TRUE) |>
+    remove_nested_ngrams()
   if (!is.null(kwr$stopwords)) {
     around_ngrams <- around_ngrams |>
       dplyr::filter(!.data$token %in% kwr$stopwords)
