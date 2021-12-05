@@ -49,12 +49,7 @@ kwr_ngrams <- function(
       dplyr::filter(!.data$token %in% kwr$stopwords)
   }
   ngrams <- ngrams |>
-    dplyr::group_by(.data$token) |>
-    dplyr::summarize(n = dplyr::n(), volume = sum(.data$volume)) |>
-    dplyr::filter(
-      .data$volume >= min_volume,
-      .data$n >= min_n
-    ) |>
+    aggregate_ngrams() |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume), .data$token)
   if (remove_nested) {
     ngrams <- ngrams |>
@@ -97,8 +92,7 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
       .data$token != .data$query_normalized,
       .data$token %in% .data$query_normalized
     ) |>
-    dplyr::group_by(.data$token) |>
-    dplyr::summarize(volume = sum(.data$volume), n = dplyr::n()) |>
+    aggregate_ngrams() |>
     dplyr::filter(
       .data$volume >= min_volume,
       .data$n >= min_n
@@ -154,13 +148,19 @@ kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
       .data$n >= min_n
     ) |>
     dplyr::select(
-      .data$token, .data$volume, .data$n, .data$volume_prop, .data$n_prop
+      .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
     ) |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
 }
 
 
 # Private functions -------------------------------------------------------
+
+aggregate_ngrams <- function(ngrams) {
+  ngrams |>
+    dplyr::group_by(.data$token) |>
+    dplyr::summarize(n = dplyr::n(), volume = sum(.data$volume))
+}
 
 remove_nested_ngrams <- function(df) {
   is_nested_ngram <- function(ngrams, ngram, nn) {

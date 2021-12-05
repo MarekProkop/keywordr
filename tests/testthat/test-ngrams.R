@@ -61,8 +61,16 @@ test_that("kwr_subqueries() works", {
     kwresearch() |>
     kwr_subqueries()
   expect_s3_class(subqueries, "tbl_df")
-  expect_named(subqueries, c("token", "volume", "n"))
+  expect_named(subqueries, c("token", "n", "volume"))
   expect_equal(nrow(subqueries), 2)
+  expect_equal(
+    subqueries,
+    tibble::tibble(
+      token = c("aaa bbb", "bbb ccc"),
+      n = c(1, 1),
+      volume = c(100, 100)
+    )
+  )
 })
 
 test_that("kwr_collocations() works", {
@@ -74,5 +82,5 @@ test_that("kwr_collocations() works", {
     kwresearch() |>
     kwr_collocations()
   expect_s3_class(coll, "tbl_df")
-  expect_named(coll, c("token", "volume", "n", "volume_prop", "n_prop"))
+  expect_named(coll, c("token", "n", "volume", "n_prop", "volume_prop"))
 })
