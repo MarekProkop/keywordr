@@ -10,8 +10,8 @@ kwr_use_stopwords(kwr, stopwords = NULL)
 \item{kwr}{A kwresearch object.}
 
 \item{stopwords}{Stopwords as a character vector. You can use the
-kwr_stopwords() function. These words will be removed from unigram
-listings. If NULL (default), no stopwords are used.}
+kwr_stopwords() function for Czech stopwords. These words will be removed
+from unigram listings. If NULL (default), no stopwords are used.}
 }
 \value{
 A kwresearch object with stopwords set.
