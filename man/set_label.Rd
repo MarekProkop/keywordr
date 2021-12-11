@@ -4,7 +4,7 @@
 \alias{set_label}
 \title{Sets a classification label (character)}
 \usage{
-set_label(df, name, pattern, value = NULL)
+set_label(df, name, pattern, value = NULL, exclude = NULL)
 }
 \arguments{
 \item{df}{A data frame from a kwr object (either clean_data, or
@@ -12,9 +12,13 @@ classified_data).}
 
 \item{name}{A name of the label.}
 
-\item{pattern}{A regex pattern (character vector of length 1).}
+\item{pattern}{A regex pattern (character vector of length 1). The label is
+set to matched queries only.}
 
 \item{value}{An optional value of the label (character).}
+
+\item{exclude}{A regex pattern (character vector of lenth 1). The label is
+never set to matched queries.}
 }
 \value{
 A data frame with the label updated.

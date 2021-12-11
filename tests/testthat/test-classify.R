@@ -147,6 +147,36 @@ test_that("set_label() sets an existing label with a predefined value", {
   expect_equal(set_label(tibble_6, "label", "yyy", "Y"), tibble_7)
 })
 
+test_that("set_label() does not set a label for an excluded pattern", {
+  queries <- c("aaa", "bbb", "aaa bbb", "aaa ccc", "aaa ddd")
+  inp <- tibble::tibble(
+    query_normalized = queries
+  )
+  out <- tibble::tibble(
+    query_normalized = queries,
+    label = c("A", NA_character_, "A", NA_character_, "A")
+  )
+
+  expect_equal(
+    object = set_label(
+      df = inp, name = "label", pattern = "aaa", value = "A", exclude = "ccc"
+    ),
+    expected = tibble::tibble(
+      query_normalized = queries,
+      label = c("A", NA_character_, "A", NA_character_, "A")
+    )
+  )
+  expect_equal(
+    object = set_label(
+      df = inp, name = "label", pattern = "aaa", value = NULL, exclude = "ccc"
+    ),
+    expected = tibble::tibble(
+      query_normalized = queries,
+      label = c("aaa", NA_character_, "aaa", NA_character_, "aaa")
+    )
+  )
+})
+
 test_that("process_recipe() sets a new label without a predefined value", {
   recipe <- list(
     type = "label",
@@ -200,6 +230,31 @@ test_that("process_recipe() sets a new label with multiple predefined values", {
     )
   )
   expect_equal(process_recipe(tibble_4, recipe), tibble_7)
+})
+
+test_that("process_recipe() doesn't set a label for an excluded patterns", {
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb", "aaa bbb", "aaa ccc", "aaa ddd")
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        values = list(
+          list(
+            value = "A",
+            patterns = "aaa",
+            exclude = "ccc"
+          )
+        )
+      )
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "aaa bbb", "aaa ccc", "aaa ddd"),
+      label = c("A", NA_character_, "A", NA_character_, "A")
+    )
+  )
 })
 
 test_that("process_recipe() handles multiple recipes correctly", {

@@ -5,6 +5,8 @@
 \title{Classifies queries based on recipes}
 \usage{
 kwr_classify(kwr, quiet = FALSE)
+
+kwr_classify(kwr, quiet = FALSE)
 }
 \arguments{
 \item{kwr}{A kwr object containg queries to be classified, and classification
@@ -15,11 +17,19 @@ recipes.}
 \value{
 A kwr object where the queries are classified. Existing
 classification is preserved or updated, new is added.
+
+A kwr object where the queries are classified. Existing
+classification is preserved or updated, new is added.
 }
 \description{
 Classifies queries based on recipes
+
+Classifies queries based on recipes
 }
 \examples{
+\dontrun{
+kwr <- kwr |> kwr_classify()
+}
 \dontrun{
 kwr <- kwr |> kwr_classify()
 }

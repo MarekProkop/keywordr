@@ -5,6 +5,8 @@
 \title{Adds new classification recipes to a kwresearch object}
 \usage{
 kwr_use_recipes(kwr, recipe_file)
+
+kwr_use_recipes(kwr, recipe_file)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
@@ -15,7 +17,13 @@ kwr_use_recipes(kwr, recipe_file)
 The input kwresearch object with updated classification recipes. If
 the kwresearch object already contained recipes, they are merged with the
 new ones.
+
+The input kwresearch object with updated classification recipes. If
+the kwresearch object already contained recipes, they are merged with the
+new ones.
 }
 \description{
+Adds new classification recipes to a kwresearch object
+
 Adds new classification recipes to a kwresearch object
 }

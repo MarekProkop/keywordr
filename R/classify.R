@@ -111,7 +111,12 @@ process_value <- function(df, value, name, quiet = TRUE) {
     message("  Value: ", value$value)
   }
   df |>
-    set_label(name, join_patterns(value$patterns), value = value$value)
+    set_label(
+      name = name,
+      pattern = join_patterns(value$patterns),
+      value = value$value,
+      exclude = join_patterns(value$exclude)
+    )
 }
 
 #' Deduplicates regex patterns and joins them by "|"
@@ -120,6 +125,7 @@ process_value <- function(df, value, name, quiet = TRUE) {
 #'
 #' @return A character vector of length 1.
 join_patterns <- function(patterns) {
+  if (is.null(patterns)) return(patterns)
   patterns |> unique() |> stringr::str_c(collapse = "|")
 }
 
@@ -143,24 +149,44 @@ set_flag <- function(df, name, pattern, negate = FALSE) {
 #' Sets a classification label (character)
 #'
 #' @param df A data frame from a kwr object (either clean_data, or
-#' classified_data).
+#'   classified_data).
 #' @param name A name of the label.
-#' @param pattern A regex pattern (character vector of length 1).
+#' @param pattern A regex pattern (character vector of length 1). The label is
+#'   set to matched queries only.
 #' @param value An optional value of the label (character).
+#' @param exclude A regex pattern (character vector of lenth 1). The label is
+#'   never set to matched queries.
 #'
 #' @return A data frame with the label updated.
-set_label <- function(df, name, pattern, value = NULL) {
+set_label <- function(df, name, pattern, value = NULL, exclude = NULL) {
   if (is.null(value)) {
-    df[[name]] <- extract_pattern(df$query_normalized, pattern)
+    if (is.null(exclude)) {
+      df[[name]] <- extract_pattern(df$query_normalized, pattern)
+    } else {
+      df[[name]] <- dplyr::if_else(
+        !stringr::str_detect(df$query_normalized, exclude),
+        extract_pattern(df$query_normalized, pattern),
+        NA_character_
+      )
+    }
   } else {
     if (!name %in% names(df)) {
       df[[name]] <- NA_character_
     }
-    df[[name]] <- dplyr::if_else(
-      stringr::str_detect(df$query_normalized, pattern),
-      join_labels(df[[name]], value),
-      df[[name]]
-    )
+    if (is.null(exclude)) {
+      df[[name]] <- dplyr::if_else(
+        stringr::str_detect(df$query_normalized, pattern),
+        join_labels(df[[name]], value),
+        df[[name]]
+      )
+    } else {
+      df[[name]] <- dplyr::if_else(
+        stringr::str_detect(df$query_normalized, pattern) &
+          !stringr::str_detect(df$query_normalized, exclude),
+        join_labels(df[[name]], value),
+        df[[name]]
+      )
+    }
   }
   df
 }
@@ -199,4 +225,58 @@ extract_pattern <- function(x, pattern) {
   )
   result <- dplyr::if_else(result == "", NA_character_, result)
   return(result)
+}
+#' Adds new classification recipes to a kwresearch object
+#'
+#' @param kwr A kwresearch object.
+#' @param recipe_file A path to a recipe file in YAML format.
+#'
+#' @return The input kwresearch object with updated classification recipes. If
+#'   the kwresearch object already contained recipes, they are merged with the
+#'   new ones.
+#' @export
+kwr_use_recipes <- function(kwr, recipe_file) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_file_exists(recipe_file, access = "r", extension = "yml")
+
+  new_recipes <- read_recipes(recipe_file)
+  if (is.null(kwr$recipes)) {
+    kwr$recipes <- new_recipes
+  } else {
+    kwr$recipes <- c(kwr$recipes, new_recipes)
+  }
+  kwr
+}
+
+#' Classifies queries based on recipes
+#'
+#' @param kwr A kwr object containg queries to be classified, and classification
+#'   recipes.
+#' @param quiet If TRUE prints no messgaes.
+#'
+#' @return A kwr object where the queries are classified. Existing
+#'   classification is preserved or updated, new is added.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' kwr <- kwr |> kwr_classify()
+#' }
+kwr_classify <- function(kwr, quiet = FALSE) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_list(kwr$recipes, min.len = 1)
+  checkmate::assert_flag(quiet)
+
+  if (kwr$status == "classified") {
+    dataset <- kwr$classified_data
+  } else {
+    dataset <- kwr$clean_data
+  }
+  classified <- kwr$recipes |>
+    purrr::reduce(process_recipe, .init = dataset, quiet) |>
+    dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
+  kwr$classified_data <- classified
+  kwr$status <- "classified"
+  kwr
 }
