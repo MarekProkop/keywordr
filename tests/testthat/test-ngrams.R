@@ -36,11 +36,11 @@ test_that("kwr_ngrams(remove_nested = TRUE) works", {
 
 test_that("kwr_ngrams() with stopwords works", {
   input_df <- data.frame(
-    query = c("aaa bbb", "aaa na bbb"),
+    query = c("aaa bbb", "aaa že bbb"),
     volume = c(100, 100)
   )
   expected <- tibble::tibble(
-    token = c("aaa", "bbb", "aaa bbb", "aaa na", "aaa na bbb", "na bbb"),
+    token = c("aaa", "bbb", "aaa bbb", "aaa že", "aaa že bbb", "že bbb"),
     n = c(2, 2, 1, 1, 1, 1),
     volume = c(200, 200, 100, 100, 100, 100)
   )

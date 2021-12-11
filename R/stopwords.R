@@ -7,15 +7,18 @@
 kwr_stopwords <- function(lang = "cs") {
   checkmate::assert_true(lang == "cs")
 
+  # converted to \unnnn by https://r12a.github.io/app-conversion/
   c(
-    "a", "v", "se", "na", "je", "že", "o", "s", "z", "do", "i", "to", "k",
+    "a", "v", "se", "na", "je", "\u017Ee", "o", "s", "z", "do", "i", "to", "k",
     "ve", "pro", "za", "by", "ale", "si", "po", "jako", "podle", "od", "jsem",
-    "tak", "jsou", "které", "ktere", "který", "ktery", "jeho", "však",
-    "vsak", "bude", "nebo", "už", "uz", "jen", "byl", "jak", "u", "co",
-    "při", "pri", "až", "az", "aby", "má", "ma", "když", "kdyz", "než",
-    "nez", "ze", "která", "ktera", "před", "pred", "být", "také", "bylo",
-    "jsme", "není", "neni", "jejich", "ještě", "jeste", "ani", "mezi",
-    "byla", "své", "sve", "již", "jiz", "pak", "kteří", "kteri", "proti",
-    "tím", "tim", "může", "muze", "tom", "kde", "či", "ci", "tedy", "pouze"
+    "tak", "jsou", "kter\u00E9", "ktere", "kter\u00FD", "ktery", "jeho",
+    "v\u0161ak", "vsak", "bude", "nebo", "u\u017E", "uz", "jen", "byl", "jak",
+    "u", "co", "p\u0159i", "pri", "a\u017E", "az", "aby", "m\u00E1", "ma",
+    "kdy\u017E", "kdyz", "ne\u017E", "nez", "ze", "kter\u00E1", "ktera",
+    "p\u0159ed", "pred", "b\u00FDt", "tak\u00E9", "bylo", "jsme", "nen\u00ED",
+    "neni", "jejich", "je\u0161t\u011B", "jeste", "ani", "mezi", "byla",
+    "sv\u00E9", "sve", "ji\u017E", "jiz", "pak", "kte\u0159\u00ED", "kteri",
+    "proti", "t\u00EDm", "tim", "m\u016F\u017Ee", "muze", "tom", "kde",
+    "\u010Di", "ci", "tedy", "pouze"
   )
 }
