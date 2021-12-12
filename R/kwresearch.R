@@ -60,7 +60,7 @@ kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
 #' @export
 kwr_import <- function(kwr, queries) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_string(kwr$status, pattern = "^empty$")
+  checkmate::assert_choice(kwr$status, "empty")
   checkmate::assert_data_frame(queries)
 
   empty_df <- tibble::tibble(
@@ -100,7 +100,7 @@ kwr_import <- function(kwr, queries) {
 #' kwr |> kwr_source_queries()
 kwr_source_queries <- function(kwr) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
 
   kwr$source_data
 }
@@ -121,7 +121,7 @@ kwr_source_queries <- function(kwr) {
 #' kwr |> kwr_clean_queries()
 kwr_clean_queries <- function(kwr) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
 
   kwr$clean_data
 }

@@ -46,7 +46,7 @@ kwr_classify <- function(kwr, quiet = FALSE) {
     dataset <- kwr$clean_data
   }
   classified <- kwr$recipes |>
-    purrr::reduce(process_recipe, .init = dataset, quiet) |>
+    purrr::reduce(process_recipe, .init = dataset, quiet = quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
   kwr$classified_data <- classified
   kwr$status <- "classified"
@@ -76,22 +76,24 @@ read_recipes <- function(path) {
 #' @return A data frame with updated classification.
 process_recipe <- function(df, recipe, quiet = FALSE) {
   if (recipe$type == "flag") {
-    if (quiet) {
+    if (!quiet) {
       message("Flag: ", recipe$name)
     }
     df |>
       set_flag(recipe$name, join_patterns(recipe$patterns), recipe$negate)
   } else if (recipe$type == "label") {
-    if (quiet) {
+    if (!quiet) {
       message("Label:", recipe$name)
     }
-    if (is.null(recipe$values)) {
-      df |> set_label(recipe$name, join_patterns(recipe$patterns))
-    } else {
-      recipe$values |> purrr::reduce(
+    if (!is.null(recipe$patterns)) {
+      df <- df |> set_label(recipe$name, join_patterns(recipe$patterns))
+    }
+    if (!is.null(recipe$values)) {
+      df <- recipe$values |> purrr::reduce(
         process_value, name = recipe$name, .init = df, quiet
       )
     }
+    df
   } else {
     stop(paste("Unknown recipe type", recipe$type))
   }
@@ -106,8 +108,8 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
 #' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A data frame with updated classification.
-process_value <- function(df, value, name, quiet = TRUE) {
-  if (quiet) {
+process_value <- function(df, value, name, quiet = FALSE) {
+  if (!quiet) {
     message("  Value: ", value$value)
   }
   df |>
@@ -274,7 +276,7 @@ kwr_classify <- function(kwr, quiet = FALSE) {
     dataset <- kwr$clean_data
   }
   classified <- kwr$recipes |>
-    purrr::reduce(process_recipe, .init = dataset, quiet) |>
+    purrr::reduce(process_recipe, .init = dataset, quiet = quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
   kwr$classified_data <- classified
   kwr$status <- "classified"

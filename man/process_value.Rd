@@ -4,7 +4,7 @@
 \alias{process_value}
 \title{Processes a single value of a recipe of the type label}
 \usage{
-process_value(df, value, name, quiet = TRUE)
+process_value(df, value, name, quiet = FALSE)
 }
 \arguments{
 \item{df}{A data frame from a kwr object (either clean_data, or

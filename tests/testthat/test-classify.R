@@ -112,11 +112,11 @@ test_that("process_recipe() sets a flag correctly", {
   recipe_2 <- recipe_1
   recipe_2$negate <- TRUE
 
-  expect_identical(process_recipe(tibble_1, recipe_1), tibble_2)
-  expect_identical(process_recipe(tibble_1, recipe_2), tibble_3)
+  expect_identical(process_recipe(tibble_1, recipe_1, quiet = TRUE), tibble_2)
+  expect_identical(process_recipe(tibble_1, recipe_2, quiet = TRUE), tibble_3)
 
   # Shoud work iven if a label already exists
-  expect_identical(process_recipe(tibble_2, recipe_2), tibble_3)
+  expect_identical(process_recipe(tibble_2, recipe_2, quiet = TRUE), tibble_3)
 })
 
 tibble_4 <- tibble::tibble(
@@ -183,7 +183,7 @@ test_that("process_recipe() sets a new label without a predefined value", {
     name = "label",
     patterns = c("xxx", "yyy")
   )
-  expect_equal(process_recipe(tibble_4, recipe), tibble_5)
+  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_5)
 })
 
 test_that("process_recipe() sets a new label with a predefined value", {
@@ -197,7 +197,7 @@ test_that("process_recipe() sets a new label with a predefined value", {
       )
     )
   )
-  expect_equal(process_recipe(tibble_4, recipe), tibble_6)
+  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_6)
 })
 
 test_that("process_recipe() sets an existing label with a predefined value", {
@@ -211,7 +211,7 @@ test_that("process_recipe() sets an existing label with a predefined value", {
       )
     )
   )
-  expect_equal(process_recipe(tibble_6, recipe), tibble_7)
+  expect_equal(process_recipe(tibble_6, recipe, quiet = TRUE), tibble_7)
 })
 
 test_that("process_recipe() sets a new label with multiple predefined values", {
@@ -229,7 +229,7 @@ test_that("process_recipe() sets a new label with multiple predefined values", {
       )
     )
   )
-  expect_equal(process_recipe(tibble_4, recipe), tibble_7)
+  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_7)
 })
 
 test_that("process_recipe() doesn't set a label for an excluded patterns", {
@@ -248,11 +248,65 @@ test_that("process_recipe() doesn't set a label for an excluded patterns", {
             exclude = "ccc"
           )
         )
-      )
+      ),
+      quiet = TRUE
     ),
     expected = tibble::tibble(
       query_normalized = c("aaa", "bbb", "aaa bbb", "aaa ccc", "aaa ddd"),
       label = c("A", NA_character_, "A", NA_character_, "A")
+    )
+  )
+})
+
+test_that("process_recipe() handles values and patterns in the same recipe", {
+  queries <- c("aaa", "bbb", "ccc")
+
+  # Values followed by patterns
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        values = list(
+          list(
+            value = "A",
+            patterns = "aaa"
+          )
+        ),
+        patterns = "bbb"
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = queries,
+      label = c("A", "bbb", NA_character_)
+    )
+  )
+  # Patterns followed by values
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        patterns = "bbb",
+        values = list(
+          list(
+            value = "A",
+            patterns = "aaa"
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = queries,
+      label = c("A", "bbb", NA_character_)
     )
   )
 })
@@ -296,7 +350,8 @@ test_that("process_recipe() handles multiple recipes correctly", {
       )
     )
   )
-  tibble_out <- recipes |> purrr::reduce(process_recipe, .init = tibble_in)
+  tibble_out <- recipes |>
+    purrr::reduce(process_recipe, .init = tibble_in, quiet = TRUE)
   expect_equal(tibble_out, tibble_expected)
 })
 
@@ -319,6 +374,6 @@ test_that("kwr_classify() works as expected", {
   )
   kwr <- kwresearch(tibble_in) |>
     kwr_use_recipes("../test-data/recipes-1.yml") |>
-    kwr_classify()
+    kwr_classify(quiet = TRUE)
   expect_equal(kwr$classified_data, tibble_expected)
 })

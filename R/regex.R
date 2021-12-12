@@ -7,7 +7,7 @@
 #' @export
 kwr_test_regex <- function(kwr, pattern) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
   checkmate::assert_string(pattern)
 
   full <- kwr |>

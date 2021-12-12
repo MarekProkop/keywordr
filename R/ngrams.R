@@ -31,7 +31,7 @@ kwr_ngrams <- function(
   remove_nested = TRUE
 ) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
   checkmate::assert_int(min_words, lower = 1, upper = 10)
   checkmate::assert_int(max_words, lower = min_words, upper = 10)
   checkmate::assert_count(min_n)
@@ -83,7 +83,7 @@ kwr_ngrams <- function(
 #' @export
 kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
   checkmate::assert_int(max_words, lower = 1, upper = 10)
   checkmate::assert_count(min_n)
   checkmate::assert_count(min_volume)
@@ -121,7 +121,7 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
 #' @export
 kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "data")
+  checkmate::assert_choice(kwr$status, c("data", "classified"))
   checkmate::assert_double(min_volume_prop, len = 1, lower = 0, upper = 1)
   checkmate::assert_count(min_n)
 
