@@ -61,7 +61,7 @@ kwr_classify <- function(kwr, quiet = FALSE) {
 #' @param path Path to YAML file.
 #'
 #' @return Classification recipes (a list).
-#' @export
+#' @keywords internal
 read_recipes <- function(path) {
   yaml::yaml.load_file(path)
 }
@@ -74,6 +74,7 @@ read_recipes <- function(path) {
 #' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A data frame with updated classification.
+#' @keywords internal
 process_recipe <- function(df, recipe, quiet = FALSE) {
   if (recipe$type == "flag") {
     if (!quiet) {
@@ -108,6 +109,7 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
 #' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A data frame with updated classification.
+#' @keywords internal
 process_value <- function(df, value, name, quiet = FALSE) {
   if (!quiet) {
     message("  Value: ", value$value)
@@ -126,6 +128,7 @@ process_value <- function(df, value, name, quiet = FALSE) {
 #' @param patterns A character vector of regex patterns.
 #'
 #' @return A character vector of length 1.
+#' @keywords internal
 join_patterns <- function(patterns) {
   if (is.null(patterns)) return(patterns)
   patterns |> unique() |> stringr::str_c(collapse = "|")
@@ -141,6 +144,7 @@ join_patterns <- function(patterns) {
 #' as TRUE.
 #'
 #' @return A data frame with the flag updated.
+#' @keywords internal
 set_flag <- function(df, name, pattern, negate = FALSE) {
   df[[name]] <- stringr::str_detect(
     df$query_normalized, pattern, negate = negate
@@ -160,6 +164,7 @@ set_flag <- function(df, name, pattern, negate = FALSE) {
 #'   never set to matched queries.
 #'
 #' @return A data frame with the label updated.
+#' @keywords internal
 set_label <- function(df, name, pattern, value = NULL, exclude = NULL) {
   if (is.null(value)) {
     if (is.null(exclude)) {
@@ -201,6 +206,7 @@ set_label <- function(df, name, pattern, value = NULL, exclude = NULL) {
 #'
 #' @return Character vector of the same length as x. Unique label values
 #' of x and y joined together.
+#' @keywords internal
 join_labels <- function(x, y, sep = ",") {
   purrr::map2_chr(x, y, function(x, y) {
     if (is.na(x)) {
@@ -220,6 +226,7 @@ join_labels <- function(x, y, sep = ",") {
 #' @param pattern A character vector.
 #'
 #' @return A character vector of the same lenght as x.
+#' @keywords internal
 extract_pattern <- function(x, pattern) {
   result <- purrr::map_chr(
     purrr::map(stringr::str_extract_all(x, pattern), unique),

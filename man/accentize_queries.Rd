@@ -18,3 +18,4 @@ of them.
 \description{
 Tries to add accents (´ˇ¨ etc.) where they should be
 }
+\keyword{internal}

@@ -48,6 +48,7 @@ kwr_import_mm <- function(kwr, path, quiet = FALSE) {
 #' @return A tibble with columns: query, volume, cpc, input, source. Rows are
 #' just copied from the CSV file without deduplication or any other
 #' modification.
+#' @keywords internal
 import_mm_file <- function(path, quiet = FALSE) {
   if (!quiet) {
     message("Importing ", path)

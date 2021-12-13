@@ -23,3 +23,4 @@ A data frame with the flag updated.
 \description{
 Sets a classification flag (logical value)
 }
+\keyword{internal}

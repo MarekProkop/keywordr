@@ -17,3 +17,4 @@ A character vector of the same lenght as x.
 \description{
 Extracts a regex pattern from a character vector (vectorized)
 }
+\keyword{internal}

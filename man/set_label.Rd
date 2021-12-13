@@ -26,3 +26,4 @@ A data frame with the label updated.
 \description{
 Sets a classification label (character)
 }
+\keyword{internal}

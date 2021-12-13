@@ -15,3 +15,4 @@ A character vector of length 1.
 \description{
 Deduplicates regex patterns and joins them by "|"
 }
+\keyword{internal}

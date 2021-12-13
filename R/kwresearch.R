@@ -193,6 +193,7 @@ clean_source_data <- function(source_data) {
 #' @return Character vector of all queries in x, with accents added to some
 #' of them.
 #' @importFrom rlang .data
+#' @keywords internal
 accentize_queries <- function(x, vol) {
   tibble::tibble(
     x,

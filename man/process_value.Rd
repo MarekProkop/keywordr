@@ -22,3 +22,4 @@ A data frame with updated classification.
 \description{
 Processes a single value of a recipe of the type label
 }
+\keyword{internal}

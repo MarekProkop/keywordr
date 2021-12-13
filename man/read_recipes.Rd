@@ -15,3 +15,4 @@ Classification recipes (a list).
 \description{
 Reads classification recipes from a YAML file
 }
+\keyword{internal}
