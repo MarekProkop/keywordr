@@ -197,8 +197,10 @@ list(
   list(
     type = "remove",
     rules = list(
-      match = c("rrr", "sss"),
-      except = c("aaa", "bbb")
+      list(
+        match = c("rrr", "sss"),
+        except = c("aaa", "bbb")
+      )
     )
   ),
   list(

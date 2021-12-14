@@ -76,27 +76,53 @@ read_recipes <- function(path) {
 #' @return A data frame with updated classification.
 #' @keywords internal
 process_recipe <- function(df, recipe, quiet = FALSE) {
-  if (recipe$type == "flag") {
-    if (!quiet) {
-      message("Flag: ", recipe$name)
+  switch (recipe$type,
+    remove = {
+      if (!quiet) {
+        message("Removing queries...")
+      }
+      recipe$rules |>
+        purrr::reduce(process_remove_rule, .init = df)
+    },
+    flag = {
+      if (!quiet) {
+        message("Flag: ", recipe$name)
+      }
+      df |>
+        set_flag(recipe$name, join_patterns(recipe$patterns), recipe$negate)
+    },
+    label = {
+      if (!quiet) {
+        message("Label:", recipe$name)
+      }
+      if (!is.null(recipe$patterns)) {
+        df <- df |> set_label(recipe$name, join_patterns(recipe$patterns))
+      }
+      if (!is.null(recipe$values)) {
+        df <- recipe$values |> purrr::reduce(
+          process_value, name = recipe$name, .init = df, quiet
+        )
+      }
+      df
+    },
+    {
+      stop(paste("Unknown recipe type", recipe$type))
     }
+  )
+}
+
+process_remove_rule <- function(df, rule) {
+  if (is.null(rule$except)) {
     df |>
-      set_flag(recipe$name, join_patterns(recipe$patterns), recipe$negate)
-  } else if (recipe$type == "label") {
-    if (!quiet) {
-      message("Label:", recipe$name)
-    }
-    if (!is.null(recipe$patterns)) {
-      df <- df |> set_label(recipe$name, join_patterns(recipe$patterns))
-    }
-    if (!is.null(recipe$values)) {
-      df <- recipe$values |> purrr::reduce(
-        process_value, name = recipe$name, .init = df, quiet
+      dplyr::filter(
+        !stringr::str_detect(query_normalized, join_patterns(rule$match))
       )
-    }
-    df
   } else {
-    stop(paste("Unknown recipe type", recipe$type))
+    df |>
+      dplyr::filter(
+        !stringr::str_detect(query_normalized, join_patterns(rule$match)) |
+        stringr::str_detect(query_normalized, join_patterns(rule$except))
+      )
   }
 }
 
