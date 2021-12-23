@@ -272,6 +272,18 @@ test_that("set_label() does not set a label for an excluded pattern", {
       label = c("aaa", NA_character_, "aaa", NA_character_, "aaa")
     )
   )
+  expect_equal(
+    set_label(
+      tibble::tibble(
+        query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy")
+      ),
+      name = "label", pattern = "xxx", value = "X", exclude = "yyy"
+    ),
+    tibble::tibble(
+      query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      label = c(NA_character_, "X", NA_character_, NA_character_)
+    )
+  )
 })
 
 test_that("process_recipe() sets a new label without a predefined value", {
@@ -406,6 +418,10 @@ test_that("process_recipe() handles values and patterns in the same recipe", {
       label = c("A", "bbb", NA_character_)
     )
   )
+})
+
+test_that("process_recipe() doesn't set a label for an excluded patterns", {
+  fail()
 })
 
 test_that("process_recipe() handles multiple recipes correctly", {
