@@ -36,16 +36,19 @@ kwr_use_recipes <- function(kwr, recipe_file) {
 #' }
 kwr_classify <- function(kwr, quiet = FALSE) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_list(kwr$recipes, min.len = 1)
   checkmate::assert_flag(quiet)
 
   if (kwr$status == "classified") {
     dataset <- kwr$classified_data
+  } else if (kwr$status == "pruned") {
+    dataset <- kwr$pruned_data
   } else {
     dataset <- kwr$clean_data
   }
   classified <- kwr$recipes |>
+    purrr::keep(~ .x$type %ïn% c("flag", "label")) |>
     purrr::reduce(process_recipe, .init = dataset, quiet = quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
   kwr$classified_data <- classified
