@@ -48,7 +48,7 @@ kwr_classify <- function(kwr, quiet = FALSE) {
     dataset <- kwr$clean_data
   }
   classified <- kwr$recipes |>
-    purrr::keep(~ .x$type %ïn% c("flag", "label")) |>
+    purrr::keep(~ .x$type %in% c("flag", "label")) |>
     purrr::reduce(process_recipe, .init = dataset, quiet = quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
   kwr$classified_data <- classified

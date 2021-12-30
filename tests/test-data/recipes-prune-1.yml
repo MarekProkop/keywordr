@@ -1,0 +1,6 @@
+- type: remove
+  rules:
+  - match:
+    - aaa
+    - ccc
+    except: xxx
