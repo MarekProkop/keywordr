@@ -7,21 +7,21 @@
 #' @export
 kwr_test_regex <- function(kwr, pattern) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_string(pattern)
 
   full <- kwr |>
-    kwr_clean_queries() |>
+    kwr_queries() |>
     dplyr::select(.data$query_normalized) |>
     dplyr::filter(stringr::str_detect(.data$query_normalized, pattern)) |>
     dplyr::mutate(
       match = stringr::str_extract(.data$query_normalized, pattern),
       word = stringr::str_extract(
-        .data$query_normalized, stringr::str_c("[\\B]*?", pattern, ".*?\\b")
+        .data$query_normalized, stringr::str_c("\\w*", pattern, "\\w*")
       ),
       schema = stringr::str_replace(
         .data$query_normalized,
-        stringr::str_c("[\\B]*?", pattern, ".*?\\b"), "*"
+        stringr::str_c("\\w*", pattern, "\\w*"), "*"
       ),
       pred = stringr::str_replace(
         stringr::str_replace(.data$schema, " \\*.*", ""), ".*\\*.*", ""

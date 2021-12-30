@@ -14,8 +14,8 @@ kwr_ngrams(
 )
 }
 \arguments{
-\item{kwr}{A kwresearch object, which clean queries will be n-grams
-calculated from.}
+\item{kwr}{A kwresearch object, which queries will be n-grams calculated
+from.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 

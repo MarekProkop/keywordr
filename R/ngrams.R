@@ -1,7 +1,7 @@
 #' Generates n-grams from queries
 #'
-#' @param kwr A kwresearch object, which clean queries will be n-grams
-#'   calculated from.
+#' @param kwr A kwresearch object, which queries will be n-grams calculated
+#'   from.
 #' @param max_words Maximum number of words in n-grams.
 #' @param min_words Minimum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
@@ -31,7 +31,7 @@ kwr_ngrams <- function(
   remove_nested = TRUE
 ) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_int(min_words, lower = 1, upper = 10)
   checkmate::assert_int(max_words, lower = min_words, upper = 10)
   checkmate::assert_count(min_n)
@@ -39,26 +39,23 @@ kwr_ngrams <- function(
   checkmate::assert_flag(remove_nested)
 
   ngrams <- kwr |>
-    kwr_clean_queries() |>
+    kwr_queries() |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
       n = max_words, n_min = min_words, drop = FALSE
     )
-  if (min_n == 1 & !is.null(kwr$stopwords)) {
+  if (!is.null(kwr$stopwords)) {
     ngrams <- ngrams |>
       dplyr::filter(!.data$token %in% kwr$stopwords)
   }
   ngrams <- ngrams |>
     aggregate_ngrams() |>
+    dplyr::filter(.data$n >= min_n, .data$volume >= min_volume) |>
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume), .data$token)
   if (remove_nested) {
     ngrams <- ngrams |>
       remove_nested_ngrams()
-  }
-  if (!is.null(kwr$stopwords)) {
-    ngrams <- ngrams |>
-      dplyr::filter(!.data$token %in% kwr$stopwords)
   }
   ngrams
 }
@@ -83,13 +80,13 @@ kwr_ngrams <- function(
 #' @export
 kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_int(max_words, lower = 1, upper = 10)
   checkmate::assert_count(min_n)
   checkmate::assert_count(min_volume)
 
   kwr |>
-    kwr_clean_queries() |>
+    kwr_queries() |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
@@ -121,12 +118,12 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
 #' @export
 kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_double(min_volume_prop, len = 1, lower = 0, upper = 1)
   checkmate::assert_count(min_n)
 
   kwr |>
-    kwr_clean_queries() |>
+    kwr_queries() |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized", n = 4, n_min = 2

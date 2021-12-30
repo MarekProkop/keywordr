@@ -233,3 +233,11 @@ aggregate_clean_data <- function(mm_data) {
     ) |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
 }
+
+kwr_queries <- function(kwr) {
+  if (kwr$status == "pruned") {
+    kwr$pruned_data
+  } else {
+    kwr |> kwr_clean_queries()
+  }
+}
