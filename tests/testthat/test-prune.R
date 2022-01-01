@@ -1,3 +1,100 @@
+test_that("process_prune_recipe() removes correct queries", {
+
+  # Full syntax, a single rule without except
+  expect_equal(
+    object = process_prune_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb", "ccc", "ddd")
+      ),
+      recipe = list(
+        type = "remove",
+        rules = list(
+          list(
+            match = c("aaa", "ccc")
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("bbb", "ddd")
+    )
+  )
+
+  # Full syntax, multiple rules without except
+  expect_equal(
+    object = process_prune_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb", "ccc", "ddd")
+      ),
+      recipe = list(
+        type = "remove",
+        rules = list(
+          list(
+            match = c("aaa", "ccc")
+          ),
+          list(
+            match = c("aaa", "ddd")
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("bbb")
+    )
+  )
+
+  # Full syntax, a single rule with except
+  expect_equal(
+    object = process_prune_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa iii", "bbb iii", "bbb jjj")
+      ),
+      recipe = list(
+        type = "remove",
+        rules = list(
+          list(
+            match = "bbb",
+            except = "iii"
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa iii", "bbb iii")
+    )
+  )
+
+  # Full syntax, multiple rules with except
+  expect_equal(
+    object = process_prune_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa iii", "aaa jjj", "bbb iii", "bbb jjj")
+      ),
+      recipe = list(
+        type = "remove",
+        rules = list(
+          list(
+            match = "aaa",
+            except = "iii"
+          ),
+          list(
+            match = "bbb",
+            except = "jjj"
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa iii", "bbb jjj")
+    )
+  )
+
+})
+
 test_that("kwr_prune() prunes clean data", {
   kwr <- kwresearch(
     queries = tibble::tibble(

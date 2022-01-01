@@ -30,9 +30,42 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
   }
 
   pruned <- recipes |>
-    purrr::reduce(process_recipe, .init = dataset, quiet = quiet)
+    purrr::reduce(process_prune_recipe, .init = dataset, quiet = quiet)
 
   kwr$pruned_data <- pruned
   kwr$status <- "pruned"
   kwr
+}
+
+
+# Private functions -------------------------------------------------------
+
+#' Processes a single pruning recipe
+#'
+#' @param df A data frame from a kwr object (either clean_data, or
+#' pruned_data).
+#' @param recipe A single pruning recipe (type 'remove').
+#' @param quiet If TRUE prints no messgaes.
+#'
+#' @return A data frame with pruned queries.
+#' @keywords internal
+process_prune_recipe <- function(df, recipe, quiet = FALSE) {
+  if (recipe$type == "remove") {
+    if (!quiet) {
+      message("Removing queries...")
+      n_queries <- nrow(df)
+    }
+    result <- recipe$rules |>
+      purrr::reduce(process_remove_rule, .init = df)
+    if (!quiet) {
+      message(stringr::str_glue(
+        "Removed {n_queries - nrow(result)} queries out of {n_queries}."
+      ))
+    }
+    return(result)
+  } else {
+    stop(stringr::str_glue(
+      "Recipe type '{recipe$type}' is not implemented for pruning."
+    ))
+  }
 }

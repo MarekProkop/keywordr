@@ -80,13 +80,6 @@ read_recipes <- function(path) {
 #' @keywords internal
 process_recipe <- function(df, recipe, quiet = FALSE) {
   switch (recipe$type,
-    remove = {
-      if (!quiet) {
-        message("Removing queries...")
-      }
-      recipe$rules |>
-        purrr::reduce(process_remove_rule, .init = df)
-    },
     flag = {
       if (!quiet) {
         message("Flag: ", recipe$name)
