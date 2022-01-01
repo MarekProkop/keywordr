@@ -100,7 +100,7 @@ kwr_import <- function(kwr, queries) {
 #' kwr |> kwr_source_queries()
 kwr_source_queries <- function(kwr) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
 
   kwr$source_data
 }
@@ -121,9 +121,22 @@ kwr_source_queries <- function(kwr) {
 #' kwr |> kwr_clean_queries()
 kwr_clean_queries <- function(kwr) {
   checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
 
   kwr$clean_data
+}
+
+#' Outputs pruned queries
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble.
+#' @export
+kwr_pruned_queries <- function(kwr) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_choice(kwr$status, c("pruned", "classified"))
+
+  kwr$pruned_data
 }
 
 #' Outputs classified queries
@@ -149,6 +162,20 @@ kwr_classified_queries <- function(kwr) {
   checkmate::assert_true(kwr$status == "classified")
 
   kwr$classified_data
+}
+
+#' Outputs the most processed queries
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble with queries.
+#' @export
+kwr_queries <- function(kwr) {
+  if (kwr$status == "pruned") {
+    kwr |> kwr_pruned_queries()
+  } else {
+    kwr |> kwr_clean_queries()
+  }
 }
 
 #' Set a stopword list to use with n-gram functions
@@ -232,12 +259,4 @@ aggregate_clean_data <- function(mm_data) {
       source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
-}
-
-kwr_queries <- function(kwr) {
-  if (kwr$status == "pruned") {
-    kwr$pruned_data
-  } else {
-    kwr |> kwr_clean_queries()
-  }
 }

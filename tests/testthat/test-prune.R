@@ -21,3 +21,14 @@ test_that("kwr_prune() prunes clean data", {
     )
   )
 })
+
+test_that("kwr_queries() returns pruned data if available", {
+  kwr <- kwresearch(
+    queries = tibble::tibble(
+      query = c("aaa", "bbb", "ccc", "ccc xxx", "ddd"),
+      volume = c(10, 20, 30, 40, 50)
+    )
+  ) |> kwr_prune("../test-data/recipes-prune-1.yml", quiet = TRUE)
+
+  expect_equal(kwr_queries(kwr), kwr$pruned_data)
+})
