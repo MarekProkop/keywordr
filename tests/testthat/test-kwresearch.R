@@ -177,6 +177,26 @@ test_that("kwr_classified_queries() returns a correct data set (or error)", {
   )
 })
 
+test_that("kwr_pruned_queries() return a correct data set", {
+  expect_equal(
+    object = kwresearch(tibble::tibble(
+      query = c("aaa", "bbb", "ccc"),
+      volume = 10
+    )) |>
+      kwr_prune("../test-data/recipes-prune-1.yml", quiet = TRUE) |>
+      kwr_removed_queries(),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "ccc"),
+      n_queries = 1,
+      volume = 10,
+      cpc = NA_real_,
+      query_original = c("aaa", "ccc"),
+      input = NA_character_,
+      source = NA_character_
+    )
+  )
+})
+
 test_that("kwr_use_stopwords() works", {
   kwr <- kwresearch() |>
     kwr_use_stopwords(kwr_stopwords())

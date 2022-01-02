@@ -178,6 +178,21 @@ kwr_queries <- function(kwr) {
   }
 }
 
+#' Outputs queries removed by kwr_prune
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return A tibble with queries removed by kwr_prune.
+#' @export
+kwr_removed_queries <- function(kwr) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_choice(kwr$status, c("pruned", "classified"))
+
+  kwr |>
+    kwr_clean_queries() |>
+    dplyr::anti_join(kwr_pruned_queries(kwr), by = "query_normalized")
+}
+
 #' Set a stopword list to use with n-gram functions
 #'
 #' @param kwr A kwresearch object.
