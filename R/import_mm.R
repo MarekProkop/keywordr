@@ -38,7 +38,7 @@ kwr_import_mm <- function(kwr, path, quiet = FALSE) {
   result <- kwr |> kwr_import(queries)
   if (!quiet) {
     message(stringr::str_glue(
-      "Imported {nrow(queries)} rows from {length(path)} file(s), aggregated into {nrow(result$source_data)} queries, normalized into {nrow(result$clean_data)} queries. (duration: {round(Sys.time() - start_time, 3)}s)"
+      "Imported {nrow(queries)} rows from {length(path)} file(s), aggregated into {nrow(result$source_data)} queries, normalized into {nrow(result$clean_data)} queries. Duration: {round(Sys.time() - start_time, 3)}s."
     ))
   }
   result

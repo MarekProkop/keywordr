@@ -4,15 +4,13 @@
 \alias{process_prune_recipe}
 \title{Processes a single pruning recipe}
 \usage{
-process_prune_recipe(df, recipe, quiet = FALSE)
+process_prune_recipe(df, recipe)
 }
 \arguments{
 \item{df}{A data frame from a kwr object (either clean_data, or
 pruned_data).}
 
 \item{recipe}{A single pruning recipe (type 'remove').}
-
-\item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
 A data frame with pruned queries.

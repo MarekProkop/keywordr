@@ -6,10 +6,7 @@ test_that("kwr_import_mm(file) imports a sigle file", {
     volume = c(10, 20),
     cpc = c(1.0, 2.0)
   )
-  expect_message(
-    kwr <- kwresearch() |> kwr_import_mm("../test-data/mm-test-1.csv"),
-    "Importing"
-  )
+  kwr <- kwresearch() |> kwr_import_mm("../test-data/mm-test-1.csv", TRUE)
   expect_equal(kwr$source_data, expected)
 })
 

@@ -20,6 +20,11 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_file_exists(recipe_file, access = "r", extension = "yml")
 
+  if (!quiet) {
+    start_time <- Sys.time()
+    message("Removing queries...")
+  }
+
   recipes <- read_recipes(recipe_file) |>
     purrr::keep(~ .x$type %in% c("remove", "include"))
 
@@ -28,12 +33,20 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
   } else {
     dataset <- kwr$clean_data
   }
+  n_queries <- nrow(dataset)
 
   pruned <- recipes |>
-    purrr::reduce(process_prune_recipe, .init = dataset, quiet = quiet)
+    purrr::reduce(process_prune_recipe, .init = dataset)
 
   kwr$pruned_data <- pruned
   kwr$status <- "pruned"
+
+  if (!quiet) {
+    message(stringr::str_glue(
+      "Removed {n_queries - nrow(pruned)} queries out of {n_queries}. Duration: {round(Sys.time() - start_time, 3)}s"
+    ))
+  }
+
   kwr
 }
 
@@ -45,24 +58,13 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
 #' @param df A data frame from a kwr object (either clean_data, or
 #' pruned_data).
 #' @param recipe A single pruning recipe (type 'remove').
-#' @param quiet If TRUE prints no messgaes.
 #'
 #' @return A data frame with pruned queries.
 #' @keywords internal
-process_prune_recipe <- function(df, recipe, quiet = FALSE) {
+process_prune_recipe <- function(df, recipe) {
   if (recipe$type == "remove") {
-    if (!quiet) {
-      message("Removing queries...")
-      n_queries <- nrow(df)
-    }
-    result <- recipe$rules |>
+    recipe$rules |>
       purrr::reduce(process_remove_rule, .init = df)
-    if (!quiet) {
-      message(stringr::str_glue(
-        "Removed {n_queries - nrow(result)} queries out of {n_queries}."
-      ))
-    }
-    return(result)
   } else {
     stop(stringr::str_glue(
       "Recipe type '{recipe$type}' is not implemented for pruning."

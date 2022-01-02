@@ -13,8 +13,7 @@ test_that("process_prune_recipe() removes correct queries", {
             match = c("aaa", "ccc")
           )
         )
-      ),
-      quiet = TRUE
+      )
     ),
     expected = tibble::tibble(
       query_normalized = c("bbb", "ddd")
@@ -37,8 +36,7 @@ test_that("process_prune_recipe() removes correct queries", {
             match = c("aaa", "ddd")
           )
         )
-      ),
-      quiet = TRUE
+      )
     ),
     expected = tibble::tibble(
       query_normalized = c("bbb")
@@ -59,8 +57,7 @@ test_that("process_prune_recipe() removes correct queries", {
             except = "iii"
           )
         )
-      ),
-      quiet = TRUE
+      )
     ),
     expected = tibble::tibble(
       query_normalized = c("aaa iii", "bbb iii")
@@ -85,8 +82,7 @@ test_that("process_prune_recipe() removes correct queries", {
             except = "jjj"
           )
         )
-      ),
-      quiet = TRUE
+      )
     ),
     expected = tibble::tibble(
       query_normalized = c("aaa iii", "bbb jjj")
