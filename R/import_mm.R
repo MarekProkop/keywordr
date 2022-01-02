@@ -29,11 +29,19 @@ kwr_import_mm <- function(kwr, path, quiet = FALSE) {
     checkmate::check_character(path)
   )
   checkmate::assert_flag(quiet)
+
+  if (!quiet) start_time <- Sys.time()
   if (length(path) == 1 && file.info(path)$isdir) {
     path <- list.files(path = path, full.names = TRUE, pattern = "\\.csv$")
   }
   queries <- path |> purrr::map_dfr(import_mm_file, quiet)
-  kwr |> kwr_import(queries)
+  result <- kwr |> kwr_import(queries)
+  if (!quiet) {
+    message(stringr::str_glue(
+      "Imported {nrow(queries)} rows from {length(path)} file(s), aggregated into {nrow(result$source_data)} queries, normalized into {nrow(result$clean_data)} queries. (duration: {round(Sys.time() - start_time, 3)}s)"
+    ))
+  }
+  result
 }
 
 
