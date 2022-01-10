@@ -25,6 +25,7 @@ kwr_use_recipes <- function(kwr, recipe_file) {
 #' @param kwr A kwr object containg queries to be classified, and classification
 #'   recipes.
 #' @param quiet If TRUE prints no messgaes.
+#' @param recipe_file A path to a recipe file in YAML format.
 #'
 #' @return A kwr object where the queries are classified. Existing
 #'   classification is preserved or updated, new is added.
@@ -34,10 +35,11 @@ kwr_use_recipes <- function(kwr, recipe_file) {
 #' \dontrun{
 #' kwr <- kwr |> kwr_classify()
 #' }
-kwr_classify <- function(kwr, quiet = FALSE) {
+kwr_classify <- function(kwr, recipe_file = NULL, quiet = FALSE) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
-  checkmate::assert_list(kwr$recipes, min.len = 1)
+  checkmate::assert_file_exists(recipe_file, access = "r", extension = "yml")
+#  checkmate::assert_list(kwr$recipes, min.len = 1)
   checkmate::assert_flag(quiet)
 
   if (kwr$status == "classified") {
@@ -47,7 +49,7 @@ kwr_classify <- function(kwr, quiet = FALSE) {
   } else {
     dataset <- kwr$clean_data
   }
-  classified <- kwr$recipes |>
+  classified <- read_recipes(recipe_file) |>
     purrr::keep(~ .x$type %in% c("flag", "label")) |>
     purrr::reduce(process_recipe, .init = dataset, quiet = quiet) |>
     dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
@@ -256,58 +258,4 @@ extract_pattern <- function(x, pattern) {
   )
   result <- dplyr::if_else(result == "", NA_character_, result)
   return(result)
-}
-#' Adds new classification recipes to a kwresearch object
-#'
-#' @param kwr A kwresearch object.
-#' @param recipe_file A path to a recipe file in YAML format.
-#'
-#' @return The input kwresearch object with updated classification recipes. If
-#'   the kwresearch object already contained recipes, they are merged with the
-#'   new ones.
-#' @export
-kwr_use_recipes <- function(kwr, recipe_file) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_file_exists(recipe_file, access = "r", extension = "yml")
-
-  new_recipes <- read_recipes(recipe_file)
-  if (is.null(kwr$recipes)) {
-    kwr$recipes <- new_recipes
-  } else {
-    kwr$recipes <- c(kwr$recipes, new_recipes)
-  }
-  kwr
-}
-
-#' Classifies queries based on recipes
-#'
-#' @param kwr A kwr object containg queries to be classified, and classification
-#'   recipes.
-#' @param quiet If TRUE prints no messgaes.
-#'
-#' @return A kwr object where the queries are classified. Existing
-#'   classification is preserved or updated, new is added.
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' kwr <- kwr |> kwr_classify()
-#' }
-kwr_classify <- function(kwr, quiet = FALSE) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "classified"))
-  checkmate::assert_list(kwr$recipes, min.len = 1)
-  checkmate::assert_flag(quiet)
-
-  if (kwr$status == "classified") {
-    dataset <- kwr$classified_data
-  } else {
-    dataset <- kwr$clean_data
-  }
-  classified <- kwr$recipes |>
-    purrr::reduce(process_recipe, .init = dataset, quiet) |>
-    dplyr::relocate(.data$n_queries:.data$source, .after = dplyr::last_col())
-  kwr$classified_data <- classified
-  kwr$status <- "classified"
-  kwr
 }

@@ -4,32 +4,24 @@
 \alias{kwr_classify}
 \title{Classifies queries based on recipes}
 \usage{
-kwr_classify(kwr, quiet = FALSE)
-
-kwr_classify(kwr, quiet = FALSE)
+kwr_classify(kwr, recipe_file = NULL, quiet = FALSE)
 }
 \arguments{
 \item{kwr}{A kwr object containg queries to be classified, and classification
 recipes.}
+
+\item{recipe_file}{A path to a recipe file in YAML format.}
 
 \item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
 A kwr object where the queries are classified. Existing
 classification is preserved or updated, new is added.
-
-A kwr object where the queries are classified. Existing
-classification is preserved or updated, new is added.
 }
 \description{
 Classifies queries based on recipes
-
-Classifies queries based on recipes
 }
 \examples{
-\dontrun{
-kwr <- kwr |> kwr_classify()
-}
 \dontrun{
 kwr <- kwr |> kwr_classify()
 }

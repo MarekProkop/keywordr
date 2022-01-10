@@ -170,8 +170,7 @@ test_that("kwr_classified_queries() returns a correct data set (or error)", {
   expect_error(kwr |> kwr_classified_queries())
   expect_equal(
     kwr |>
-      kwr_use_recipes("../test-data/recipes-1.yml") |>
-      kwr_classify(quiet = TRUE) |>
+      kwr_classify(recipe_file = "../test-data/recipes-1.yml", quiet = TRUE) |>
       kwr_classified_queries(),
     tibble_expected
   )

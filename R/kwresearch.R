@@ -171,7 +171,7 @@ kwr_classified_queries <- function(kwr) {
 #' @return A tibble with queries.
 #' @export
 kwr_queries <- function(kwr) {
-  if (kwr$status == "pruned") {
+  if (kwr$status %in% c("pruned", "classified")) {
     kwr |> kwr_pruned_queries()
   } else {
     kwr |> kwr_clean_queries()

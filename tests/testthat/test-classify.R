@@ -389,7 +389,6 @@ test_that("kwr_classify() works as expected", {
     source = NA_character_
   )
   kwr <- kwresearch(tibble_in) |>
-    kwr_use_recipes("../test-data/recipes-1.yml") |>
-    kwr_classify(quiet = TRUE)
+    kwr_classify(recipe_file = "../test-data/recipes-1.yml", quiet = TRUE)
   expect_equal(kwr$classified_data, tibble_expected)
 })
