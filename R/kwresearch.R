@@ -178,6 +178,29 @@ kwr_queries <- function(kwr) {
   }
 }
 
+#' List queries that are not classified in all dimension
+#'
+#' @param kwr A kwresearch object.
+#' @param label An optional dimension names as a character vector. If specified,
+#'   classification in only those dimensions is considered.
+#'
+#' @return A tibble with queries.
+#' @export
+kwr_unclassified_queries <- function(kwr, label = NULL) {
+  df <- kwr |> kwr_classified_queries()
+  dims <- dimension_names(df)
+  if (is.null(label)) {
+    df |>
+      dplyr::filter(dplyr::across({{ dims }}, is_unclassified)) |>
+      dplyr::select(.data$query_normalized, .data$n_queries:.data$source)
+  } else {
+    df |>
+      dplyr::filter(dplyr::across({{ label }}, is_unclassified)) |>
+      dplyr::select(!{{ label }})
+  }
+}
+
+
 #' Outputs queries removed by kwr_prune
 #'
 #' @param kwr A kwresearch object.
@@ -274,4 +297,22 @@ aggregate_clean_data <- function(mm_data) {
       source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
+}
+
+dimension_names <- function(df) {
+  df |>
+    names() |>
+    setdiff(c(
+      "query_normalized", "n_queries", "volume", "cpc", "query_original", "input", "source"
+    ))
+}
+
+is_unclassified <- function(x) {
+  if (is.character(x)) {
+    is.na(x)
+  } else if (is.logical(x)) {
+    !x
+  } else {
+    stop("A dimension must be either character, or logical vector.")
+  }
 }

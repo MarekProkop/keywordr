@@ -201,3 +201,48 @@ test_that("kwr_use_stopwords() works", {
     kwr_use_stopwords(kwr_stopwords())
   expect_type(kwr$stopwords, "character")
 })
+
+test_that("dimension_names() works", {
+  expect_equal(
+    object = dimension_names(tibble::tibble(
+      query_normalized = "x",
+      a = "a",
+      b = "b",
+      n_queries = 1,
+      volume = 10,
+      cpc = 1,
+      query_original = "a",
+      input = "a",
+      source = "a"
+    )),
+    expected = c("a", "b")
+  )
+})
+
+test_that("is_unclassified() works", {
+  expect_true(is_unclassified(NA_character_))
+  expect_true(is_unclassified(FALSE))
+  expect_false(is_unclassified("a"))
+  expect_false(is_unclassified(TRUE))
+})
+
+test_that("kwr_unclassified_queries() works", {
+  tibble_in <- tibble::tibble(
+    query = c("aaa", "xxx"),
+    volume = c(10, 20)
+  )
+  tibble_expected <- tibble::tibble(
+    query_normalized = c("xxx"),
+    n_queries = 1,
+    volume = c(20),
+    cpc = NA_real_,
+    query_original = c("xxx"),
+    input = NA_character_,
+    source = NA_character_
+  )
+  result <- kwresearch(tibble_in) |>
+    kwr_classify(recipe_file = "../test-data/recipes-1.yml", quiet = TRUE) |>
+    kwr_unclassified_queries()
+  expect_equal(result, tibble_expected)
+})
+
