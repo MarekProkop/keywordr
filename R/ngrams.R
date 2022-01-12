@@ -1,7 +1,7 @@
 #' Generates n-grams from queries
 #'
-#' @param kwr A kwresearch object, which queries will be n-grams calculated
-#'   from.
+#' @param x A kwresearch object, which queries will be n-grams calculated
+#'   from, or a data frame of queries and volume.
 #' @param max_words Maximum number of words in n-grams.
 #' @param min_words Minimum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
@@ -26,28 +26,35 @@
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_ngrams()
 kwr_ngrams <- function(
-  kwr,
+  x,
   max_words = 4, min_words = 1, min_n = 1, min_volume = 0,
   remove_nested = TRUE
 ) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
+  checkmate::assert(
+    checkmate::check_class(x, "kwresearch"),
+    checkmate::check_class(x, "data.frame")
+  )
   checkmate::assert_int(min_words, lower = 1, upper = 10)
   checkmate::assert_int(max_words, lower = min_words, upper = 10)
   checkmate::assert_count(min_n)
   checkmate::assert_count(min_volume)
   checkmate::assert_flag(remove_nested)
 
-  ngrams <- kwr |>
-    kwr_queries() |>
+  if (inherits(x, "kwresearch")) {
+    checkmate::assert_choice(x$status, c("data", "pruned", "classified"))
+    df <- x |> kwr_queries()
+  } else {
+    df <- x
+  }
+  ngrams <- df |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
       n = max_words, n_min = min_words, drop = FALSE
     )
-  if (!is.null(kwr$stopwords)) {
+  if (inherits(x, "kwresearch") && !is.null(x$stopwords)) {
     ngrams <- ngrams |>
-      dplyr::filter(!.data$token %in% kwr$stopwords)
+      dplyr::filter(!.data$token %in% x$stopwords)
   }
   ngrams <- ngrams |>
     aggregate_ngrams() |>
@@ -60,14 +67,14 @@ kwr_ngrams <- function(
   ngrams
 }
 
-#' Generates n-grams from queries and filter only those that equals any existing
+#' Generates n-grams from queries and filter only those that match any existing
 #' query
 #'
 #' @description In other words, it lists queries that are contained in other
 #'   queries.
 #'
-#' @param kwr A kwresearch object, which clean queries will be n-grams
-#'   calculated from.
+#' @param x A kwresearch object, which queries will be n-grams calculated from,
+#'   or a data frame of queries and volume.
 #' @param max_words Maximum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
 #'   number of queries will be included.
@@ -78,15 +85,22 @@ kwr_ngrams <- function(
 #'   search volumes). The n-grams are orderd descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
-kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
+kwr_subqueries <- function(x, max_words = 5, min_n = 1, min_volume = 0) {
+  checkmate::assert(
+    checkmate::check_class(x, "kwresearch"),
+    checkmate::check_class(x, "data.frame")
+  )
   checkmate::assert_int(max_words, lower = 1, upper = 10)
   checkmate::assert_count(min_n)
   checkmate::assert_count(min_volume)
 
-  kwr |>
-    kwr_queries() |>
+  if (inherits(x, "kwresearch")) {
+    checkmate::assert_choice(x$status, c("data", "pruned", "classified"))
+    df <- x |> kwr_queries()
+  } else {
+    df <- x
+  }
+  df |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
@@ -107,7 +121,8 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
 #' Finds collocations, i.e. multiword phrases that are more likely than their
 #' single words
 #'
-#' @param kwr A kwresearch object, which clean queries will be used.
+#' @param x A kwresearch object, which queries will be collocations calculated
+#'   from, or a data frame of queries and volume.
 #' @param min_volume_prop Minimum proportion.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
 #'   number of queries will be included.
@@ -116,14 +131,21 @@ kwr_subqueries <- function(kwr, max_words = 5, min_n = 1, min_volume = 0) {
 #'   search volumes). The n-grams are orderd descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
-kwr_collocations <- function(kwr, min_volume_prop = 0.5, min_n = 2) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
+kwr_collocations <- function(x, min_volume_prop = 0.5, min_n = 2) {
+  checkmate::assert(
+    checkmate::check_class(x, "kwresearch"),
+    checkmate::check_class(x, "data.frame")
+  )
   checkmate::assert_double(min_volume_prop, len = 1, lower = 0, upper = 1)
   checkmate::assert_count(min_n)
 
-  kwr |>
-    kwr_queries() |>
+  if (inherits(x, "kwresearch")) {
+    checkmate::assert_choice(x$status, c("data", "pruned", "classified"))
+    df <- x |> kwr_queries()
+  } else {
+    df <- x
+  }
+  df |>
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized", n = 4, n_min = 2

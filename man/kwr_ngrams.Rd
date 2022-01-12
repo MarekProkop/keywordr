@@ -5,7 +5,7 @@
 \title{Generates n-grams from queries}
 \usage{
 kwr_ngrams(
-  kwr,
+  x,
   max_words = 4,
   min_words = 1,
   min_n = 1,
@@ -14,8 +14,8 @@ kwr_ngrams(
 )
 }
 \arguments{
-\item{kwr}{A kwresearch object, which queries will be n-grams calculated
-from.}
+\item{x}{A kwresearch object, which queries will be n-grams calculated
+from, or a data frame of queries and volume.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 

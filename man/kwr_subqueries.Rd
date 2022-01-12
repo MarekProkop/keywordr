@@ -2,14 +2,14 @@
 % Please edit documentation in R/ngrams.R
 \name{kwr_subqueries}
 \alias{kwr_subqueries}
-\title{Generates n-grams from queries and filter only those that equals any existing
+\title{Generates n-grams from queries and filter only those that match any existing
 query}
 \usage{
-kwr_subqueries(kwr, max_words = 5, min_n = 1, min_volume = 0)
+kwr_subqueries(x, max_words = 5, min_n = 1, min_volume = 0)
 }
 \arguments{
-\item{kwr}{A kwresearch object, which clean queries will be n-grams
-calculated from.}
+\item{x}{A kwresearch object, which queries will be n-grams calculated from,
+or a data frame of queries and volume.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 

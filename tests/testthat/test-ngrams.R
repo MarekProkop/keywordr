@@ -15,6 +15,13 @@ test_that("kwr_ngrams(remove_nested = FALSE) works", {
   expect_named(ngrams, c("token", "n", "volume"))
   expect_equal(nrow(ngrams), 6)
   expect_equal(ngrams, expected)
+  expect_equal(
+    object = input_df |>
+      kwresearch() |>
+      kwr_queries() |>
+      kwr_ngrams(remove_nested = FALSE),
+    expected = expected
+  )
 })
 
 test_that("kwr_ngrams(remove_nested = TRUE) works", {
@@ -71,6 +78,17 @@ test_that("kwr_subqueries() works", {
       volume = c(100, 100)
     )
   )
+  expect_equal(
+    object = input_df |>
+      kwresearch() |>
+      kwr_queries() |>
+      kwr_subqueries(),
+    expected = tibble::tibble(
+      token = c("aaa bbb", "bbb ccc"),
+      n = c(1, 1),
+      volume = c(100, 100)
+    )
+  )
 })
 
 test_that("kwr_collocations() works", {
@@ -83,4 +101,11 @@ test_that("kwr_collocations() works", {
     kwr_collocations()
   expect_s3_class(coll, "tbl_df")
   expect_named(coll, c("token", "n", "volume", "n_prop", "volume_prop"))
+  expect_s3_class(
+    object = input_df |>
+      kwresearch() |>
+      kwr_queries() |>
+      kwr_collocations(),
+    class = "tbl_df"
+  )
 })

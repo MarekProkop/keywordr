@@ -5,10 +5,11 @@
 \title{Finds collocations, i.e. multiword phrases that are more likely than their
 single words}
 \usage{
-kwr_collocations(kwr, min_volume_prop = 0.5, min_n = 2)
+kwr_collocations(x, min_volume_prop = 0.5, min_n = 2)
 }
 \arguments{
-\item{kwr}{A kwresearch object, which clean queries will be used.}
+\item{x}{A kwresearch object, which queries will be collocations calculated
+from, or a data frame of queries and volume.}
 
 \item{min_volume_prop}{Minimum proportion.}
 
