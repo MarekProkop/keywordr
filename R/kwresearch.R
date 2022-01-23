@@ -280,9 +280,9 @@ kwr_show_dimension <- function(kwr, column) {
     dplyr::group_by({{ column }}) |>
     dplyr::summarise(
       n = dplyr::n(),
-      volume = sum(volume)
+      volume = sum(.data$volume)
     ) |>
-    dplyr::arrange(dplyr::desc(n))
+    dplyr::arrange(dplyr::desc(.data$n))
 }
 
 
