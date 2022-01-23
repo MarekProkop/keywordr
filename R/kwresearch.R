@@ -236,6 +236,56 @@ kwr_use_stopwords <- function(kwr, stopwords = NULL) {
   kwr
 }
 
+#' Shows number of queries in all phases of processing
+#'
+#' @param kwr A kwresearch object.
+#'
+#' @return Non.
+#' @export
+kwr_summary <- function(kwr) {
+  checkmate::assert_class(kwr, "kwresearch")
+
+  if (kwr$status == "empty") {
+    cat("Object is empty")
+  } else {
+    cat("Distinct input queries: ", dplyr::n_distinct(kwr_source_queries(kwr)), "\n")
+    cat("Normalized queries:     ", nrow(kwr_clean_queries(kwr)), "\n")
+    if (kwr$status %in% c("pruned", "classified")) {
+      cat("Pruned queries:         ", nrow(kwr_pruned_queries(kwr)), "\n")
+    }
+    if (kwr$status == "classified") {
+      cat(
+        "Classified queries:     ",
+        nrow(kwr_pruned_queries(kwr)) - nrow(kwr_unclassified_queries(kwr)),
+        "\n"
+      )
+    }
+  }
+
+}
+
+#' Outputs frequency table of a given dimension (label or flag)
+#'
+#' @param kwr A kwresearch object, whose queries are already classified.
+#' @param column A dimension (column) as a name, not a string.
+#'
+#' @return A tibble.
+#' @export
+kwr_show_dimension <- function(kwr, column) {
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_true(kwr$status == "classified")
+
+  kwr |> kwr_classified_queries() |>
+    tidyr::separate_rows({{ column }}, sep = ",") |>
+    dplyr::group_by({{ column }}) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      volume = sum(volume)
+    ) |>
+    dplyr::arrange(dplyr::desc(n))
+}
+
+
 # Private functions -------------------------------------------------------
 
 

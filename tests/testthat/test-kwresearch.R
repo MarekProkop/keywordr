@@ -246,3 +246,24 @@ test_that("kwr_unclassified_queries() works", {
   expect_equal(result, tibble_expected)
 })
 
+test_that("kwr_summary() works", {
+  kwr <- kwresearch(
+    tibble::tibble(
+      query = c("aaa", "xxx"),
+      volume = c(10, 20)
+    )
+  )
+  expect_output(
+    object = kwr |> kwr_summary(),
+    regexp = "input queries.+2"
+  )
+  expect_output(
+    object = kwr |> kwr_summary(),
+    regexp = "Normalized queries.+2"
+  )
+  kwr <- kwr |> kwr_prune("../test-data/recipes-prune-1.yml", quiet = TRUE)
+  expect_output(
+    object = kwr |> kwr_summary(),
+    regexp = "Pruned queries.+1"
+  )
+})
