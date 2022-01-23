@@ -251,14 +251,14 @@ kwr_summary <- function(kwr) {
     cat("Distinct input queries: ", dplyr::n_distinct(kwr_source_queries(kwr)), "\n")
     cat("Normalized queries:     ", nrow(kwr_clean_queries(kwr)), "\n")
     if (kwr$status %in% c("pruned", "classified")) {
-      cat("Pruned queries:         ", nrow(kwr_pruned_queries(kwr)), "\n")
+      pruned_queries <- nrow(kwr_pruned_queries(kwr))
+      cat("Pruned queries:         ", pruned_queries, "\n")
     }
     if (kwr$status == "classified") {
-      cat(
-        "Classified queries:     ",
-        nrow(kwr_pruned_queries(kwr)) - nrow(kwr_unclassified_queries(kwr)),
-        "\n"
-      )
+      unclassified_queries <- nrow(kwr_unclassified_queries(kwr))
+      classified_queries <- pruned_queries - unclassified_queries
+      cat("Classified queries:     ", classified_queries, "\n")
+      cat("Unclassified queries:   ", unclassified_queries, "\n")
     }
   }
 
