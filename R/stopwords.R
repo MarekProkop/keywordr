@@ -22,3 +22,15 @@ kwr_stopwords <- function(lang = "cs") {
     "\u010Di", "ci", "tedy", "pouze"
   )
 }
+
+#' Removes stopwords from a dataset, e.g. n-grams
+#'
+#' @param df A data frame with words or n-grams in the 1st column.
+#' @param stopwords A vector of words (or n-grams) to be removed. It can be the
+#'   output of the kwr_stopwords function.
+#'
+#' @return The same data set as df with the rows matching stopwords removed.
+#' @export
+kwr_remove_stopwords <- function(df, stopwords = kwr_stopwords()) {
+  df |> dplyr::filter(dplyr::across(1, ~ !(. %in% stopwords)))
+}
