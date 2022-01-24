@@ -4,12 +4,26 @@
 \alias{kwr_test_regex}
 \title{Explore a regex pattern applied on queries}
 \usage{
-kwr_test_regex(kwr, pattern)
+kwr_test_regex(
+  kwr,
+  pattern,
+  and = NULL,
+  except = NULL,
+  stopwords = kwr_stopwords()
+)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
 
 \item{pattern}{A single regular experession.}
+
+\item{and}{A vector of regular expressions. If more than one, they are
+treated as OR.}
+
+\item{except}{A vector of regular expressions. If more than one, they are
+treated as OR.}
+
+\item{stopwords}{A vector of stopwords to remove from n-grams.}
 }
 \value{
 A list of data frames.

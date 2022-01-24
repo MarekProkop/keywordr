@@ -2,10 +2,15 @@
 #'
 #' @param kwr A kwresearch object.
 #' @param pattern A single regular experession.
+#' @param and A vector of regular expressions. If more than one, they are
+#'   treated as OR.
+#' @param except A vector of regular expressions. If more than one, they are
+#'   treated as OR.
+#' @param stopwords A vector of stopwords to remove from n-grams.
 #'
 #' @return A list of data frames.
 #' @export
-kwr_test_regex <- function(kwr, pattern) {
+kwr_test_regex <- function(kwr, pattern, and = NULL, except = NULL, stopwords = kwr_stopwords()) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
   checkmate::assert_string(pattern)
@@ -13,7 +18,20 @@ kwr_test_regex <- function(kwr, pattern) {
   full <- kwr |>
     kwr_queries() |>
     dplyr::select(.data$query_normalized) |>
-    dplyr::filter(stringr::str_detect(.data$query_normalized, pattern)) |>
+    dplyr::filter(stringr::str_detect(.data$query_normalized, pattern))
+  if (!is.null(except)) {
+    full <- full |>
+      dplyr::filter(
+        !stringr::str_detect(.data$query_normalized, join_patterns(except))
+      )
+  }
+  if (!is.null(and)) {
+    full <- full |>
+      dplyr::filter(
+        stringr::str_detect(.data$query_normalized, join_patterns(and))
+      )
+  }
+  full <- full |>
     dplyr::mutate(
       match = stringr::str_extract(.data$query_normalized, pattern),
       word = stringr::str_extract(
@@ -43,6 +61,9 @@ kwr_test_regex <- function(kwr, pattern) {
     tidytext::unnest_ngrams("token", "around", n = 4, n_min = 1) |>
     dplyr::count(.data$token, sort = TRUE) |>
     remove_nested_ngrams()
+  if (!is.null(stopwords)) {
+    around_ngrams <- around_ngrams |> kwr_remove_stopwords(stopwords)
+  }
   if (!is.null(kwr$stopwords)) {
     around_ngrams <- around_ngrams |>
       dplyr::filter(!.data$token %in% kwr$stopwords)
