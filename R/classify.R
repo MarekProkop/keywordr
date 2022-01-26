@@ -81,7 +81,7 @@ read_recipes <- function(path) {
 #' @return A data frame with updated classification.
 #' @keywords internal
 process_recipe <- function(df, recipe, quiet = FALSE) {
-  switch (recipe$type,
+  switch(recipe$type,
     flag = {
       if (!quiet) {
         message("Flag: ", recipe$name)
@@ -252,10 +252,9 @@ join_labels <- function(x, y, sep = ",") {
 #' @return A character vector of the same lenght as x.
 #' @keywords internal
 extract_pattern <- function(x, pattern) {
-  result <- purrr::map_chr(
-    purrr::map(stringr::str_extract_all(x, pattern), unique),
-    stringr::str_c, collapse = ","
-  )
-  result <- dplyr::if_else(result == "", NA_character_, result)
-  return(result)
+  x |>
+    stringr::str_extract_all(pattern) |>
+    purrr::map(unique) |>
+    purrr::map_chr(stringr::str_c, collapse = ",") |>
+    (\(x) replace(x, x == "", NA_character_))()
 }

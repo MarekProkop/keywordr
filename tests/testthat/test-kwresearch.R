@@ -202,9 +202,9 @@ test_that("kwr_use_stopwords() works", {
   expect_type(kwr$stopwords, "character")
 })
 
-test_that("dimension_names() works", {
+test_that("kwr_dimension_names() works", {
   expect_equal(
-    object = dimension_names(tibble::tibble(
+    object = kwr_dimension_names(tibble::tibble(
       query_normalized = "x",
       a = "a",
       b = "b",

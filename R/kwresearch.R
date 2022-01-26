@@ -188,7 +188,7 @@ kwr_queries <- function(kwr) {
 #' @export
 kwr_unclassified_queries <- function(kwr, label = NULL) {
   df <- kwr |> kwr_classified_queries()
-  dims <- dimension_names(df)
+  dims <- kwr_dimension_names(df)
   if (is.null(label)) {
     df |>
       dplyr::filter(dplyr::across({{ dims }}, is_unclassified)) |>
@@ -285,6 +285,20 @@ kwr_show_dimension <- function(kwr, column) {
     dplyr::arrange(dplyr::desc(.data$n))
 }
 
+#' Gets names of all dimensions (flags an labels)
+#'
+#' @param df A data frame to get dimension names from.
+#'
+#' @return A vector of names.
+#' @export
+kwr_dimension_names <- function(df) {
+  df |>
+    names() |>
+    setdiff(c(
+      "query_normalized", "n_queries", "volume", "cpc", "query_original", "input", "source"
+    ))
+}
+
 
 # Private functions -------------------------------------------------------
 
@@ -347,14 +361,6 @@ aggregate_clean_data <- function(mm_data) {
       source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
-}
-
-dimension_names <- function(df) {
-  df |>
-    names() |>
-    setdiff(c(
-      "query_normalized", "n_queries", "volume", "cpc", "query_original", "input", "source"
-    ))
 }
 
 is_unclassified <- function(x) {
