@@ -247,14 +247,16 @@ join_labels <- function(x, y, sep = ",") {
 #' Extracts a regex pattern from a character vector (vectorized)
 #'
 #' @param x A character vector to extract pattern from.
-#' @param pattern A character vector.
+#' @param pattern A regex pattern. If it contains capture groups, they all will
+#'   be extracted.
 #'
 #' @return A character vector of the same lenght as x.
 #' @keywords internal
 extract_pattern <- function(x, pattern) {
-  x |>
-    stringr::str_extract_all(pattern) |>
-    purrr::map(unique) |>
-    purrr::map_chr(stringr::str_c, collapse = ",") |>
+  match_list <- stringr::str_match_all(x, pattern)
+  col_2 <- ncol(match_list[[1]])
+  col_1 <- min(col_2, 2)
+  match_list |>
+    purrr::map_chr(~ stringr::str_c(na.omit(.x[,col_1:col_2]), collapse = ",")) |>
     (\(x) replace(x, x == "", NA_character_))()
 }

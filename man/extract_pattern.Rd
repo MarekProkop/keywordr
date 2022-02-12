@@ -9,7 +9,8 @@ extract_pattern(x, pattern)
 \arguments{
 \item{x}{A character vector to extract pattern from.}
 
-\item{pattern}{A character vector.}
+\item{pattern}{A regex pattern. If it contains capture groups, they all will
+be extracted.}
 }
 \value{
 A character vector of the same lenght as x.

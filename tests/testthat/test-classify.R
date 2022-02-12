@@ -76,12 +76,28 @@ test_that("join_patterns(x) joins regex patterns", {
   expect_equal(join_patterns(input), output)
 })
 
-test_that("extract_pattern() extracts a pattern correctly", {
-  vect <- c("aaa", "bbb xxx", "ccc", "xxx ddd yyy")
-  pattern <- "xxx|yyy"
-  output <- c(NA_character_, "xxx", NA_character_, "xxx,yyy")
+test_that("extract_pattern() extracts a pattern without a group", {
+  expect_identical(
+    object = extract_pattern(
+      c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      "xxx|yyy"
+    ),
+    expected = c(NA_character_, "xxx", NA_character_, "xxx,yyy")
+  )
+})
 
-  expect_identical(extract_pattern(vect, pattern), output)
+test_that("extract_pattern() extracts a pattern with a group", {
+  expect_identical(
+    object = extract_pattern(c("abc", "aabcc", "cba", "abc adc"), "a(b|d)c"),
+    expected = c("b", "b", NA_character_, "b,d")
+  )
+  expect_identical(
+    object = extract_pattern(
+      c("abc x", "x abc", "x", "def x", "abc y"),
+      "abc.+(x)|(x).+abc"
+    ),
+    expected = c("x", "x", NA_character_, NA_character_, NA_character_)
+  )
 })
 
 tibble_1 <- tibble::tibble(query_normalized = c("aaa", "bbb", "ccc", "ddd"))
