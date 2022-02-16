@@ -266,16 +266,27 @@ kwr_summary <- function(kwr) {
 
 #' Outputs frequency table of a given dimension (label or flag)
 #'
-#' @param kwr A kwresearch object, whose queries are already classified.
+#' @param x A kwresearch object, whose queries are already classified, or a data
+#'   frame of classified queries (e.g. the result of the kwr_classified_queries
+#'   function).
 #' @param column A dimension (column) as a name, not a string.
 #'
 #' @return A tibble.
 #' @export
-kwr_show_dimension <- function(kwr, column) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_true(kwr$status == "classified")
+kwr_dimension_table <- function(x, column) {
+  checkmate::assert(
+    checkmate::check_class(x, "kwresearch"),
+    checkmate::check_class(x, "data.frame")
+  )
 
-  kwr |> kwr_classified_queries() |>
+  if (inherits(x, "kwresearch")) {
+    checkmate::assert_true(x$status == "classified")
+    df <- x |> kwr_classified_queries()
+  } else {
+    df <- x
+  }
+
+  df |>
     tidyr::separate_rows({{ column }}, sep = ",") |>
     dplyr::group_by({{ column }}) |>
     dplyr::summarise(
