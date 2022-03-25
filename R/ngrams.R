@@ -196,16 +196,36 @@ aggregate_ngrams <- function(ngrams) {
 }
 
 remove_nested_ngrams <- function(df) {
-  is_nested_ngram <- function(ngrams, ngram, nn) {
-    nrow(dplyr::filter(
-      ngrams,
-      stringr::str_detect(.data$token, stringr::fixed(ngram))
-      & .data$token != ngram & .data$n == nn
-    )) > 0
+  match_subtoken <- function(x, y) {
+    (x != y) & stringr::str_detect(x, paste0("\\b",  y, "\\b"))
   }
 
-  df |>
-    dplyr::rowwise() |>
-    dplyr::filter(!is_nested_ngram(df, .data$token, .data$n)) |>
-    dplyr::ungroup()
+  if ("volume" %in% names(df)) {
+    token_groups <- df |>
+      dplyr::group_by(.data$n, .data$volume) |>
+      dplyr::filter(dplyr::n() > 1) |>
+      dplyr::ungroup()
+  } else {
+    token_groups <- df |>
+      dplyr::group_by(.data$n) |>
+      dplyr::filter(dplyr::n() > 1) |>
+      dplyr::ungroup()
+  }
+
+  if (nrow(token_groups) > 1000) {
+    message(
+      "Too many n-grams. Removing nested n-grams from the first 1000 tokens only."
+    )
+    token_groups <- utils::head(token_groups, n = 1000)
+  }
+
+  nested <- token_groups |>
+    fuzzyjoin::fuzzy_inner_join(
+      token_groups, by = c(token = "token"), match_fun = match_subtoken
+    ) |>
+    dplyr::filter(
+      .data$n.x == .data$n.y
+    )
+
+  df |> dplyr::anti_join(nested, by = c("token" = "token.y"))
 }

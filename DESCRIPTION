@@ -28,5 +28,6 @@ Imports:
     rlang,
     tidytext,
     tidyr,
-    checkmate
+    checkmate,
+    fuzzyjoin
 VignetteBuilder: knitr

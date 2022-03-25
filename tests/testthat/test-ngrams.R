@@ -1,3 +1,20 @@
+test_that("remove_nested_ngrams() works", {
+  expect_equal(
+    remove_nested_ngrams(
+      tibble::tibble(
+        token = c("a", "b", "b c", "d", "e d", "d e f"),
+        n = c(5, 4, 3, 2, 2, 1),
+        volume = c(50, 40, 30, 20, 20, 10)
+      )
+    ),
+    tibble::tibble(
+      token = c("a", "b", "b c", "e d", "d e f"),
+      n = c(5, 4, 3, 2, 1),
+      volume = c(50, 40, 30, 20, 10)
+    )
+  )
+})
+
 test_that("kwr_ngrams(remove_nested = FALSE) works", {
   input_df <- data.frame(
     query = c("aaa bbb ccc", "aaa bbb", "bbb ccc"),
