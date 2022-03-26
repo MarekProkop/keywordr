@@ -362,15 +362,24 @@ normalize_queries <- function(x, value) {
 
 aggregate_clean_data <- function(mm_data) {
   mm_data |>
+    dplyr::group_by(.data$query, .data$query_normalized, .data$source) |>
+    dplyr::summarise(
+      volume = dplyr::last(.data$volume),
+      cpc = dplyr::last(.data$cpc),
+      input = stringr::str_c(unique(.data$input), collapse = ","),
+      .groups = "drop"
+    ) |>
+    dplyr::relocate(.data$source, .after = .data$input) |>
     dplyr::group_by(.data$query_normalized) |>
     dplyr::summarise(
-      n_queries = dplyr::n(),
+      n_queries = dplyr::n_distinct(.data$query),
+      cpc = stats::weighted.mean(.data$cpc, .data$volume),
       volume = sum(.data$volume),
-      cpc = max(.data$cpc),
       query_original = stringr::str_c(unique(.data$query), collapse = ","),
-      input = stringr::str_c(unique(.data$input), collapse = ","),
+      input = dplyr::first(.data$input),
       source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
+    dplyr::relocate(.data$cpc, .after = .data$volume) |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
 }
 

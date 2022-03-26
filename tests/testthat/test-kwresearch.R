@@ -49,7 +49,7 @@ test_that("kwresearch(df) cretaes an object and imports an initial data set", {
   expect_equal(kwr$status, "data")
 })
 
-test_that("kwr_import_mm(.) |> kwresearch() creates kwresearch from MM files", {
+test_that("kwresearch() |> kwr_import_mm(.) creates kwresearch from MM files", {
   expected <- tibble::tibble(
     query = c("query 1", "query 1", "query 2", "query 2", "query 3"),
     input = c("input 1", "input 2", "input 1", "input 1", "input 2"),
@@ -76,43 +76,43 @@ test_that("normalize_queries() works as axpected", {
   expect_equal(normalize_queries(input_query, input_volume), output)
 })
 
-test_that("aggregate_clean_data() works as expected", {
-  input <- tibble::tibble(
-    query = c("a", "b", "c", "a", "b", "a"),
-    query_normalized = c("a", "b", "c", "a", "b", "a"),
-    volume = c(10, 20, 30, 40, 50, 10),
-    cpc = c(1, 2, 3, 4, 5, 6),
-    input = c("i1", "i1", "i1", "i1", "i1", "i2"),
-    source = c("x", "x", "x", "y", "y", "x")
+test_that("aggregate_clean_data() aggegates inputs and sources", {
+  input <- tidyr::expand_grid(
+    query = "a",
+    query_normalized = "a",
+    volume = 10,
+    cpc = 1,
+    input = c("i1", "i2"),
+    source = c("s1", "s2")
   )
   output <- tibble::tibble(
-    query_normalized = c("b", "a", "c"),
-    n_queries = c(2L, 3L, 1L),
-    volume = c(70, 60, 30),
-    cpc = c(5, 6, 3),
-    query_original = c("b", "a", "c"),
-    input = c("i1", "i1,i2", "i1"),
-    source = c("x,y", "x,y", "x")
+    query_normalized = "a",
+    n_queries = 1,
+    volume = 20,
+    cpc = 1,
+    query_original = "a",
+    input = "i1,i2",
+    source = "s1,s2"
   )
   expect_equal(aggregate_clean_data(input), output)
 })
 
 test_that("clean_source_data() works as expected", {
-  input <- tibble::tibble(
-    query = c("a", "á", "b", "c", "a", "b"),
-    volume = rep_len(10, 6),
-    cpc = rep_len(1, 6),
-    input = c(rep_len("i1", 5), "i2"),
-    source = c(rep_len("x", 4), rep_len("y", 2))
+  input <- tidyr::expand_grid(
+    query = c("a", "á"),
+    volume = 10,
+    cpc = 1,
+    input = c("i1", "i2"),
+    source = c("s1", "s2")
   )
   output <- tibble::tibble(
-    query_normalized = c("á", "b", "c"),
-    n_queries = c(3L, 2L, 1L),
-    volume = c(30, 20, 10),
-    cpc = rep_len(1, 3),
-    query_original = c("a,á", "b", "c"),
-    input = c("i1", "i1,i2", "i1"),
-    source = c("x,y", "x,y", "x")
+    query_normalized = "á",
+    n_queries = 2L,
+    volume = 40,
+    cpc = 1,
+    query_original = "a,á",
+    input = "i1,i2",
+    source = "s1,s2"
   )
   expect_identical(clean_source_data(input), output)
 })
