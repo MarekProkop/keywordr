@@ -62,7 +62,7 @@ kwr_ngrams <- function(
     dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume), .data$token)
   if (remove_nested) {
     ngrams <- ngrams |>
-      remove_nested_ngrams()
+      remove_nested_ngrams(max_words)
   }
   ngrams
 }
@@ -178,7 +178,7 @@ kwr_collocations <- function(x, min_volume_prop = 0.5, min_n = 2) {
       .data$volume_prop >= min_volume_prop,
       .data$n >= min_n
     ) |>
-    remove_nested_ngrams() |>
+    remove_nested_ngrams(4) |>
     dplyr::select(
       .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
     ) |>
@@ -195,37 +195,20 @@ aggregate_ngrams <- function(ngrams) {
     dplyr::summarize(n = dplyr::n(), volume = sum(.data$volume))
 }
 
-remove_nested_ngrams <- function(df) {
-  match_subtoken <- function(x, y) {
-    (x != y) & stringr::str_detect(x, paste0("\\b",  y, "\\b"))
-  }
-
-  if ("volume" %in% names(df)) {
-    token_groups <- df |>
-      dplyr::group_by(.data$n, .data$volume) |>
-      dplyr::filter(dplyr::n() > 1) |>
-      dplyr::ungroup()
-  } else {
-    token_groups <- df |>
-      dplyr::group_by(.data$n) |>
-      dplyr::filter(dplyr::n() > 1) |>
-      dplyr::ungroup()
-  }
-
-  if (nrow(token_groups) > 1000) {
-    message(
-      "Too many n-grams. Removing nested n-grams from the first 1000 tokens only."
-    )
-    token_groups <- utils::head(token_groups, n = 1000)
-  }
-
-  nested <- token_groups |>
-    fuzzyjoin::fuzzy_inner_join(
-      token_groups, by = c(token = "token"), match_fun = match_subtoken
+remove_nested_ngrams <- function(df, n) {
+  nested <- df |>
+    tidytext::unnest_ngrams(
+      output = .data$subtoken,
+      input = .data$token,
+      n = n, n_min = 1, drop = FALSE
     ) |>
+    dplyr::group_by(.data$n) |>
     dplyr::filter(
-      .data$n.x == .data$n.y
-    )
+      .data$subtoken %in% .data$token,
+      .data$subtoken != .data$token
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(token = .data$subtoken)
 
-  df |> dplyr::anti_join(nested, by = c("token" = "token.y"))
+  df |> dplyr::anti_join(nested, by = "token")
 }

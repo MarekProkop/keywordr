@@ -5,7 +5,7 @@ test_that("remove_nested_ngrams() works", {
         token = c("a", "b", "b c", "d", "e d", "d e f"),
         n = c(5, 4, 3, 2, 2, 1),
         volume = c(50, 40, 30, 20, 20, 10)
-      )
+      ), 3
     ),
     tibble::tibble(
       token = c("a", "b", "b c", "e d", "d e f"),

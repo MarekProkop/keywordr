@@ -60,7 +60,7 @@ kwr_test_regex <- function(kwr, pattern, and = NULL, except = NULL, stopwords = 
   around_ngrams <- around |>
     tidytext::unnest_ngrams("token", "around", n = 4, n_min = 1) |>
     dplyr::count(.data$token, sort = TRUE) |>
-    remove_nested_ngrams()
+    remove_nested_ngrams(4)
   if (!is.null(stopwords)) {
     around_ngrams <- around_ngrams |> kwr_remove_stopwords(stopwords)
   }
