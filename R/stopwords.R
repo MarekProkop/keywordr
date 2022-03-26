@@ -32,5 +32,5 @@ kwr_stopwords <- function(lang = "cs") {
 #' @return The same data set as df with the rows matching stopwords removed.
 #' @export
 kwr_remove_stopwords <- function(df, stopwords = kwr_stopwords()) {
-  df |> dplyr::filter(dplyr::across(1, ~ !(. %in% stopwords)))
+  df |> dplyr::filter(dplyr::if_any(1, ~ !(. %in% stopwords)))
 }

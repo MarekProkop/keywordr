@@ -191,7 +191,7 @@ kwr_unclassified_queries <- function(kwr, label = NULL) {
   dims <- kwr_dimension_names(df)
   if (is.null(label)) {
     df |>
-      dplyr::filter(dplyr::across({{ dims }}, is_unclassified)) |>
+      dplyr::filter(dplyr::if_all({{ dims }}, is_unclassified)) |>
       dplyr::select(.data$query_normalized, .data$n_queries:.data$source)
   } else {
     df |>
