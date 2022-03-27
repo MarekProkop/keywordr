@@ -1,0 +1,85 @@
+---
+title: "Keyword Research"
+date: "`r format(Sys.Date(), '%x')`"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	fig.width = 8,
+	fig.height = 5,
+	dev = c("png", "cairo_pdf")
+)
+```
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(clipr)
+library(keywordr)
+```
+
+## Intialize
+
+Create kwresearch object:
+
+```{r}
+kwr <- kwresearch()
+```
+
+Import from Marketing Miner:
+
+```{r}
+kwr <- kwr |> 
+  kwr_import_mm(path = "data-raw/mm-files/")
+```
+
+Summary:
+
+```{r}
+kwr |> kwr_summary()
+```
+
+## Research
+
+### Source Queries
+
+```{r}
+kwr |> kwr_source_queries() |> 
+  arrange(desc(volume), query)
+```
+
+### Cleaned and Normalized Queries
+
+```{r}
+kwr |> kwr_clean_queries()
+```
+
+### Subqueries
+
+```{r}
+kwr |> kwr_subqueries()
+```
+
+### Collocations
+
+```{r}
+kwr |> kwr_collocations()
+```
+
+### N-grams
+
+```{r}
+kwr |> 
+  kwr_ngrams(min_words = 1, max_words = 4, min_n = 2, min_volume = 1, remove_nested = TRUE) |> 
+  kwr_remove_stopwords()
+```
