@@ -4,13 +4,15 @@
 \alias{kwr_unclassified_queries}
 \title{List queries that are not classified in all dimension}
 \usage{
-kwr_unclassified_queries(kwr, label = NULL)
+kwr_unclassified_queries(kwr, label = NULL, q = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
 
 \item{label}{An optional dimension names as a character vector. If specified,
 classification in only those dimensions is considered.}
+
+\item{q}{A regular expression to filter the output data frame.}
 }
 \value{
 A tibble with queries.

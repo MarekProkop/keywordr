@@ -4,10 +4,12 @@
 \alias{kwr_clean_queries}
 \title{Outputs cleaned (normalized and accentized) queries}
 \usage{
-kwr_clean_queries(kwr)
+kwr_clean_queries(kwr, q = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
+
+\item{q}{A regular expression to filter the output data frame.}
 }
 \value{
 A tibble.

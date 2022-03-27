@@ -87,6 +87,7 @@ kwr_import <- function(kwr, queries) {
 #' Outputs raw, source queries
 #'
 #' @param kwr A kwresearch object.
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @return A tibble.
 #' @export
@@ -98,11 +99,16 @@ kwr_import <- function(kwr, queries) {
 #' )
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_source_queries()
-kwr_source_queries <- function(kwr) {
+kwr_source_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
 
-  kwr$source_data
+  if (is.null(q)) {
+    kwr$source_data
+  } else {
+    kwr$source_data |>
+      dplyr::filter(stringr::str_detect(.data$query, q))
+  }
 }
 
 #' Outputs cleaned (normalized and accentized) queries
@@ -110,6 +116,7 @@ kwr_source_queries <- function(kwr) {
 #' @param kwr A kwresearch object.
 #'
 #' @return A tibble.
+#' @param q A regular expression to filter the output data frame.
 #' @export
 #'
 #' @examples
@@ -119,29 +126,41 @@ kwr_source_queries <- function(kwr) {
 #' )
 #' kwr <- kwresearch(queries)
 #' kwr |> kwr_clean_queries()
-kwr_clean_queries <- function(kwr) {
+kwr_clean_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
 
-  kwr$clean_data
+  if (is.null(q)) {
+    kwr$clean_data
+  } else {
+    kwr$clean_data |>
+      dplyr::filter(stringr::str_detect(.data$query_normalized, q))
+  }
 }
 
 #' Outputs pruned queries
 #'
 #' @param kwr A kwresearch object.
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @return A tibble.
 #' @export
-kwr_pruned_queries <- function(kwr) {
+kwr_pruned_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("pruned", "classified"))
 
-  kwr$pruned_data
+  if (is.null(q)) {
+    kwr$pruned_data
+  } else {
+    kwr$pruned_data |>
+      dplyr::filter(stringr::str_detect(.data$query_normalized, q))
+  }
 }
 
 #' Outputs classified queries
 #'
 #' @param kwr A kwresearch object.
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @return A tibble.
 #' @export
@@ -157,24 +176,30 @@ kwr_pruned_queries <- function(kwr) {
 #'   kwr_classify("C:/Dev/R/Public/keyworder/tests/test-data/recipes.yml") |>
 #'   kwr_classified_queries()
 #' }
-kwr_classified_queries <- function(kwr) {
+kwr_classified_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_true(kwr$status == "classified")
 
-  kwr$classified_data
+  if (is.null(q)) {
+    kwr$classified_data
+  } else {
+    kwr$classified_data |>
+      dplyr::filter(stringr::str_detect(.data$query_normalized, q))
+  }
 }
 
 #' Outputs the most processed queries
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @param kwr A kwresearch object.
 #'
 #' @return A tibble with queries.
 #' @export
-kwr_queries <- function(kwr) {
+kwr_queries <- function(kwr, q = NULL) {
   if (kwr$status %in% c("pruned", "classified")) {
-    kwr |> kwr_pruned_queries()
+    kwr |> kwr_pruned_queries(q)
   } else {
-    kwr |> kwr_clean_queries()
+    kwr |> kwr_clean_queries(q)
   }
 }
 
@@ -183,11 +208,12 @@ kwr_queries <- function(kwr) {
 #' @param kwr A kwresearch object.
 #' @param label An optional dimension names as a character vector. If specified,
 #'   classification in only those dimensions is considered.
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @return A tibble with queries.
 #' @export
-kwr_unclassified_queries <- function(kwr, label = NULL) {
-  df <- kwr |> kwr_classified_queries()
+kwr_unclassified_queries <- function(kwr, label = NULL, q = NULL) {
+  df <- kwr |> kwr_classified_queries(q)
   dims <- kwr_dimension_names(df)
   if (is.null(label)) {
     df |>
@@ -204,16 +230,24 @@ kwr_unclassified_queries <- function(kwr, label = NULL) {
 #' Outputs queries removed by kwr_prune
 #'
 #' @param kwr A kwresearch object.
+#' @param q A regular expression to filter the output data frame.
 #'
 #' @return A tibble with queries removed by kwr_prune.
 #' @export
-kwr_removed_queries <- function(kwr) {
+kwr_removed_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("pruned", "classified"))
 
-  kwr |>
+  result <- kwr |>
     kwr_clean_queries() |>
     dplyr::anti_join(kwr_pruned_queries(kwr), by = "query_normalized")
+
+  if (is.null(q)) {
+    result
+  } else {
+    result |>
+      dplyr::filter(stringr::str_detect(.data$query_normalized, q))
+  }
 }
 
 #' Set a stopword list to use with n-gram functions

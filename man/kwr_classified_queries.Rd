@@ -4,10 +4,12 @@
 \alias{kwr_classified_queries}
 \title{Outputs classified queries}
 \usage{
-kwr_classified_queries(kwr)
+kwr_classified_queries(kwr, q = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
+
+\item{q}{A regular expression to filter the output data frame.}
 }
 \value{
 A tibble.

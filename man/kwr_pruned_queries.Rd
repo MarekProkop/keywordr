@@ -4,10 +4,12 @@
 \alias{kwr_pruned_queries}
 \title{Outputs pruned queries}
 \usage{
-kwr_pruned_queries(kwr)
+kwr_pruned_queries(kwr, q = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
+
+\item{q}{A regular expression to filter the output data frame.}
 }
 \value{
 A tibble.

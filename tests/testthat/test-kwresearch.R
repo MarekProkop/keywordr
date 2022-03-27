@@ -132,6 +132,25 @@ test_that("kwr_source_queries() returns a correct data set", {
   expect_equal(kwresearch(input_df) |> kwr_source_queries(), expected_df)
 })
 
+test_that("kwr_source_queries() filters queries correctly", {
+  expect_equal(
+    kwresearch(
+      data.frame(
+        query = c("seo", "keyword research"),
+        volume = c(1000, 500)
+      )
+    ) |>
+      kwr_source_queries(q = "seo"),
+    tibble::tibble(
+      query = c("seo"),
+      input = NA_character_,
+      source = NA_character_,
+      volume = 1000,
+      cpc = NA_real_
+    )
+  )
+})
+
 test_that("kwr_clean_queries() returns a correct data set", {
   input_df <- data.frame(
     query = c("seo", "seo", "keyword research"),

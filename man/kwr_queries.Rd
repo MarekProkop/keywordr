@@ -4,10 +4,12 @@
 \alias{kwr_queries}
 \title{Outputs the most processed queries}
 \usage{
-kwr_queries(kwr)
+kwr_queries(kwr, q = NULL)
 }
 \arguments{
 \item{kwr}{A kwresearch object.}
+
+\item{q}{A regular expression to filter the output data frame.}
 }
 \value{
 A tibble with queries.
