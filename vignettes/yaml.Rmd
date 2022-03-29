@@ -225,7 +225,7 @@ list(
   ),
   list(
     type = "label",
-    name = "label_name",
+    name = "label_name_1",
     rules = list(
       list(
         match = c("aaa", "bbb"),
@@ -239,6 +239,15 @@ list(
   list(
     type = "label",
     name = "label_name_2",
+    rules = list(
+      list(
+        match = c("aaa", "bbb"),
+        except = c("xxx", "yyy")
+      ),
+      list(
+        match = c("ccc", "ddd")
+      )
+    ),
     values = list(
       list(
         value = "A-B",
