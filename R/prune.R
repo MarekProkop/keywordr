@@ -71,3 +71,19 @@ process_prune_recipe <- function(df, recipe) {
     ))
   }
 }
+
+process_remove_rule <- function(df, rule) {
+  if (is.null(rule$except)) {
+    df |>
+      dplyr::filter(
+        !stringr::str_detect(.data$query_normalized, join_patterns(rule$match))
+      )
+  } else {
+    df |>
+      dplyr::filter(
+        !stringr::str_detect(.data$query_normalized, join_patterns(rule$match)) |
+          stringr::str_detect(.data$query_normalized, join_patterns(rule$except))
+      )
+  }
+}
+

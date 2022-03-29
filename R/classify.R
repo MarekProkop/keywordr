@@ -86,15 +86,18 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
       if (!quiet) {
         message("Flag: ", recipe$name)
       }
-      df |>
-        set_flag(recipe$name, join_patterns(recipe$patterns), recipe$negate)
+      df <- recipe$rules |> purrr::reduce(
+        process_flag_rule, recipe$name, recipe$negate, .init = df
+      )
     },
     label = {
       if (!quiet) {
         message("Label:", recipe$name)
       }
-      if (!is.null(recipe$patterns)) {
-        df <- df |> set_label(recipe$name, join_patterns(recipe$patterns))
+      if (!is.null(recipe$rules)) {
+        df <- recipe$rules |> purrr::reduce(
+          process_label_rule, recipe$name, .init = df
+        )
       }
       if (!is.null(recipe$values)) {
         df <- recipe$values |> purrr::reduce(
@@ -107,21 +110,6 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
       stop(paste("Unknown recipe type", recipe$type))
     }
   )
-}
-
-process_remove_rule <- function(df, rule) {
-  if (is.null(rule$except)) {
-    df |>
-      dplyr::filter(
-        !stringr::str_detect(.data$query_normalized, join_patterns(rule$match))
-      )
-  } else {
-    df |>
-      dplyr::filter(
-        !stringr::str_detect(.data$query_normalized, join_patterns(rule$match)) |
-        stringr::str_detect(.data$query_normalized, join_patterns(rule$except))
-      )
-  }
 }
 
 #' Processes a single value of a recipe of the type label
@@ -138,12 +126,27 @@ process_value <- function(df, value, name, quiet = FALSE) {
   if (!quiet) {
     message("  Value: ", value$value)
   }
+  value$rules |> purrr::reduce(
+    process_label_rule, name, value$value, .init = df
+  )
+}
+
+process_label_rule <- function(df, rule, name, value = NULL) {
   df |>
     set_label(
       name = name,
-      pattern = join_patterns(value$patterns),
-      value = value$value,
-      exclude = join_patterns(value$exclude)
+      value = value,
+      pattern = join_patterns(rule$match),
+      exclude = join_patterns(rule$except)
+    )
+}
+
+process_flag_rule <- function(df, rule, name, negate = FALSE) {
+  df |>
+    set_flag(
+      name = name,
+      pattern = join_patterns(rule$match),
+      negate = negate
     )
 }
 

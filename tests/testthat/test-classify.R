@@ -1,4 +1,5 @@
 test_that("kwr_use_recipes() adds a recipe file to an empty kwresearch", {
+  skip("deprecated")
   expected_recipes <- list(
     list(
       type = "flag",
@@ -32,6 +33,7 @@ test_that("kwr_use_recipes() adds a recipe file to an empty kwresearch", {
 })
 
 test_that("kwr_use_recipes() adds 2 recipe files to an empty kwresearch", {
+  skip("deprecated")
   expected_recipes <- list(
     list(
       type = "flag",
@@ -123,7 +125,7 @@ test_that("process_recipe() sets a flag correctly", {
     type = "flag",
     name = "flag",
     negate = FALSE,
-    patterns = c("bbb", "ddd")
+    rules = list(list(match = c("bbb", "ddd")))
   )
   recipe_2 <- recipe_1
   recipe_2$negate <- TRUE
@@ -206,58 +208,99 @@ test_that("set_label() does not set a label for an excluded pattern", {
 })
 
 test_that("process_recipe() sets a new label without a predefined value", {
-  recipe <- list(
-    type = "label",
-    name = "label",
-    patterns = c("xxx", "yyy")
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy")
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        rules = list(list(match = c("xxx", "yyy")))
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      label = c(NA_character_, "xxx", NA_character_, "xxx,yyy")
+    )
   )
-  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_5)
 })
 
 test_that("process_recipe() sets a new label with a predefined value", {
-  recipe <- list(
-    type = "label",
-    name = "label",
-    values = list(
-      list(
-        value = "X",
-        patterns = "xxx"
-      )
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy")
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        values = list(list(
+          value = "X",
+          rules = list(list(match = "xxx"))
+        ))
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      label = c(NA_character_, "X", NA_character_, "X")
     )
   )
-  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_6)
 })
 
 test_that("process_recipe() sets an existing label with a predefined value", {
-  recipe <- list(
-    type = "label",
-    name = "label",
-    values = list(
-      list(
-        value = "Y",
-        patterns = "yyy"
-      )
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+        label = c(NA_character_, "X", NA_character_, "X")
+      ),
+      recipe = list(
+        type = "label",
+        name = "label",
+        values = list(list(
+          value = "Y",
+          rules = list(list(match = "yyy"))
+        ))
+      ),
+      quiet = TRUE),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      label = c(NA_character_, "X", NA_character_, "X,Y")
     )
   )
-  expect_equal(process_recipe(tibble_6, recipe, quiet = TRUE), tibble_7)
 })
 
 test_that("process_recipe() sets a new label with multiple predefined values", {
-  recipe <- list(
-    type = "label",
-    name = "label",
-    values = list(
-      list(
-        value = "X",
-        patterns = "xxx"
+  recipe <-
+  expect_equal(
+    object = process_recipe(
+      df = tibble::tibble(
+        query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy")
       ),
-      list(
-        value = "Y",
-        patterns = "yyy"
-      )
+      recipe = list(
+        type = "label",
+        name = "label",
+        values = list(
+          list(
+            value = "X",
+            rules = list(list(match = "xxx"))
+          ),
+          list(
+            value = "Y",
+            rules = list(list(match = "yyy"))
+          )
+        )
+      ),
+      quiet = TRUE
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      label = c(NA_character_, "X", NA_character_, "X,Y")
     )
   )
-  expect_equal(process_recipe(tibble_4, recipe, quiet = TRUE), tibble_7)
 })
 
 test_that("process_recipe() doesn't set a label for an excluded patterns", {
@@ -269,13 +312,13 @@ test_that("process_recipe() doesn't set a label for an excluded patterns", {
       recipe = list(
         type = "label",
         name = "label",
-        values = list(
-          list(
-            value = "A",
-            patterns = "aaa",
-            exclude = "ccc"
-          )
-        )
+        values = list(list(
+          value = "A",
+          rules = list(list(
+            match = "aaa",
+            except = "ccc"
+          ))
+        ))
       ),
       quiet = TRUE
     ),
@@ -286,10 +329,10 @@ test_that("process_recipe() doesn't set a label for an excluded patterns", {
   )
 })
 
-test_that("process_recipe() handles values and patterns in the same recipe", {
+test_that("process_recipe() handles values and rules in the same recipe", {
   queries <- c("aaa", "bbb", "ccc")
 
-  # Values followed by patterns
+  # Values followed by rules
   expect_equal(
     object = process_recipe(
       df = tibble::tibble(
@@ -298,13 +341,11 @@ test_that("process_recipe() handles values and patterns in the same recipe", {
       recipe = list(
         type = "label",
         name = "label",
-        values = list(
-          list(
-            value = "A",
-            patterns = "aaa"
-          )
-        ),
-        patterns = "bbb"
+        values = list(list(
+          value = "A",
+          rules = list(list(match = "aaa"))
+        )),
+        rules = list(list(match = "bbb"))
       ),
       quiet = TRUE
     ),
@@ -313,7 +354,7 @@ test_that("process_recipe() handles values and patterns in the same recipe", {
       label = c("A", "bbb", NA_character_)
     )
   )
-  # Patterns followed by values
+  # Rules followed by values
   expect_equal(
     object = process_recipe(
       df = tibble::tibble(
@@ -322,13 +363,11 @@ test_that("process_recipe() handles values and patterns in the same recipe", {
       recipe = list(
         type = "label",
         name = "label",
-        patterns = "bbb",
-        values = list(
-          list(
-            value = "A",
-            patterns = "aaa"
-          )
-        )
+        rules = list(list(match = "bbb")),
+        values = list(list(
+          value = "A",
+          rules = list(list(match = "aaa"))
+        ))
       ),
       quiet = TRUE
     ),
@@ -337,10 +376,6 @@ test_that("process_recipe() handles values and patterns in the same recipe", {
       label = c("A", "bbb", NA_character_)
     )
   )
-})
-
-test_that("process_recipe() doesn't set a label for an excluded patterns", {
-  skip("to do")
 })
 
 test_that("process_recipe() handles multiple recipes correctly", {
@@ -360,12 +395,12 @@ test_that("process_recipe() handles multiple recipes correctly", {
       type = "flag",
       name = "flag",
       negate = FALSE,
-      patterns = c("aaa", "ccc")
+      rules = list(list(match = c("aaa", "ccc")))
     ),
     list(
       type = "label",
       name = "label_1",
-      patterns = c("aaa", "ddd")
+      rules = list(list(match = c("aaa", "ddd")))
     ),
     list(
       type = "label",
@@ -373,11 +408,11 @@ test_that("process_recipe() handles multiple recipes correctly", {
       values = list(
         list(
           value = "A",
-          patterns = "aaa"
+          rules = list(list(match = "aaa"))
         ),
         list(
           value = "B/C",
-          patterns = c("bbb", "ccc")
+          rules = list(list(match = c("bbb", "ccc")))
         )
       )
     )
