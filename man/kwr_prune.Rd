@@ -14,7 +14,7 @@ kwr_prune(kwr, recipe_file, quiet = FALSE)
 \item{quiet}{If TRUE prints no messgaes.}
 }
 \value{
-A kwr object with pruned data and status = 'pruned'.
+A kwresearch object with pruned data and status = 'pruned'.
 }
 \description{
 If the status of the kwresearch object is 'data', it changes to 'pruned' and

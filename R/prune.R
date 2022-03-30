@@ -8,7 +8,7 @@
 #' @param recipe_file A path to a recipe file in YAML format.
 #' @param quiet If TRUE prints no messgaes.
 #'
-#' @return A kwr object with pruned data and status = 'pruned'.
+#' @return A kwresearch object with pruned data and status = 'pruned'.
 #' @export
 #'
 #' @examples
@@ -51,7 +51,44 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
 }
 
 
+#' Outputs queries longer than a specific number of characters
+#'
+#' @param kwr A kwresearch object.
+#' @param longer_than A number.
+#'
+#' @return The output of `kwr_queries` filtered for queries longer than
+#'   `longer_than` characters.
+#' @export
+kwr_long_queries <- function(kwr, longer_than = 60) {
+  kwr |> kwr_queries() |>
+    dplyr::filter(dplyr::if_any(1, ~ stringr::str_length(.) > longer_than)) |>
+    dplyr::select(1, .data$volume)
+}
+
+
+#' From pruned data removes queries longer than a specific number of characters
+#'
+#' @param kwr A kwresearch object.
+#' @param longer_than A number.
+#'
+#' @return A kwresearch object with pruned data and status = 'pruned'.
+#' @export
+kwr_prune_long_queries <- function(kwr, longer_than = 60) {
+  if (kwr$status == "pruned") {
+    dataset <- kwr$pruned_data
+  }
+  else {
+    dataset <- kwr$clean_data
+  }
+  kwr$pruned_data <- dataset |>
+    dplyr::filter(dplyr::if_any(1, ~ stringr::str_length(.) <= longer_than))
+  kwr$status <- "pruned"
+  kwr
+}
+
+
 # Private functions -------------------------------------------------------
+
 
 #' Processes a single pruning recipe
 #'

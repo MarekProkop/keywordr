@@ -125,3 +125,49 @@ test_that("kwr_queries() returns pruned data if available", {
 
   expect_equal(kwr_queries(kwr), kwr$pruned_data)
 })
+
+test_that("kwr_long_queries() returns a correct data", {
+  expect_equal(
+    object = kwr_long_queries(
+      kwresearch(
+        queries = tibble::tibble(
+          query = c(
+            "aaa",
+            "bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb"
+          ),
+          volume = c(10, 1)
+        )
+      )
+    ),
+    expected = tibble::tibble(
+      query_normalized = "bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb",
+      volume = 1
+    )
+  )
+})
+
+test_that("kwr_prune_long_queries() removes a long query", {
+  expect_equal(
+    object = kwr_prune_long_queries(
+      kwr = kwresearch(
+        queries = tibble::tibble(
+          query = c(
+            "aaa",
+            "bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb"
+          ),
+          volume = c(10, 1)
+        )
+      ),
+      longer_than = 60
+    ) |> kwr_queries(),
+    expected = tibble::tibble(
+      query_normalized = "aaa",
+      n_queries = 1,
+      volume = 10,
+      cpc = NA_real_,
+      query_original = "aaa",
+      input = NA_character_,
+      source = NA_character_
+    )
+  )
+})
