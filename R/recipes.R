@@ -32,7 +32,6 @@
 #'   recipe_type = "label",
 #'   dim_name = "my_label"
 #' )
-
 kwr_add_pattern <- function(pattern = NULL,
                             recipe_file = NULL,
                             recipe_type = NULL,
@@ -58,6 +57,10 @@ kwr_add_pattern <- function(pattern = NULL,
   } else {
     checkmate::assert_string(dim_name)
     checkmate::assert_null(value)
+  }
+
+  if (!is.null(value)) {
+    value <- stringi::stri_enc_toutf8(value)
   }
 
   if (file.exists(recipe_file)) {
