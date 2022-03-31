@@ -196,11 +196,14 @@ kwr_classified_queries <- function(kwr, q = NULL) {
 #' @return A tibble with queries.
 #' @export
 kwr_queries <- function(kwr, q = NULL) {
-  if (kwr$status %in% c("pruned", "classified")) {
-    kwr |> kwr_pruned_queries(q)
-  } else {
-    kwr |> kwr_clean_queries(q)
-  }
+  checkmate::assert_class(kwr, "kwresearch")
+  checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
+
+  switch(kwr$status,
+    data = kwr_clean_queries(kwr),
+    pruned = kwr_pruned_queries(kwr),
+    classified = kwr_classified_queries(kwr)
+  )
 }
 
 #' List queries that are not classified in all dimension
