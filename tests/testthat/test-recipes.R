@@ -404,6 +404,44 @@ test_that("kwr_add_pattern() adds the 1st value to an existing label", {
   file.remove(recipe_file)
 })
 
+test_that("kwr_add_pattern() adds the 1st value to an existing label (complex)", {
+  recipe_file <- file.path(recipe_dir, "test.yml")
+  yaml::write_yaml(
+    list(
+      list(
+        type = "label",
+        name = "name_1",
+        rules = list(list(match = c("a", "b", "c")))
+      )
+    ),
+    file = recipe_file
+  )
+  kwr_add_pattern(
+    pattern = "po[šs]t[aeuy]\\b",
+    recipe_file = recipe_file,
+    recipe_type = "label",
+    dim_name = "name_1",
+    value = "pošta"
+  )
+  expect_equal(
+    object = yaml::read_yaml(recipe_file),
+    expected = list(
+      list(
+        type = "label",
+        name = "name_1",
+        rules = list(list(match = c("a", "b", "c"))),
+        values = list(
+          list(
+            value = "pošta",
+            rules = list(list(match = "po[šs]t[aeuy]\\b"))
+          )
+        )
+      )
+    )
+  )
+  file.remove(recipe_file)
+})
+
 test_that("kwr_add_pattern() adds another value to an existing label", {
   recipe_file <- file.path(recipe_dir, "test.yml")
   yaml::write_yaml(
