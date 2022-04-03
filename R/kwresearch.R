@@ -200,9 +200,9 @@ kwr_queries <- function(kwr, q = NULL) {
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
 
   switch(kwr$status,
-    data = kwr_clean_queries(kwr),
-    pruned = kwr_pruned_queries(kwr),
-    classified = kwr_classified_queries(kwr)
+    data = kwr_clean_queries(kwr, q),
+    pruned = kwr_pruned_queries(kwr, q),
+    classified = kwr_classified_queries(kwr, q)
   )
 }
 
