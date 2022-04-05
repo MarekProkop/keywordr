@@ -12,13 +12,23 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(yaml)
+library(keywordr)
+library(tibble)
+library(dplyr)
+
+print_yaml <- function(x) {
+  yaml <- yaml::as.yaml(x)
+  cat("\n\n```{yaml}\n", yaml, "```\n\n", sep = "")
+}
 ```
 
 The processing of search queries is controlled by rules that are stored in [YAML](https://yaml.org/) files. Their structure is documented here.
 
 # File
 
-The highest unit of structure is the file. You can have just one, or you can have more. Splitting many rules into multiple files can be neater and can make it easier for multiple people to collaborate on a project. 
+The highest unit of structure is the file. You can have just one, or you can have more. Splitting many rules into multiple files can be neater and can make it easier for multiple people to collaborate on a project.
 
 In addition, you can only apply certain files at a time. This will split your query classification into multiple phases, which will be faster and more transparent to process.
 
@@ -26,339 +36,226 @@ In addition, you can only apply certain files at a time. This will split your qu
 
 The file consists of a list of recipes.
 
-```{yaml}
+```yaml
 - [recipe]
 - [recipe]
 - [recipe]
-...
 ```
 
 There are two basic groups of recipes: removal and classification.
 
 ## Removal recipes
 
-## Classification recipes
+You ussually need just one file with one recipe to remove unwanted input queries. The simpliest removal recipe looks like this:
 
-Each classification recipe consists of several fields and a set of several (here three) recipes looks like this:
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns:
-  - aaa
-  - ccc
-- type: label
-  name: label_name_1
-  patterns:
-  - aaa
-  - ddd
-- type: label
-  name: label_name_2
-  values:
-  - value: A
-    patterns: aaa
-  - value: B
-    patterns:
-    - bbb
-    - bb bb
-```
-
-Note that:
-
-- All recipes have *type*, *name* and *patterns* fields.
-- The *type* field specifies the type of the classification dimension (see below).
-- The *name* field specifies the name of the classification dimension. In the resulting table of classified queries, it becomes the column header.
-- The *patterns* field is a list of regular expressions. If at least one of them applies to a query, the query is classified in that dimension.
-
-### Recipe of the type *flag*
-
-The following example recipe of type *flag* creates a column of logical type (boolean) named *flag_name* in the resulting table of classified queries. Queries that match the regular expression `aaa` or `ccc` will be given the value `TRUE`, while queries that match neither of these regular expressions will be given the value `FALSE`.
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns:
-  - aaa
-  - ccc
-```
-
-If a single regular expression is sufficient to specify the queries, you can write the entire recipe abbreviated as follows according to YAML rules. Te following example works the same as the one above:
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns: aaa|ccc
-```
-
-If you want to reverse the logic and flag queries that do not match certain regular expressions with `TRUE`, use the *except* field instead of the *patterns* field. In this example the queries that do not match the regular expressions `aaa` or `ccc` will be marked `TRUE`.
-
-```{yaml}
-- type: flag
-  name: flag_name
-  except: aaa|ccc
-```
-
-The *patterns* and *exept* fields can be combined with each other. The following recipe marks `TRUE` only those queries that match the regular expressions `aaa` or `ccc` and do not match the regular expression `bbb`.
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns:
-  - aaa
-  - ccc
-  except: bbb
-```
-
-In special cases, a more complex rule may be needed. Suppose you want to mark `TRUE` queries that match the regular expression `aaa` and do not match the regular expression `bbb`, and also queries that match the regular expression `ccc` and do not match the regular expression `ddd`. You must do this with two recipes:
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns: aaa
-  except: bbb
-- type: flag
-  name: flag_name
-  patterns: ccc
-  except: ddd
-```
-
-Alternative:
-
-```{yaml}
-- type: flag
-  name: flag_name
-  patterns: 
-  - aaa
-  - except: 
-    - bbb
-  - ccc
-  - except:
-    - ddd
-```
-
-### Recipe of the type *label*
-
-```{yaml}
-- type: flag
-  name: flag_name
-  negate: no
-  patterns:
-  - aaa
-  - ccc
-- type: label
-  name: label_name_1
-  patterns:
-  - aaa
-  - ddd
-- type: label
-  name: label_name_2
-  values:
-  - value: A
-    patterns: aaa
-  - value: B
-    patterns:
-    - bbb
-    - bb bb
-```
-
-
-```{r}
-library(keywordr)
-```
-
-```{r}
-readr::read_lines(skip_empty_rows = TRUE, "
-- type: flag
-  name: flag_name
+```yaml
+- type: remove
   rules:
-  - patterns:
-    - aaa
-    - bbb
-    except:
+  - match: xxx
+```
+
+When this recipe is applied, it removes all queries that match refular expression `xxx`.
+
+More complex removal recipe looks like this:
+
+```yaml
+- type: remove
+  rules:
+  - match:
     - xxx
     - yyy
-  - patterns:
-    - ccc
-    - ddd
+    except:
+    - aaa
+    - bbb
+```
+
+When applied, it removes all queries that match regular expressions `xxx` or `yyy` (or both), unless they also match regular expressions `aaa` or `bbb` (or both).
+
+## Classification recipes
+
+The simpliest classification recipe looks like this:
+
+```yaml
+- type: label
+  name: label_name
+  rules:
+  - match:
+    - aaa
+    - bbb
+```
+
+It says:
+
+1. Create the column (dimension, label) named *label_name*.
+1. Apply the regular expression `aaa|bbb` (which means `aaa` or `bbb`) on every query.
+1. Fill in the column *label_name* with matched part of the query.
+1. If no part of the query matches the regular expression, leave the value empty (ie. `NA`).
+
+Sometimes you don't want to have the label value the same as the matched part of the query. For instance you want to match both *shirt* and *shirts*, but label value should read *shirt* in both cases. Then you use this recipe:
+
+```yaml
+- type: label
+  name: product
+  values:
+  - value: shirt
+    rules:
+    - match:
+      - shirt
+      - shirts
+```
+
+Or you can write regular expressions more efficiently:
+
+```yaml
+- type: label
+  name: product
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+```
+
+You can combine both methods and create multiple values of the same column (label), e.g.:
+
+```yaml
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+```
+
+And you can even combine multiple recipes into one file like this:
+
+```yaml
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+- type: label
+  name: price
+  rules:
+  - match:
+    - cheap
+    - luxury
+```
+
+What happens, if you apply the classification recipes above on queries? Let's suppose the following queries:
+
+```{r echo=FALSE}
+queries <- tibble(
+  query = c("outdoor shoes", "cheap shoes", "luxury shoes", "white shirt", "blue trousers", "black hat"),
+  volume = 10
+)
+queries
+```
+
+And now classify those queries with the recipes above:
+
+```{r include=FALSE}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+
+recipes <- yaml.load("
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+- type: label
+  name: price
+  rules:
+  - match:
+    - cheap
+    - luxury
 ") |> 
-  stringr::str_c(collapse = "\n") |> 
-  yaml::yaml.load()
+  write_yaml(recipe_file)
+
+kwr <- kwresearch(queries) |> 
+  kwr_classify(recipe_file)
+
+file.remove(recipe_file)
 ```
 
-Úplnný YAML
-
-```{r echo=FALSE, results='asis'}
-print_yaml <- function(x) {
-  yaml <- yaml::as.yaml(x)
-  cat("\n\n```{yaml}\n", yaml, "```\n\n", sep = "")
-}
-
-list(
-  list(
-    type = "remove",
-    rules = list(
-      list(
-        match = c("rrr", "sss"),
-        except = c("aaa", "bbb")
-      )
-    )
-  ),
-  list(
-    type = "include",
-    rules = list(
-      match = c("rrr", "sss"),
-      except = c("aaa", "bbb")
-    )
-  ),
-  list(
-    type = "flag",
-    name = "flag_name",
-    rules = list(
-      list(
-        match = c("aaa", "bbb"),
-        except = c("xxx", "yyy")
-      ),
-      list(
-        match = c("ccc", "ddd")
-      )
-    )
-  ),
-  list(
-    type = "label",
-    name = "label_name_1",
-    rules = list(
-      list(
-        match = c("aaa", "bbb"),
-        except = c("xxx", "yyy")
-      ),
-      list(
-        match = c("ccc", "ddd")
-      )
-    )
-  ),
-  list(
-    type = "label",
-    name = "label_name_2",
-    rules = list(
-      list(
-        match = c("aaa", "bbb"),
-        except = c("xxx", "yyy")
-      ),
-      list(
-        match = c("ccc", "ddd")
-      )
-    ),
-    values = list(
-      list(
-        value = "A-B",
-        rules = list(
-          list(
-            match = c("aaa", "bbb"),
-            except = c("xxx", "yyy")
-          )
-        )
-      ),
-      list(
-        value = "C-D",
-        rules = list(
-          list(
-            match = c("ccc", "ddd"),
-            except = c("xxx", "yyy")
-          )
-        )
-      )
-    )
-  )
-) |> 
-  print_yaml()
+```{r echo=FALSE}
+kwr |> 
+  kwr_queries() |> 
+  select(query_normalized:volume)
 ```
 
-Zkrácený YAML, pokud je jen jedno pravidlo
 
-```{r echo=FALSE, results='asis'}
-list(
-  list(
-    type = "remove",
-    match = c("rrr", "sss"),
-    except = c("aaa", "bbb")
-  ),
-  list(
-    type = "include",
-    match = c("rrr", "sss"),
-    except = c("aaa", "bbb")
-  ),
-  list(
-    type = "flag",
-    name = "flag_name",
-    match = c("aaa", "bbb"),
-    except = c("xxx", "yyy")
-  ),
-  list(
-    type = "label",
-    name = "label_name",
-    match = c("aaa", "bbb"),
-    except = c("xxx", "yyy")
-  ),
-  list(
-    type = "label",
-    name = "label_name_2",
-    values = list(
-      value = "A-B",
-      rules = list(
-        list(
-          match = c("aaa", "bbb"),
-          except = c("xxx", "yyy")
-        )
-      ),
-      value = "C-D",
-      rules = list(
-        list(
-          match = c("ccc", "ddd"),
-          except = c("xxx", "yyy")
-        )
-      )
-    )
-  )
-) |> 
-  print_yaml()
+# Helper for recipe creation
+
+In fact you need not always edit the recipe files directly. The packege *keywordr* contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:
+
+```{r}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+kwr_add_pattern(
+  pattern = "shoes", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product"
+)
+kwr_add_pattern(
+  pattern = "trousers", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product"
+)
+kwr_add_pattern(
+  pattern = "shirts?", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product", 
+  value = "shirt"
+)
+kwr_add_pattern(
+  pattern = "hats?", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product", 
+  value = "hat"
+)
+kwr_add_pattern(
+  pattern = "cheap", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "price"
+)
+kwr_add_pattern(
+  pattern = "luxury", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "price"
+)
+writeLines(readLines(recipe_file))
 ```
 
-Nejjednodušší YAML- jen jedno pravidlo, jen jeden pattern, žádný except
-
-```{r echo=FALSE, results='asis'}
-list(
-  list(
-    type = "remove",
-    match = "rrr"
-  ),
-  list(
-    type = "include",
-    match = "sss"
-  ),
-  list(
-    type = "flag",
-    name = "flag_name",
-    match = "aaa"
-  ),
-  list(
-    type = "label",
-    name = "label_name",
-    match = "aaa"
-  ),
-  list(
-    type = "label",
-    name = "label_name_2",
-    values = list(
-      list(
-        value = "A-B",
-        match = "aaa"
-      ),
-      list(
-        value = "C-D",
-        match = "ccc"
-      )
-    )
-  )
-) |> 
-  print_yaml()
+```{r include=FALSE}
+file.remove(recipe_file)
 ```
+
