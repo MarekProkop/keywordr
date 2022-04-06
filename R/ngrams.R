@@ -76,6 +76,7 @@ kwr_ngrams <- function(
 #' @param x A kwresearch object, which queries will be n-grams calculated from,
 #'   or a data frame of queries and volume.
 #' @param max_words Maximum number of words in n-grams.
+#' @param min_words Minimum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
 #'   number of queries will be included.
 #' @param min_volume Minimum search volume per n-gram. Only the n-grams with at
@@ -85,7 +86,9 @@ kwr_ngrams <- function(
 #'   search volumes). The n-grams are orderd descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
-kwr_subqueries <- function(x, max_words = 5, min_n = 1, min_volume = 0) {
+kwr_subqueries <- function(
+  x, max_words = 5, min_words = 1, min_n = 1, min_volume = 0
+) {
   checkmate::assert(
     checkmate::check_class(x, "kwresearch"),
     checkmate::check_class(x, "data.frame")
@@ -104,7 +107,7 @@ kwr_subqueries <- function(x, max_words = 5, min_n = 1, min_volume = 0) {
     dplyr::select(.data$query_normalized, .data$volume) |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
-      n = max_words, n_min = 2, drop = FALSE
+      n = max_words, n_min = min_words, drop = FALSE
     ) |>
     dplyr::filter(
       .data$token != .data$query_normalized,
@@ -157,7 +160,7 @@ kwr_collocations <- function(
       ) |>
       quanteda::tokens(remove_punct = TRUE) |>
       quanteda.textstats::textstat_collocations(size = min_n:4) |>
-      as_tibble()
+      tibble::as_tibble()
   } else {
     df |>
       dplyr::select(.data$query_normalized, .data$volume) |>

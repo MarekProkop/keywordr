@@ -5,13 +5,15 @@
 \title{Generates n-grams from queries and filter only those that match any existing
 query}
 \usage{
-kwr_subqueries(x, max_words = 5, min_n = 1, min_volume = 0)
+kwr_subqueries(x, max_words = 5, min_words = 1, min_n = 1, min_volume = 0)
 }
 \arguments{
 \item{x}{A kwresearch object, which queries will be n-grams calculated from,
 or a data frame of queries and volume.}
 
 \item{max_words}{Maximum number of words in n-grams.}
+
+\item{min_words}{Minimum number of words in n-grams.}
 
 \item{min_n}{Minimum number of queries. Only the n-grams with at least this
 number of queries will be included.}
