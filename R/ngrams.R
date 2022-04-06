@@ -126,12 +126,16 @@ kwr_subqueries <- function(x, max_words = 5, min_n = 1, min_volume = 0) {
 #' @param min_volume_prop Minimum proportion.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
 #'   number of queries will be included.
+#' @param quanteda If TRUE, will use the 'quanteda' package, which is
+#'   recommended.
 #'
 #' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
 #'   search volumes). The n-grams are orderd descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
-kwr_collocations <- function(x, min_volume_prop = 0.5, min_n = 2) {
+kwr_collocations <- function(
+  x, min_volume_prop = 0.5, min_n = 2, quanteda = TRUE
+) {
   checkmate::assert(
     checkmate::check_class(x, "kwresearch"),
     checkmate::check_class(x, "data.frame")
@@ -145,44 +149,55 @@ kwr_collocations <- function(x, min_volume_prop = 0.5, min_n = 2) {
   } else {
     df <- x
   }
-  df |>
-    dplyr::select(.data$query_normalized, .data$volume) |>
-    tidytext::unnest_ngrams(
-      output = "token", input = "query_normalized", n = 4, n_min = 2
-    ) |>
-    dplyr::relocate(.data$volume, .after = .data$token) |>
-    tidyr::drop_na() |>
-    dplyr::add_count(.data$token) |>
-    tidytext::unnest_tokens(
-      output = "word", input = "token", token = "words", drop = FALSE
-    ) |>
-    dplyr::group_by(.data$word) |>
-    dplyr::mutate(
-      volume_word = sum(.data$volume),
-      n_word = dplyr::n()
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(
-      volume_prop = .data$volume / .data$volume_word,
-      n_prop = .data$n / .data$n_word
-    ) |>
-    dplyr::group_by(.data$token) |>
-    dplyr::summarise(
-      volume = dplyr::first(.data$volume),
-      n = dplyr::first(.data$n),
-      volume_prop = max(.data$volume_prop),
-      n_prop = max(.data$n_prop)
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::filter(
-      .data$volume_prop >= min_volume_prop,
-      .data$n >= min_n
-    ) |>
-    remove_nested_ngrams(4) |>
-    dplyr::select(
-      .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
-    ) |>
-    dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
+  if (quanteda) {
+    df |>
+      quanteda::corpus(
+        docid_field = "query_normalized",
+        text_field = "query_normalized"
+      ) |>
+      quanteda::tokens(remove_punct = TRUE) |>
+      quanteda.textstats::textstat_collocations(size = min_n:4) |>
+      as_tibble()
+  } else {
+    df |>
+      dplyr::select(.data$query_normalized, .data$volume) |>
+      tidytext::unnest_ngrams(
+        output = "token", input = "query_normalized", n = 4, n_min = 2
+      ) |>
+      dplyr::relocate(.data$volume, .after = .data$token) |>
+      tidyr::drop_na() |>
+      dplyr::add_count(.data$token) |>
+      tidytext::unnest_tokens(
+        output = "word", input = "token", token = "words", drop = FALSE
+      ) |>
+      dplyr::group_by(.data$word) |>
+      dplyr::mutate(
+        volume_word = sum(.data$volume),
+        n_word = dplyr::n()
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::mutate(
+        volume_prop = .data$volume / .data$volume_word,
+        n_prop = .data$n / .data$n_word
+      ) |>
+      dplyr::group_by(.data$token) |>
+      dplyr::summarise(
+        volume = dplyr::first(.data$volume),
+        n = dplyr::first(.data$n),
+        volume_prop = max(.data$volume_prop),
+        n_prop = max(.data$n_prop)
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::filter(
+        .data$volume_prop >= min_volume_prop,
+        .data$n >= min_n
+      ) |>
+      remove_nested_ngrams(4) |>
+      dplyr::select(
+        .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
+      ) |>
+      dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
+  }
 }
 
 

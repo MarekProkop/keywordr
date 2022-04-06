@@ -29,5 +29,7 @@ Imports:
     tidytext,
     tidyr,
     checkmate,
-    utils
+    utils,
+    quanteda,
+    quanteda.textstats
 VignetteBuilder: knitr

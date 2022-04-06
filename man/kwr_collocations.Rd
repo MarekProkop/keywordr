@@ -5,7 +5,7 @@
 \title{Finds collocations, i.e. multiword phrases that are more likely than their
 single words}
 \usage{
-kwr_collocations(x, min_volume_prop = 0.5, min_n = 2)
+kwr_collocations(x, min_volume_prop = 0.5, min_n = 2, quanteda = TRUE)
 }
 \arguments{
 \item{x}{A kwresearch object, which queries will be collocations calculated
@@ -15,6 +15,9 @@ from, or a data frame of queries and volume.}
 
 \item{min_n}{Minimum number of queries. Only the n-grams with at least this
 number of queries will be included.}
+
+\item{quanteda}{If TRUE, will use the 'quanteda' package, which is
+recommended.}
 }
 \value{
 A tibble of n-grams with a basic stats (nuber of queries and sum of

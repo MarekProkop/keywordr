@@ -115,14 +115,14 @@ test_that("kwr_collocations() works", {
   )
   coll <- input_df |>
     kwresearch() |>
-    kwr_collocations()
+    kwr_collocations(quanteda = FALSE)
   expect_s3_class(coll, "tbl_df")
   expect_named(coll, c("token", "n", "volume", "n_prop", "volume_prop"))
   expect_s3_class(
     object = input_df |>
       kwresearch() |>
       kwr_queries() |>
-      kwr_collocations(),
+      kwr_collocations(quanteda = FALSE),
     class = "tbl_df"
   )
 })
