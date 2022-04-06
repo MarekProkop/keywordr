@@ -1,25 +1,3 @@
-#' Adds new classification recipes to a kwresearch object
-#'
-#' @param kwr A kwresearch object.
-#' @param recipe_file A path to a recipe file in YAML format.
-#'
-#' @return The input kwresearch object with updated classification recipes. If
-#'   the kwresearch object already contained recipes, they are merged with the
-#'   new ones.
-#' @export
-kwr_use_recipes <- function(kwr, recipe_file) {
-  checkmate::assert_class(kwr, "kwresearch")
-  checkmate::assert_file_exists(recipe_file, access = "r", extension = "yml")
-
-  new_recipes <- read_recipes(recipe_file)
-  if (is.null(kwr$recipes)) {
-    kwr$recipes <- new_recipes
-  } else {
-    kwr$recipes <- c(kwr$recipes, new_recipes)
-  }
-  kwr
-}
-
 #' Classifies queries based on recipes
 #'
 #' @param kwr A kwr object containg queries to be classified, and classification
