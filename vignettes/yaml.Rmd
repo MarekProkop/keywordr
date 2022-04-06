@@ -1,8 +1,8 @@
 ---
-title: "YAML removal and classification recipes"
+title: "Removal and classification recipes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{yaml}
+  %\VignetteIndexEntry{Removal and classification recipes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -28,13 +28,13 @@ The processing of search queries is controlled by rules that are stored in [YAML
 
 # File
 
-The highest unit of structure is the file. You can have just one, or you can have more. Splitting many rules into multiple files can be neater and can make it easier for multiple people to collaborate on a project.
+The highest unit of structure is the file. You can have just one, or you can have more. Breaking many rules into multiple files is more manageable and makes it easier for multiple people to collaborate on a project.
 
-In addition, you can only apply certain files at a time. This will split your query classification into multiple phases, which will be faster and more transparent to process.
+In addition, you can only work with a few files at a time. This will split the classification of queries into multiple phases, which are processed more quickly and clearly.
 
 # Recipes
 
-The file consists of a list of recipes.
+A file consists of a list of recipes.
 
 ```yaml
 - [recipe]
@@ -46,7 +46,7 @@ There are two basic groups of recipes: removal and classification.
 
 ## Removal recipes
 
-You ussually need just one file with one recipe to remove unwanted input queries. The simpliest removal recipe looks like this:
+Usually, a single recipe file is all you need to remove unwanted input queries. The simplest recipe for removal looks like this:
 
 ```yaml
 - type: remove

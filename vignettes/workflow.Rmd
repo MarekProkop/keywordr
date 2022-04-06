@@ -1,30 +1,258 @@
 ---
-title: "Keywordr -- a typical workflow"
+title: "Recomended workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{workflow}
+  %\VignetteIndexEntry{Recomended workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
+## Setup and prerequsites
+
+### Used libraries
+
+The *keywordr* package is designed to work well with [tidyverse](https://www.tidyverse.org/) and I always iclude it in libraries.
+
+```{r message=FALSE}
+library(tidyverse)
 library(keywordr)
 ```
 
-# A minimal pipeline
+### Input data
 
-```{r eval=FALSE}
-kwr <- kwresearch(accentize = TRUE, normalize = TRUE) |> 
-  kwr_import_mm("...") |> 
-  kwr_use_recipes("...") |> 
-  kwr_classify() |> 
-  kwr_export("...")
+As input data you can use either a CSV export from [Marketing Miner](https://www.marketingminer.com/en) called *Keyword Suggestions* or a dataframe (or _tibble_) with the following structure:
+
+```{r echo=FALSE}
+data.frame(
+  query = character(),
+  volume = integer(),
+  cpc = double(),
+  input = character(),
+  source = character()
+) |> 
+  str()
+```
+
+Only the first two columns are required, the other three (`cpc`, `input` and `source`) are optional.
+
+For the purposes of this tutorial, I will use the first method and prepare the input data first.
+
+```{r rows.print=25}
+input_data <- tribble(
+  ~query,             ~volume,
+  "seo",                96000,
+  "seo ye-ji",          22000,
+  "seo meaning",         6700,
+  "seo services",        6400,
+  "seo ye ji",           6000,
+  "what is a seo",       5300,
+  "seo london",          5000,
+  "what is seo",         4800,
+  "seo agency",          4300,
+  "joe seo",             4300,
+  "seo company",         4200,
+  "london seo agencies", 4100,
+  "seo consultant",      3500,
+  "seo service",         3500,
+  "seo company london",  2500,
+  "seo agencies london", 2500,
+  "seo agency london",   2400,
+  "seo services london", 2400,
+  "seo consultants",     2300,
+  "local seo",           2200,
+  "local seo services",  2000
+)
+print(input_data, n = 25)
+```
+
+### A `kwresearch` object
+
+All data is stored in an object of class `kwresearch` during keyword analysis. Therefore, create such an object, called for example `kwr`, right at the beginning. In the same function call, you can also import input data into it. For English (or other languages that do not use diacritics), I recommend setting `accentize` to `FALSE`.
+
+```{r}
+kwr <- kwresearch(input_data, accentize = FALSE)
+```
+
+Now you can check the data are in.
+
+```{r}
+kwr |> kwr_queries()
+```
+
+Note that queries 'seo ye-ji' and 'seo ye ji' were combined together. Tis is the result of *normalization*, which tries to unify queries that differ only by punctuation, accents or order of words. If you don't like the result, you can switch normalization off with the `normalize` argument.
+
+You are ready for pruning and classification now.
+
+## Pruning
+
+Pruning is a process in which you remove irrelevant queries. While they still remain in the source data and can be displayed in some outputs, they do not bother you during classification.
+
+Your task is to find the patterns that determine the irrelevant queries and to specify these patterns as regular expressions. Because there are so few queries in the example, we can spot these formulas at a glance. They are the words or phrases 'ye-ji' and 'joe'.
+
+You remove the queries matching these patterns as follows:
+
+```{r}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+
+kwr_add_pattern("ye-ji", recipe_file, recipe_type = "remove")
+kwr_add_pattern("joe", recipe_file, recipe_type = "remove")
+
+kwr <- kwr |> 
+  kwr_prune(recipe_file)
+```
+
+If you check the queries now, you will find that the irrelevant ones are already missing.
+
+```{r}
+kwr |> kwr_queries()
+```
+
+#### What exactly happened
+
+Using the `kwr_add_pattern` function, you created a recipe file called 'recipes.yml' in the temporary directory and wrote the 'ye-ji' and 'joe' patterns into it. The recipe type is `remove`, which means that queries matching the recipe should be removed. You can read more about recipes and their structure in the 'Removal and classification recipes' vignette.
+
+You then applied the `kwr_prune` function to the `kwr` object, which executed all recipes with type `remove` from the recipe file.
+
+On such small data the effect of this method does not show much, but consider that on data of the usual size one pattern can capture and thus remove possibly hundreds of queries.
+
+
+## Classification
+
+Your next and actually main task is to classify the queries. We will start with exploration, which is supported by three functions: `kwr_subqueries`, `kwr_collocations` and `kwr_ngrams`.
+
+### Exploration
+
+#### N-grams
+
+The `kwr_ngrams` function returns so-called n-grams, i.e. single words or multi-word phrases contained in the queries. The output is sorted by the number of queries in which the n-gram is found, however you can reorder it using the `arrange` function from the *dplyr* package by search volume.
+
+```{r}
+kwr |> kwr_ngrams()
+```
+
+#### Subqueries
+
+Subqueries are essentially n-grams that also exist as separate queries. In other words, they are queries that are entirely and exactly contained in other, longer queries.
+
+```{r}
+kwr |> kwr_subqueries()
+```
+
+#### Collocations
+
+Collocations are at least two-word phrases that are more likely to occur in queries than the single words that make them up. They are useful for detecting typical multi-word phrases.
+
+```{r}
+kwr |> kwr_collocations()
+```
+
+### Pattern testing
+
+When you discover a useful pattern during your research, it's a good idea to test it. The `kwr_test_regex` function is used for this purpose.
+
+Let's try the pattern 'agenc'.
+
+```{r}
+pattern <- "agenc"
+kwr_test_regex(kwr, pattern)
+```
+
+As a result you get 4 tables:
+
+- The first one contains all the queries that match the formula, and from the other columns you can clearly see what is before and after the matched text in the queries.
+- The second contains a list of the full words or phrases that match the pattern.
+- The third contains a list of unique texts that are located before and after the text that matches the pattern.
+- Finally, the fourth contains the n-grams constructed from the texts in the third table.
+
+### Recipe creation and the classification itself
+
+After you have tested it, you create a classification recipe from the pattern, just as you have previously created pruning recipes. Then you call the `kwr_classify` function.
+
+```{r}
+kwr_add_pattern(
+  pattern = pattern,
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "bussiness_type",
+  value = "agency"
+)
+kwr <- kwr |> 
+  kwr_classify(recipe_file)
+```
+
+If you look at the queries now, they are already classified.
+
+```{r}
+kwr |> 
+  kwr_queries()
+```
+
+And then you just repeat the process with other patterns.
+
+```{r}
+kwr_add_pattern("compan", recipe_file, "label", "bussiness_type", "company")
+kwr_add_pattern("consult", recipe_file, "label", "bussiness_type", "consultancy")
+kwr_add_pattern("london", recipe_file, "label", "place")
+
+kwr <- kwr |> 
+  kwr_classify(recipe_file)
+```
+
+```{r}
+kwr |> 
+  kwr_queries() |> 
+  select(1:5)
+```
+
+## Exploring the results
+
+During and after the classification, you can review the overall summary of the queries.
+
+```{r}
+kwr |> kwr_summary()
+```
+
+An overview of the values in each column (dimension) of the classification is also useful.
+
+```{r}
+kwr |> kwr_dimension_table(bussiness_type)
+```
+
+## Exporting results
+
+The last step is the presentation of the results and their use in practice. For this phase, the *keywordr* package does not yet provide direct support. However, the results can be easily presented or exported by other means of the R language.
+
+The following output datasets are available.
+
+### Classified queries
+
+```{r}
+kwr |> kwr_classified_queries()
+```
+
+### Unclassified queries
+
+```{r}
+kwr |> kwr_unclassified_queries()
+```
+
+### Removed (irrelevant) queries
+
+```{r}
+kwr |> kwr_removed_queries()
+```
+
+
+
+
+```{r include=FALSE}
+file.remove(recipe_file)
 ```
 

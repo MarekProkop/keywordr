@@ -13,7 +13,8 @@ BugReports: https://github.com/MarekProkop/keywordr/issues
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tidyverse
 Config/testthat/edition: 3
 Imports: 
     readr,
