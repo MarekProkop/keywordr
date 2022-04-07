@@ -32,6 +32,8 @@
 #'   recipe_type = "label",
 #'   dim_name = "my_label"
 #' )
+#'
+#' file.remove(recipe_file)
 kwr_add_pattern <- function(pattern = NULL,
                             recipe_file = NULL,
                             recipe_type = NULL,

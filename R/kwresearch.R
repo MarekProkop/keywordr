@@ -18,7 +18,11 @@
 #' @export
 #'
 #' @examples
+#' # create an empty object
+#'
 #' kwr <- kwresearch()
+#'
+#' # create an object and import queries
 #'
 #' queries <- data.frame(
 #'   query = c("seo", "keyword research"),
@@ -58,6 +62,15 @@ kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
 #'
 #' @return The provided kwresearch object with imported queries.
 #' @export
+#'
+#' @examples
+#' kwr <- kwresearch()
+#'
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwr_import(kwr, queries)
 kwr_import <- function(kwr, queries) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, "empty")

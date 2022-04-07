@@ -18,3 +18,12 @@ The provided kwresearch object with imported queries.
 \description{
 Imports queries to a kwresearch object
 }
+\examples{
+kwr <- kwresearch()
+
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwr_import(kwr, queries)
+}

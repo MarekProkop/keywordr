@@ -4,9 +4,9 @@
 \name{keywordr-package}
 \alias{keywordr}
 \alias{keywordr-package}
-\title{keywordr: Research and clasify search engine queries in R!}
+\title{keywordr: Research and classify search engine queries in R!}
 \description{
-A framework for a keyword research in R.
+A framework for keyword research in R.
 }
 \seealso{
 Useful links:

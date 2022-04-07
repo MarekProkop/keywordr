@@ -1,9 +1,9 @@
 Package: keywordr
-Title: Research and clasify search engine queries in R!
+Title: Research and classify search engine queries in R!
 Version: 0.0.0.9000
 Authors@R: 
     person("Marek", "Prokop", , "mprokop@prokopsw.cz", role = c("aut", "cre"))
-Description: A framework for a keyword research in R.
+Description: A framework for keyword research in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

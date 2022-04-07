@@ -1,0 +1,108 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# The keywordr SEO package for R
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The *keywordr* package provides an efficient and user-friendly framework for keyword research. The results are then typically used to optimize websites for search engines, create content strategy, design information architecture for websites, etc.
+
+## Installation
+
+You can install the development version of keywordr from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("MarekProkop/keywordr")
+```
+
+## Example
+
+This is a basic example which shows you how to use the package:
+
+### Create a `kwresearch` object and import queries
+
+```{r example}
+library(tidyverse)
+library(keywordr)
+
+input_data <- tribble(
+  ~query,             ~volume,
+  "seo",                96000,
+  "seo ye-ji",          22000,
+  "seo meaning",         6700,
+  "seo services",        6400,
+  "what is a seo",       5300,
+  "seo london",          5000,
+  "what is seo",         4800,
+  "seo agency",          4300,
+)
+
+kwr <- kwresearch(input_data)
+
+kwr_queries(kwr)
+```
+
+### Prune unwanted queries
+
+```{r}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+
+kwr_add_pattern("ye-ji", recipe_file, recipe_type = "remove")
+
+kwr <- kwr |> 
+  kwr_prune(recipe_file)
+
+kwr_queries(kwr)
+```
+
+### Explore queries
+
+```{r}
+kwr |> kwr_ngrams()
+```
+
+### Classify queries
+
+```{r}
+kwr_add_pattern(
+  pattern = "agenc",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "bussiness_type",
+  value = "agency"
+)
+kwr_add_pattern(
+  pattern = "meaning",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "info"
+)
+kwr_add_pattern(
+  pattern = "what is",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "info"
+)
+
+kwr <- kwr |> 
+  kwr_classify(recipe_file)
+
+kwr_queries(kwr) |> 
+  select(1:5)
+```
+
+Please see a more detailed example in the vignette Recomended workflow.

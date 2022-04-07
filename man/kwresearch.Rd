@@ -28,7 +28,11 @@ research. You can import datasets into it, research queries, clasify them
 and export the final keyword analysis.
 }
 \examples{
+# create an empty object
+
 kwr <- kwresearch()
+
+# create an object and import queries
 
 queries <- data.frame(
   query = c("seo", "keyword research"),

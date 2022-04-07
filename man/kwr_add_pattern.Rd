@@ -50,4 +50,6 @@ kwr_add_pattern(
   recipe_type = "label",
   dim_name = "my_label"
 )
+
+file.remove(recipe_file)
 }

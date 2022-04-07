@@ -1,0 +1,261 @@
+---
+title: "Removal and classification recipes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Removal and classification recipes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(yaml)
+library(keywordr)
+library(tibble)
+library(dplyr)
+
+print_yaml <- function(x) {
+  yaml <- yaml::as.yaml(x)
+  cat("\n\n```{yaml}\n", yaml, "```\n\n", sep = "")
+}
+```
+
+The processing of search queries is controlled by rules that are stored in [YAML](https://yaml.org/) files. Their structure is documented here.
+
+# File
+
+The highest unit of structure is the file. You can have just one, or you can have more. Breaking many rules into multiple files is more manageable and makes it easier for multiple people to collaborate on a project.
+
+In addition, you can only work with a few files at a time. This will split the classification of queries into multiple phases, which are processed more quickly and clearly.
+
+# Recipes
+
+A file consists of a list of recipes.
+
+```yaml
+- [recipe]
+- [recipe]
+- [recipe]
+```
+
+There are two basic groups of recipes: removal and classification.
+
+## Removal recipes
+
+Usually, a single recipe file is all you need to remove unwanted input queries. The simplest recipe for removal looks like this:
+
+```yaml
+- type: remove
+  rules:
+  - match: xxx
+```
+
+When this recipe is applied, it removes all queries that match refular expression `xxx`.
+
+More complex removal recipe looks like this:
+
+```yaml
+- type: remove
+  rules:
+  - match:
+    - xxx
+    - yyy
+    except:
+    - aaa
+    - bbb
+```
+
+When applied, it removes all queries that match regular expressions `xxx` or `yyy` (or both), unless they also match regular expressions `aaa` or `bbb` (or both).
+
+## Classification recipes
+
+The simpliest classification recipe looks like this:
+
+```yaml
+- type: label
+  name: label_name
+  rules:
+  - match:
+    - aaa
+    - bbb
+```
+
+It says:
+
+1. Create the column (dimension, label) named *label_name*.
+1. Apply the regular expression `aaa|bbb` (which means `aaa` or `bbb`) on every query.
+1. Fill in the column *label_name* with matched part of the query.
+1. If no part of the query matches the regular expression, leave the value empty (ie. `NA`).
+
+Sometimes you don't want to have the label value the same as the matched part of the query. For instance you want to match both *shirt* and *shirts*, but label value should read *shirt* in both cases. Then you use this recipe:
+
+```yaml
+- type: label
+  name: product
+  values:
+  - value: shirt
+    rules:
+    - match:
+      - shirt
+      - shirts
+```
+
+Or you can write regular expressions more efficiently:
+
+```yaml
+- type: label
+  name: product
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+```
+
+You can combine both methods and create multiple values of the same column (label), e.g.:
+
+```yaml
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+```
+
+And you can even combine multiple recipes into one file like this:
+
+```yaml
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+- type: label
+  name: price
+  rules:
+  - match:
+    - cheap
+    - luxury
+```
+
+What happens, if you apply the classification recipes above on queries? Let's suppose the following queries:
+
+```{r echo=FALSE}
+queries <- tibble(
+  query = c("outdoor shoes", "cheap shoes", "luxury shoes", "white shirt", "blue trousers", "black hat"),
+  volume = 10
+)
+queries
+```
+
+And now classify those queries with the recipes above:
+
+```{r include=FALSE}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+
+recipes <- yaml.load("
+- type: label
+  name: product
+  rules:
+  - match:
+    - shoes
+    - trousers
+  values:
+  - value: shirt
+    rules:
+    - match: shirts?
+  - value: hat
+    rules:
+    - match: hats?
+- type: label
+  name: price
+  rules:
+  - match:
+    - cheap
+    - luxury
+") |> 
+  write_yaml(recipe_file)
+
+kwr <- kwresearch(queries) |> 
+  kwr_classify(recipe_file)
+
+file.remove(recipe_file)
+```
+
+```{r echo=FALSE}
+kwr |> 
+  kwr_queries() |> 
+  select(query_normalized:volume)
+```
+
+
+# Helper for recipe creation
+
+In fact you need not always edit the recipe files directly. The packege *keywordr* contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:
+
+```{r}
+recipe_file <- file.path(tempdir(), "recipes.yml")
+kwr_add_pattern(
+  pattern = "shoes", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product"
+)
+kwr_add_pattern(
+  pattern = "trousers", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product"
+)
+kwr_add_pattern(
+  pattern = "shirts?", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product", 
+  value = "shirt"
+)
+kwr_add_pattern(
+  pattern = "hats?", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "product", 
+  value = "hat"
+)
+kwr_add_pattern(
+  pattern = "cheap", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "price"
+)
+kwr_add_pattern(
+  pattern = "luxury", 
+  recipe_file = recipe_file, 
+  recipe_type = "label", 
+  dim_name = "price"
+)
+writeLines(readLines(recipe_file))
+```
+
+```{r include=FALSE}
+file.remove(recipe_file)
+```
+
