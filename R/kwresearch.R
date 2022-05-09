@@ -91,7 +91,9 @@ kwr_import <- function(kwr, queries) {
       cpc = dplyr::last(.data$cpc),
       .groups = "drop"
     )
-  kwr$clean_data <- clean_source_data(kwr$source_data)
+  kwr$clean_data <- clean_source_data(
+    kwr$source_data, kwr$options$accentize, kwr$options$normalize
+  )
   kwr$status <- "data"
   kwr
 }
@@ -364,14 +366,26 @@ kwr_dimension_names <- function(df) {
 # Private functions -------------------------------------------------------
 
 
-clean_source_data <- function(source_data) {
-  source_data |>
-    dplyr::mutate(
-      query_normalized = normalize_queries(
-        accentize_queries(.data$query, .data$volume), .data$volume
-      ),
-      .after = .data$query
-    ) |>
+clean_source_data <- function(source_data, accentize, normalize) {
+  if (accentize) {
+    result <- source_data |>
+      dplyr::mutate(
+        query_normalized = accentize_queries(.data$query, .data$volume),
+        .after = .data$query
+      )
+  } else {
+    result <- source_data |>
+      dplyr::mutate(query_normalized = .data$query, .after = .data$query)
+  }
+  if (normalize) {
+    result <- result |>
+      dplyr::mutate(
+        query_normalized = normalize_queries(
+          .data$query_normalized, .data$volume
+        )
+      )
+  }
+  result |>
     aggregate_clean_data()
 }
 

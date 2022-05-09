@@ -114,7 +114,7 @@ test_that("clean_source_data() works as expected", {
     input = "i1,i2",
     source = "s1,s2"
   )
-  expect_identical(clean_source_data(input), output)
+  expect_identical(clean_source_data(input, TRUE, TRUE), output)
 })
 
 test_that("kwr_source_queries() returns a correct data set", {
