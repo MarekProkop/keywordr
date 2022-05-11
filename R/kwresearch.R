@@ -355,6 +355,7 @@ kwr_dimension_table <- function(x, column) {
 #' @return A vector of names.
 #' @export
 kwr_dimension_names <- function(df) {
+  checkmate::check_class(df, "data.frame")
   df |>
     names() |>
     setdiff(c(
