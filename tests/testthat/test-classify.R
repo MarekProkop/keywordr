@@ -78,27 +78,44 @@ test_that("join_patterns(x) joins regex patterns", {
   expect_equal(join_patterns(input), output)
 })
 
-test_that("extract_pattern() extracts a pattern without a group", {
+test_that("extract_pattern() extracts a pattern without a capture group", {
   expect_identical(
     object = extract_pattern(
-      c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
-      "xxx|yyy"
+      x = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
+      pattern = "xxx|yyy"
     ),
     expected = c(NA_character_, "xxx", NA_character_, "xxx,yyy")
   )
 })
 
-test_that("extract_pattern() extracts a pattern with a group", {
+test_that("extract_pattern() extracts a pattern with a capture group", {
   expect_identical(
-    object = extract_pattern(c("abc", "aabcc", "cba", "abc adc"), "a(b|d)c"),
+    object = extract_pattern(
+      x = c("abc", "aabcc", "cba", "abc adc"),
+      pattern = "a(b|d)c"
+    ),
     expected = c("b", "b", NA_character_, "b,d")
   )
   expect_identical(
     object = extract_pattern(
-      c("abc x", "x abc", "x", "def x", "abc y"),
-      "abc.+(x)|(x).+abc"
+      x = c("abc x", "x abc", "x", "def x", "abc y"),
+      pattern = "abc.+(x)|(x).+abc"
     ),
     expected = c("x", "x", NA_character_, NA_character_, NA_character_)
+  )
+  expect_identical(
+    object = extract_pattern(
+      x = c("aa", "bbxx", "cc", "dd"),
+      pattern = "bb(xx)|dd"
+    ),
+    expected = c(NA_character_, "xx", NA_character_, "dd")
+  )
+  expect_identical(
+    object = extract_pattern(
+      x = c("aa", "bbxx", "ccyy", "dd"),
+      pattern = "bb(xx)|cc(yy)|dd"
+    ),
+    expected = c(NA_character_, "xx", "yy", "dd")
   )
 })
 
@@ -203,6 +220,88 @@ test_that("set_label() does not set a label for an excluded pattern", {
     tibble::tibble(
       query_normalized = c("aaa", "bbb xxx", "ccc", "xxx ddd yyy"),
       label = c(NA_character_, "X", NA_character_, NA_character_)
+    )
+  )
+})
+
+test_that("set_label() sets a label with capture group", {
+  queries <- c("aaa", "bbb", "ccc", "ddd")
+  expect_identical(
+    object = set_label(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      name = "label_name",
+      pattern = "b(bb)"
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "ccc", "ddd"),
+      label_name = c(NA_character_, "bb", NA_character_, NA_character_)
+    )
+  )
+  expect_identical(
+    object = set_label(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      name = "label_name",
+      pattern = "b(bb)|ddd"
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "ccc", "ddd"),
+      label_name = c(NA_character_, "bb", NA_character_, "ddd")
+    )
+  )
+})
+
+test_that("process_label_rule() works with the most simple rule", {
+  queries <- c("aaa", "bbb", "ccc", "ddd")
+  expect_identical(
+    object = process_label_rule(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      rule = list(match = c("bbb", "ddd")),
+      name = "label_name"
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "ccc", "ddd"),
+      label_name = c(NA_character_, "bbb", NA_character_, "ddd")
+    )
+  )
+})
+
+test_that("process_label_rule() works with a value", {
+  queries <- c("aaa", "bbb", "ccc", "ddd")
+  expect_identical(
+    object = process_label_rule(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      rule = list(match = c("bbb", "ddd")),
+      name = "label_name",
+      value = "label_value"
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "ccc", "ddd"),
+      label_name = c(NA_character_, "label_value", NA_character_, "label_value")
+    )
+  )
+})
+
+test_that("process_label_rule() works with a capture group", {
+  queries <- c("aaa", "bbb", "ccc", "ddd")
+  expect_identical(
+    object = process_label_rule(
+      df = tibble::tibble(
+        query_normalized = queries
+      ),
+      rule = list(match = c("b(bb)", "ddd")),
+      name = "label_name"
+    ),
+    expected = tibble::tibble(
+      query_normalized = c("aaa", "bbb", "ccc", "ddd"),
+      label_name = c(NA_character_, "bb", NA_character_, "ddd")
     )
   )
 })

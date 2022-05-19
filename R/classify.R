@@ -233,11 +233,18 @@ join_labels <- function(x, y, sep = ",") {
 #'
 #' @return A character vector of the same lenght as x.
 #' @keywords internal
+#' @importFrom stats na.omit
 extract_pattern <- function(x, pattern) {
+  collapse_matrix <- function(mat) {
+    purrr::map_chr(seq_len(nrow(mat)), \(i) {
+      vec <- na.omit(mat[i,])
+      vec[min(length(vec), 2):length(vec)]
+    }) |>
+      unique() |>
+      stringr::str_c(collapse = ",")
+  }
   match_list <- stringr::str_match_all(x, pattern)
-  col_2 <- ncol(match_list[[1]])
-  col_1 <- min(col_2, 2)
   match_list |>
-    purrr::map_chr(~ stringr::str_c(na.omit(.x[,col_1:col_2]), collapse = ",")) |>
-    (\(x) replace(x, x == "", NA_character_))()
+    purrr::map_chr(collapse_matrix) |>
+    (\(x) replace(x, x == "", NA))()
 }
