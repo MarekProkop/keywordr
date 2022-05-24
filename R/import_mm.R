@@ -61,35 +61,11 @@ import_mm_file <- function(path, quiet = FALSE) {
   if (!quiet) {
     message("Importing ", path)
   }
-  readr::read_csv(path, col_types = readr::cols(
-    Input = readr::col_character(),
-    Keyword = readr::col_character(),
-    CPC = readr::col_character(),
-    `Search Volume` = readr::col_double(),
-    Source = readr::col_character(),
-    `Monthly January` = readr::col_double(),
-    `Monthly February` = readr::col_double(),
-    `Monthly March` = readr::col_double(),
-    `Monthly April` = readr::col_double(),
-    `Monthly May` = readr::col_double(),
-    `Monthly June` = readr::col_double(),
-    `Monthly July` = readr::col_double(),
-    `Monthly August` = readr::col_double(),
-    `Monthly September` = readr::col_double(),
-    `Monthly October` = readr::col_double(),
-    `Monthly November` = readr::col_double(),
-    `Monthly December` = readr::col_double()
-  )) |>
+  readr::read_csv(path, col_select = 1:5, show_col_types = FALSE) |>
     janitor::clean_names() |>
     dplyr::filter(!is.na(.data$keyword)) |>
     dplyr::mutate(
-      cpc = as.numeric(
-        stringr::str_replace(.data$cpc, stringr::fixed(" K\u010D"), "")
-      ),
       source = dplyr::recode(.data$source, Sklik = "Seznam", AdWords = "Google")
     ) |>
-    dplyr::rename(volume = .data$search_volume, query = .data$keyword) |>
-    dplyr::select(
-      .data$query, .data$input, .data$source, .data$volume, .data$cpc
-    )
+    dplyr::select(query = 2, input = 1, source = 5, volume = 4, cpc = 3)
 }

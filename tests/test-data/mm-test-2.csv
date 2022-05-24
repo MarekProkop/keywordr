@@ -1,4 +1,4 @@
-Input,Keyword,CPC,"Search Volume",Source,"Monthly January","Monthly February","Monthly March","Monthly April","Monthly May","Monthly June","Monthly July","Monthly August","Monthly September","Monthly October","Monthly November","Monthly December"
-"input 1","query 2","2.0 Kč",20,Seznam,0,0,0,2,6,0,0,1,1,1,1,0
-"input 2","query 1","1.0 Kč",10,Google,0,0,0,2,6,0,0,1,1,1,1,0
-"input 2","query 3","3.0 Kč",30,Google,0,0,0,2,6,0,0,1,1,1,1,0
+Input,Keyword,CPC [CZK],Search Volume,Source,Months January,Months February,Months March,Months April,Months May,Months June,Months July,Months August,Months September,Months October,Months November,Months December
+input 1,query 2,2.0,20,Seznam,0,0,0,2,6,0,0,1,1,1,1,0
+input 2,query 1,1.0,10,Google,0,0,0,2,6,0,0,1,1,1,1,0
+input 2,query 3,3.0,30,Google,0,0,0,2,6,0,0,1,1,1,1,0
