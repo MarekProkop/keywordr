@@ -29,6 +29,8 @@ You can install the development version of keywordr from [GitHub](https://github
 devtools::install_github("MarekProkop/keywordr", build_vignettes = TRUE)
 ```
 
+Note: You must have [R version 4.1.0](https://www.r-bloggers.com/2021/05/new-features-in-r-4-1-0/) because the package makes use of the native R pipe and the new syntax for anonymous functions.
+
 ## Example
 
 This is a basic example which shows you how to use the package:
