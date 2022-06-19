@@ -54,7 +54,7 @@ Usually, a single recipe file is all you need to remove unwanted input queries. 
   - match: xxx
 ```
 
-When this recipe is applied, it removes all queries that match refular expression `xxx`.
+When this recipe is applied, it removes all queries that match regular expression `xxx`.
 
 More complex removal recipe looks like this:
 
@@ -73,7 +73,7 @@ When applied, it removes all queries that match regular expressions `xxx` or `yy
 
 ## Classification recipes
 
-The simpliest classification recipe looks like this:
+The simplest classification recipe looks like this:
 
 ``` yaml
 - type: label
@@ -89,7 +89,7 @@ It says:
 1. Create the column (dimension, label) named *label_name*.
 1. Apply the regular expression `aaa|bbb` (which means `aaa` or `bbb`) on every query.
 1. Fill in the column *label_name* with matched part of the query.
-1. If no part of the query matches the regular expression, leave the value empty (ie. `NA`).
+1. If no part of the query matches the regular expression, leave the value empty (i.e. `NA`).
 
 Sometimes you don't want to have the label value the same as the matched part of the query. For instance you want to match both *shirt* and *shirts*, but label value should read *shirt* in both cases. Then you use this recipe:
 
@@ -210,7 +210,7 @@ kwr |>
 
 # Helper for recipe creation
 
-In fact you need not always edit the recipe files directly. The packege *keywordr* contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:
+In fact you need not always edit the recipe files directly. The package *keywordr* contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:
 
 ```{r}
 recipe_file <- file.path(tempdir(), "recipes.yml")

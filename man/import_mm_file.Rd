@@ -2,14 +2,14 @@
 % Please edit documentation in R/import_mm.R
 \name{import_mm_file}
 \alias{import_mm_file}
-\title{Imports a single MarketingMiner CSV file}
+\title{Imports a single Marketing Miner CSV file}
 \usage{
 import_mm_file(path, quiet = FALSE)
 }
 \arguments{
 \item{path}{Full path and name of the imported file.}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 A tibble with columns: query, volume, cpc, input, source. Rows are
@@ -17,6 +17,6 @@ just copied from the CSV file without deduplication or any other
 modification.
 }
 \description{
-Imports a single MarketingMiner CSV file
+Imports a single Marketing Miner CSV file
 }
 \keyword{internal}

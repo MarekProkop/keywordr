@@ -1,12 +1,12 @@
 #' Removes unwanted queries according to YAML recipes
 #'
 #' If the status of the kwresearch object is 'data', it changes to 'pruned' and
-#' pruned data is created from clean data. I pruned data already exists (ie.
+#' pruned data is created from clean data. I pruned data already exists (i.e.
 #' status = 'pruned') then pruned data are pruned again.
 #'
 #' @param kwr A kwresearch object to be pruned.
 #' @param recipe_file A path to a recipe file in YAML format.
-#' @param quiet If TRUE prints no messgaes.
+#' @param quiet If TRUE prints no messages.
 #'
 #' @return A kwresearch object with pruned data and status = 'pruned'.
 #' @export

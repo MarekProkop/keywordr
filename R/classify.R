@@ -1,8 +1,8 @@
 #' Classifies queries based on recipes
 #'
-#' @param kwr A kwr object containg queries to be classified, and classification
-#'   recipes.
-#' @param quiet If TRUE prints no messgaes.
+#' @param kwr A kwr object containing queries to be classified, and
+#'   classification recipes.
+#' @param quiet If TRUE prints no messages.
 #' @param recipe_file A path to a recipe file in YAML format.
 #'
 #' @return A kwr object where the queries are classified. Existing
@@ -54,7 +54,7 @@ read_recipes <- function(path) {
 #' @param df A data frame from a kwr object (either clean_data, or
 #' classified_data).
 #' @param recipe A single classification recipe.
-#' @param quiet If TRUE prints no messgaes.
+#' @param quiet If TRUE prints no messages.
 #'
 #' @return A data frame with updated classification.
 #' @keywords internal
@@ -96,7 +96,7 @@ process_recipe <- function(df, recipe, quiet = FALSE) {
 #' classified_data).
 #' @param value A label value (character).
 #' @param name A label name (character).
-#' @param quiet If TRUE prints no messgaes.
+#' @param quiet If TRUE prints no messages.
 #'
 #' @return A data frame with updated classification.
 #' @keywords internal
@@ -165,7 +165,7 @@ set_flag <- function(df, name, pattern, negate = FALSE) {
 #' @param pattern A regex pattern (character vector of length 1). The label is
 #'   set to matched queries only.
 #' @param value An optional value of the label (character).
-#' @param exclude A regex pattern (character vector of lenth 1). The label is
+#' @param exclude A regex pattern (character vector of length 1). The label is
 #'   never set to matched queries.
 #'
 #' @return A data frame with the label updated.
@@ -231,7 +231,7 @@ join_labels <- function(x, y, sep = ",") {
 #' @param pattern A regex pattern. If it contains capture groups, they all will
 #'   be extracted.
 #'
-#' @return A character vector of the same lenght as x.
+#' @return A character vector of the same length as x.
 #' @keywords internal
 #' @importFrom stats na.omit
 extract_pattern <- function(x, pattern) {

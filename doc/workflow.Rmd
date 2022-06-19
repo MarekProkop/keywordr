@@ -14,11 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Setup and prerequsites
+## Setup and prerequisites
 
 ### Used libraries
 
-The *keywordr* package is designed to work well with [tidyverse](https://www.tidyverse.org/) and I always iclude it in libraries.
+The *keywordr* package is designed to work well with [tidyverse](https://www.tidyverse.org/) and I always include it in libraries.
 
 ```{r message=FALSE}
 library(tidyverse)

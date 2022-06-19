@@ -17,7 +17,7 @@ set to matched queries only.}
 
 \item{value}{An optional value of the label (character).}
 
-\item{exclude}{A regex pattern (character vector of lenth 1). The label is
+\item{exclude}{A regex pattern (character vector of length 1). The label is
 never set to matched queries.}
 }
 \value{

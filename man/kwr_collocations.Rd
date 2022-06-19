@@ -20,8 +20,8 @@ number of queries will be included.}
 recommended.}
 }
 \value{
-A tibble of n-grams with a basic stats (nuber of queries and sum of
-search volumes). The n-grams are orderd descendingly by number of queries
+A tibble of n-grams with a basic stats (number of queries and sum of
+search volumes). The n-grams are ordered descendingly by number of queries
 and search volume. Use dplyr::arrange to change order.
 }
 \description{

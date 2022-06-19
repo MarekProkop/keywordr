@@ -21,7 +21,7 @@ The function does the following two things:
 \enumerate{
 \item Accented letters in a string are replaced with a character class
 containing both the accented letter and the same letter without accent.
-\item If \code{and} argument is provided, the reulting regex will match both strings
+\item If \code{and} argument is provided, the resulting regex will match both strings
 in any order.
 }
 }

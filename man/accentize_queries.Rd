@@ -2,7 +2,7 @@
 % Please edit documentation in R/kwresearch.R
 \name{accentize_queries}
 \alias{accentize_queries}
-\title{Tries to add accents (´ˇ¨ etc.) where they should be}
+\title{Tries to add accents or diacritics where they should be}
 \usage{
 accentize_queries(x, vol)
 }
@@ -16,6 +16,6 @@ Character vector of all queries in x, with accents added to some
 of them.
 }
 \description{
-Tries to add accents (´ˇ¨ etc.) where they should be
+Tries to add accents or diacritics where they should be
 }
 \keyword{internal}

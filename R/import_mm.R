@@ -1,9 +1,9 @@
-#' Imports MarketingMiner CSV file(s) to an empty kwresearch object
+#' Imports Marketing Miner CSV file(s) to an empty kwresearch object
 #'
 #' @param kwr An empty kwresearch object.
 #' @param path Either a single character string containing a path to a folder,
 #'   or a character vector, where each item is a path to a CSV file.
-#' @param quiet If TRUE prints no messgaes.
+#' @param quiet If TRUE prints no messages.
 #'
 #' @return The provided kwresearch object with imported queries.
 #' @export
@@ -48,10 +48,10 @@ kwr_import_mm <- function(kwr, path, quiet = FALSE) {
 # Private functions -------------------------------------------------------
 
 
-#' Imports a single MarketingMiner CSV file
+#' Imports a single Marketing Miner CSV file
 #'
 #' @param path Full path and name of the imported file.
-#' @param quiet If TRUE prints no messgaes.
+#' @param quiet If TRUE prints no messages.
 #'
 #' @return A tibble with columns: query, volume, cpc, input, source. Rows are
 #' just copied from the CSV file without deduplication or any other

@@ -11,14 +11,14 @@ kwr_prune(kwr, recipe_file, quiet = FALSE)
 
 \item{recipe_file}{A path to a recipe file in YAML format.}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 A kwresearch object with pruned data and status = 'pruned'.
 }
 \description{
 If the status of the kwresearch object is 'data', it changes to 'pruned' and
-pruned data is created from clean data. I pruned data already exists (ie.
+pruned data is created from clean data. I pruned data already exists (i.e.
 status = 'pruned') then pruned data are pruned again.
 }
 \examples{

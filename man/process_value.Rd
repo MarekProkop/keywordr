@@ -14,7 +14,7 @@ classified_data).}
 
 \item{name}{A label name (character).}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 A data frame with updated classification.

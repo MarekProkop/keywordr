@@ -15,7 +15,7 @@ kwr_test_regex(
 \arguments{
 \item{kwr}{A kwresearch object.}
 
-\item{pattern}{A single regular experession.}
+\item{pattern}{A single regular expression.}
 
 \item{and}{A vector of regular expressions. If more than one, they are
 treated as OR.}

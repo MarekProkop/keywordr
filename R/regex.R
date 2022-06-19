@@ -5,7 +5,7 @@
 #' 1. Accented letters in a string are replaced with a character class
 #' containing both the accented letter and the same letter without accent.
 #'
-#' 2. If `and` argument is provided, the reulting regex will match both strings
+#' 2. If `and` argument is provided, the resulting regex will match both strings
 #' in any order.
 #'
 #' @param x Input string.
@@ -37,7 +37,7 @@ kwr_build_regex <- function(x, and = NULL) {
 #' Explore a regex pattern applied on queries
 #'
 #' @param kwr A kwresearch object.
-#' @param pattern A single regular experession.
+#' @param pattern A single regular expression.
 #' @param and A vector of regular expressions. If more than one, they are
 #'   treated as OR.
 #' @param except A vector of regular expressions. If more than one, they are

@@ -7,16 +7,16 @@
 kwresearch(queries = NULL, accentize = TRUE, normalize = TRUE)
 }
 \arguments{
-\item{queries}{Queries to import as a data frame with at least two colums:
+\item{queries}{Queries to import as a data frame with at least two columns:
 query (string) and volume (numeric). Optionally the data frame can contain
 three additional columns: cpc (double), input (char) and source (char). If
 you don't provide this argument, you can import queries later with
 kwr_import or kwr_import_mm.}
 
-\item{accentize}{The import functions tries to add correct accents (diakritic
+\item{accentize}{The import functions tries to add correct accents (diacritic
 marks) to queries without them.}
 
-\item{normalize}{The import funkctions tries to unite queries, which differ
+\item{normalize}{The import functions tries to unite queries, which differ
 only by order of words.}
 }
 \value{
@@ -24,7 +24,7 @@ An object of the kwresearch class.
 }
 \description{
 An object of the kwresearch class is a home to your keyword
-research. You can import datasets into it, research queries, clasify them
+research. You can import datasets into it, research queries, classify them
 and export the final keyword analysis.
 }
 \examples{

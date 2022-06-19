@@ -12,8 +12,8 @@
 #'   (number of queries must be the same) are filtered out from the result. May
 #'   be slower.
 #'
-#' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
-#'   search volumes). The n-grams are orderd descendingly by number of queries
+#' @return A tibble of n-grams with a basic stats (number of queries and sum of
+#'   search volumes). The n-grams are ordered descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order. If stop words are
 #'   set with the kwr_use_stopwords, they are removed from unigrams.
 #' @export
@@ -82,8 +82,8 @@ kwr_ngrams <- function(
 #' @param min_volume Minimum search volume per n-gram. Only the n-grams with at
 #'   least this volume will be included.
 #'
-#' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
-#'   search volumes). The n-grams are orderd descendingly by number of queries
+#' @return A tibble of n-grams with a basic stats (number of queries and sum of
+#'   search volumes). The n-grams are ordered descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
 kwr_subqueries <- function(
@@ -132,8 +132,8 @@ kwr_subqueries <- function(
 #' @param quanteda If TRUE, will use the 'quanteda' package, which is
 #'   recommended.
 #'
-#' @return A tibble of n-grams with a basic stats (nuber of queries and sum of
-#'   search volumes). The n-grams are orderd descendingly by number of queries
+#' @return A tibble of n-grams with a basic stats (number of queries and sum of
+#'   search volumes). The n-grams are ordered descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
 kwr_collocations <- function(

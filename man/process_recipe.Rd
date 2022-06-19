@@ -12,7 +12,7 @@ classified_data).}
 
 \item{recipe}{A single classification recipe.}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 A data frame with updated classification.

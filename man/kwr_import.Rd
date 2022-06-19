@@ -10,7 +10,7 @@ kwr_import(kwr, queries)
 \item{kwr}{An empty kwresearch object.}
 
 \item{queries}{A data frame with at least one column query and possibly with
-additional colums volume, cpc, imput and source.}
+additional columns volume, cpc, input and source.}
 }
 \value{
 The provided kwresearch object with imported queries.

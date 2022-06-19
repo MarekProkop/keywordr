@@ -7,12 +7,12 @@
 kwr_classify(kwr, recipe_file = NULL, quiet = FALSE)
 }
 \arguments{
-\item{kwr}{A kwr object containg queries to be classified, and classification
-recipes.}
+\item{kwr}{A kwr object containing queries to be classified, and
+classification recipes.}
 
 \item{recipe_file}{A path to a recipe file in YAML format.}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 A kwr object where the queries are classified. Existing

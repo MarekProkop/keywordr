@@ -14,6 +14,7 @@ BugReports: https://github.com/MarekProkop/keywordr/issues
 Suggests: 
     knitr,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0),
     tidyverse
 Config/testthat/edition: 3
@@ -35,3 +36,4 @@ Imports:
     quanteda,
     quanteda.textstats
 VignetteBuilder: knitr
+Language: en-US

@@ -13,7 +13,7 @@ extract_pattern(x, pattern)
 be extracted.}
 }
 \value{
-A character vector of the same lenght as x.
+A character vector of the same length as x.
 }
 \description{
 Extracts a regex pattern from a character vector (vectorized)

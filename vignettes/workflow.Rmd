@@ -1,8 +1,8 @@
 ---
-title: "Recomended workflow"
+title: "Recommended workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Recomended workflow}
+  %\VignetteIndexEntry{Recommended workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,11 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Setup and prerequsites
+## Setup and prerequisites
 
 ### Used libraries
 
-The *keywordr* package is designed to work well with [tidyverse](https://www.tidyverse.org/) and I always iclude it in libraries.
+The *keywordr* package is designed to work well with [tidyverse](https://www.tidyverse.org/) and I always include it in libraries.
 
 ```{r message=FALSE}
 library(tidyverse)
@@ -86,7 +86,7 @@ Now you can check the data are in.
 kwr |> kwr_queries()
 ```
 
-Note that queries 'seo ye-ji' and 'seo ye ji' were combined together. Tis is the result of *normalization*, which tries to unify queries that differ only by punctuation, accents or order of words. If you don't like the result, you can switch normalization off with the `normalize` argument.
+Note that queries 'seo ye-ji' and 'seo ye ji' were combined together. This is the result of *normalization*, which tries to unify queries that differ only by punctuation, accents or order of words. If you don't like the result, you can switch normalization off with the `normalize` argument.
 
 You are ready for pruning and classification now.
 
@@ -157,7 +157,7 @@ kwr |> kwr_collocations()
 
 When you discover a useful pattern during your research, it's a good idea to test it. The `kwr_test_regex` function is used for this purpose.
 
-Let's try the pattern 'agenc'.
+Let's try the pattern "agenc".
 
 ```{r}
 pattern <- "agenc"

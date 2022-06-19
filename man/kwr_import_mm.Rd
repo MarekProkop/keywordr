@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_mm.R
 \name{kwr_import_mm}
 \alias{kwr_import_mm}
-\title{Imports MarketingMiner CSV file(s) to an empty kwresearch object}
+\title{Imports Marketing Miner CSV file(s) to an empty kwresearch object}
 \usage{
 kwr_import_mm(kwr, path, quiet = FALSE)
 }
@@ -12,13 +12,13 @@ kwr_import_mm(kwr, path, quiet = FALSE)
 \item{path}{Either a single character string containing a path to a folder,
 or a character vector, where each item is a path to a CSV file.}
 
-\item{quiet}{If TRUE prints no messgaes.}
+\item{quiet}{If TRUE prints no messages.}
 }
 \value{
 The provided kwresearch object with imported queries.
 }
 \description{
-Imports MarketingMiner CSV file(s) to an empty kwresearch object
+Imports Marketing Miner CSV file(s) to an empty kwresearch object
 }
 \examples{
 # Import 2 files:

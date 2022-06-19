@@ -1,17 +1,17 @@
 #' @title Creates an object of the kwresearch class
 #'
 #' @description An object of the kwresearch class is a home to your keyword
-#'   research. You can import datasets into it, research queries, clasify them
+#'   research. You can import datasets into it, research queries, classify them
 #'   and export the final keyword analysis.
 #'
-#' @param queries Queries to import as a data frame with at least two colums:
+#' @param queries Queries to import as a data frame with at least two columns:
 #'   query (string) and volume (numeric). Optionally the data frame can contain
 #'   three additional columns: cpc (double), input (char) and source (char). If
 #'   you don't provide this argument, you can import queries later with
 #'   kwr_import or kwr_import_mm.
-#' @param accentize The import functions tries to add correct accents (diakritic
+#' @param accentize The import functions tries to add correct accents (diacritic
 #'   marks) to queries without them.
-#' @param normalize The import funkctions tries to unite queries, which differ
+#' @param normalize The import functions tries to unite queries, which differ
 #'   only by order of words.
 #'
 #' @return An object of the kwresearch class.
@@ -58,7 +58,7 @@ kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
 #'
 #' @param kwr An empty kwresearch object.
 #' @param queries A data frame with at least one column query and possibly with
-#'   additional colums volume, cpc, imput and source.
+#'   additional columns volume, cpc, input and source.
 #'
 #' @return The provided kwresearch object with imported queries.
 #' @export
@@ -390,7 +390,7 @@ clean_source_data <- function(source_data, accentize, normalize) {
     aggregate_clean_data()
 }
 
-#' Tries to add accents (´ˇ¨ etc.) where they should be
+#' Tries to add accents or diacritics where they should be
 #'
 #' @param x Character vector of queries.
 #' @param vol Character vector of search volumes corresponding to queries in x.
