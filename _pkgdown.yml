@@ -1,0 +1,41 @@
+url: https://marekprokop.github.io/keywordr/
+template:
+  bootstrap: 5
+reference:
+- title: Setup and classification
+  contents:
+  - kwresearch
+  - kwr_import
+  - kwr_import_mm
+  - kwr_prune
+  - kwr_prune_long_queries
+  - kwr_classify
+- title: Research
+  contents:
+  - kwr_collocations
+  - kwr_long_queries
+  - kwr_ngrams
+  - kwr_subqueries
+- title: Output results
+  contents:
+  - kwr_classified_queries
+  - kwr_clean_queries
+  - kwr_dimension_names
+  - kwr_dimension_table
+  - kwr_pruned_queries
+  - kwr_queries
+  - kwr_removed_queries
+  - kwr_source_queries
+  - kwr_summary
+  - kwr_unclassified_queries
+- title: Helpers and utilities
+  contents:
+  - kwr_add_pattern
+  - kwr_build_regex
+  - kwr_dimension_names
+  - kwr_remove_stopwords
+  - kwr_stopwords
+  - kwr_test_regex
+  - kwr_use_stopwords
+development:
+  mode: auto

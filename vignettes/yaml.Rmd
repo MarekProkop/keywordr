@@ -36,7 +36,7 @@ In addition, you can only work with a few files at a time. This will split the c
 
 A file consists of a list of recipes.
 
-```yaml
+```
 - [recipe]
 - [recipe]
 - [recipe]
@@ -48,7 +48,7 @@ There are two basic groups of recipes: removal and classification.
 
 Usually, a single recipe file is all you need to remove unwanted input queries. The simplest recipe for removal looks like this:
 
-```yaml
+``` yaml
 - type: remove
   rules:
   - match: xxx
@@ -58,7 +58,7 @@ When this recipe is applied, it removes all queries that match refular expressio
 
 More complex removal recipe looks like this:
 
-```yaml
+``` yaml
 - type: remove
   rules:
   - match:
@@ -75,7 +75,7 @@ When applied, it removes all queries that match regular expressions `xxx` or `yy
 
 The simpliest classification recipe looks like this:
 
-```yaml
+``` yaml
 - type: label
   name: label_name
   rules:
@@ -93,7 +93,7 @@ It says:
 
 Sometimes you don't want to have the label value the same as the matched part of the query. For instance you want to match both *shirt* and *shirts*, but label value should read *shirt* in both cases. Then you use this recipe:
 
-```yaml
+``` yaml
 - type: label
   name: product
   values:
@@ -106,7 +106,7 @@ Sometimes you don't want to have the label value the same as the matched part of
 
 Or you can write regular expressions more efficiently:
 
-```yaml
+``` yaml
 - type: label
   name: product
   values:
@@ -117,7 +117,7 @@ Or you can write regular expressions more efficiently:
 
 You can combine both methods and create multiple values of the same column (label), e.g.:
 
-```yaml
+``` yaml
 - type: label
   name: product
   rules:
@@ -135,7 +135,7 @@ You can combine both methods and create multiple values of the same column (labe
 
 And you can even combine multiple recipes into one file like this:
 
-```yaml
+``` yaml
 - type: label
   name: product
   rules:

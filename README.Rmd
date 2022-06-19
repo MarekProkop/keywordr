@@ -4,7 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r echo=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -18,13 +18,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The *keywordr* package provides an efficient and user-friendly framework for keyword research. The results are then typically used to optimize websites for search engines, create content strategy, design information architecture for websites, etc.
+The *keywordr* package provides an efficient and user-friendly framework for keyword research. The results are typically used to optimize websites for search engines, create content strategy, design information architecture for websites, etc.
 
 ## Installation
 
-You can install the development version of keywordr from [GitHub](https://github.com/) with:
+You can install the development version of keywordr from GitHub with:
 
-``` r
+```{r eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("MarekProkop/keywordr", build_vignettes = TRUE)
 ```
@@ -35,12 +35,16 @@ Note: You must have [R version 4.1.0](https://www.r-bloggers.com/2021/05/new-fea
 
 This is a basic example which shows you how to use the package:
 
-### Create a `kwresearch` object and import queries
+### Attache packages
 
-```{r example}
+```{r libs, message=FALSE}
 library(tidyverse)
 library(keywordr)
+```
 
+### Create a `kwresearch` object and import queries
+
+```{r init}
 input_data <- tribble(
   ~query,             ~volume,
   "seo",                96000,
@@ -54,7 +58,11 @@ input_data <- tribble(
 )
 
 kwr <- kwresearch(input_data)
+```
 
+### Browse imported queries
+
+```{r}
 kwr_queries(kwr)
 ```
 
@@ -67,7 +75,11 @@ kwr_add_pattern("ye-ji", recipe_file, recipe_type = "remove")
 
 kwr <- kwr |> 
   kwr_prune(recipe_file)
+```
 
+### Check pruned queries
+
+```{r}
 kwr_queries(kwr)
 ```
 
@@ -102,9 +114,13 @@ kwr_add_pattern(
 
 kwr <- kwr |> 
   kwr_classify(recipe_file)
+```
 
+### Check classified queries
+
+```{r}
 kwr_queries(kwr) |> 
   select(1:5)
 ```
 
-Please see a more detailed example in the vignette Recomended workflow.
+Please see `vignette("workflow")` for a more detailed example.

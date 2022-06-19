@@ -8,14 +8,13 @@
 <!-- badges: end -->
 
 The *keywordr* package provides an efficient and user-friendly framework
-for keyword research. The results are then typically used to optimize
+for keyword research. The results are typically used to optimize
 websites for search engines, create content strategy, design information
 architecture for websites, etc.
 
 ## Installation
 
-You can install the development version of keywordr from
-[GitHub](https://github.com/) with:
+You can install the development version of keywordr from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -31,20 +30,16 @@ for anonymous functions.
 
 This is a basic example which shows you how to use the package:
 
-### Create a `kwresearch` object and import queries
+### Attache packages
 
 ``` r
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-#> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-#> ✔ tibble  3.1.7     ✔ dplyr   1.0.9
-#> ✔ tidyr   1.2.0     ✔ stringr 1.4.0
-#> ✔ readr   2.1.2     ✔ forcats 0.5.1
-#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> ✖ dplyr::filter() masks stats::filter()
-#> ✖ dplyr::lag()    masks stats::lag()
 library(keywordr)
+```
 
+### Create a `kwresearch` object and import queries
+
+``` r
 input_data <- tribble(
   ~query,             ~volume,
   "seo",                96000,
@@ -58,7 +53,11 @@ input_data <- tribble(
 )
 
 kwr <- kwresearch(input_data)
+```
 
+### Browse imported queries
+
+``` r
 kwr_queries(kwr)
 #> # A tibble: 8 × 7
 #>   query_normalized n_queries volume   cpc query_original input source
@@ -83,8 +82,12 @@ kwr_add_pattern("ye-ji", recipe_file, recipe_type = "remove")
 kwr <- kwr |> 
   kwr_prune(recipe_file)
 #> Removing queries...
-#> Removed 1 queries out of 8. Duration: 0.008s
+#> Removed 1 queries out of 8. Duration: 0.006s
+```
 
+### Check pruned queries
+
+``` r
 kwr_queries(kwr)
 #> # A tibble: 7 × 7
 #>   query_normalized n_queries volume   cpc query_original input source
@@ -143,7 +146,11 @@ kwr <- kwr |>
 #> Label:bussiness_type
 #>   Value: agency
 #> Label:info
+```
 
+### Check classified queries
+
+``` r
 kwr_queries(kwr) |> 
   select(1:5)
 #> # A tibble: 7 × 5
@@ -158,4 +165,4 @@ kwr_queries(kwr) |>
 #> 7 seo agency       agency         <NA>            1   4300
 ```
 
-Please see a more detailed example in the vignette Recomended workflow.
+Please see `vignette("workflow")` for a more detailed example.

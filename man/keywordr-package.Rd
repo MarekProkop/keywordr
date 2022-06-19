@@ -11,6 +11,7 @@ A framework for keyword research in R.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://marekprokop.github.io/keywordr/}
   \item \url{https://github.com/MarekProkop/keywordr}
   \item Report bugs at \url{https://github.com/MarekProkop/keywordr/issues}
 }
