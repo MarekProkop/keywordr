@@ -42,7 +42,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/workflow.html">Recomended workflow</a>
+    <a class="dropdown-item" href="../articles/workflow.html">Recommended workflow</a>
     <a class="dropdown-item" href="../articles/yaml.html">Removal and classification recipes</a>
   </div>
 </li>
@@ -101,7 +101,7 @@
 <div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> remove</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">match</span><span class="kw">:</span><span class="at"> xxx</span></span></code></pre></div>
-<p>When this recipe is applied, it removes all queries that match refular expression <code>xxx</code>.</p>
+<p>When this recipe is applied, it removes all queries that match regular expression <code>xxx</code>.</p>
 <p>More complex removal recipe looks like this:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> remove</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
@@ -116,7 +116,7 @@
 <div class="section level3">
 <h3 id="classification-recipes">Classification recipes<a class="anchor" aria-label="anchor" href="#classification-recipes"></a>
 </h3>
-<p>The simpliest classification recipe looks like this:</p>
+<p>The simplest classification recipe looks like this:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> label</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> label_name</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
@@ -128,7 +128,7 @@
 <li>Create the column (dimension, label) named <em>label_name</em>.</li>
 <li>Apply the regular expression <code>aaa|bbb</code> (which means <code>aaa</code> or <code>bbb</code>) on every query.</li>
 <li>Fill in the column <em>label_name</em> with matched part of the query.</li>
-<li>If no part of the query matches the regular expression, leave the value empty (ie. <code>NA</code>).</li>
+<li>If no part of the query matches the regular expression, leave the value empty (i.e. <code>NA</code>).</li>
 </ol>
 <p>Sometimes you don’t want to have the label value the same as the matched part of the query. For instance you want to match both <em>shirt</em> and <em>shirts</em>, but label value should read <em>shirt</em> in both cases. Then you use this recipe:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> label</span></span>
@@ -205,7 +205,7 @@
 <div class="section level2">
 <h2 id="helper-for-recipe-creation">Helper for recipe creation<a class="anchor" aria-label="anchor" href="#helper-for-recipe-creation"></a>
 </h2>
-<p>In fact you need not always edit the recipe files directly. The packege <em>keywordr</em> contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:</p>
+<p>In fact you need not always edit the recipe files directly. The package <em>keywordr</em> contains a function that make your work easier: ˙kwr_add_pattern()˙. It adds a new regex pattern to a recipe file. For instance, I could recreate the recipes above with this code:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">recipe_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"recipes.yml"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span>
