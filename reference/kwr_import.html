@@ -61,12 +61,13 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>kwr</dt>
-<dd><p>An empty kwresearch object.</p></dd>
+<dd><p>An empty <code><a href="kwresearch.html">kwresearch</a></code> object.</p></dd>
 
 
 <dt>queries</dt>
-<dd><p>A data frame with at least one column query and possibly with
-additional columns volume, cpc, input and source.</p></dd>
+<dd><p>A data frame with at least one column <em>query</em> and
+possibly with additional columns <em>volume</em>, <em>cpc</em>, <em>input</em>
+and <em>source</em>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,13 +79,12 @@ additional columns volume, cpc, input and source.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span class="r-in">  query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"seo"</span>, <span class="st">"keyword research"</span><span class="op">)</span>,</span>
 <span class="r-in">  volume <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu">kwr_import</span><span class="op">(</span><span class="va">kwr</span>, <span class="va">queries</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="op">)</span> |&gt;</span>
+<span class="r-in">  <span class="fu">kwr_import</span><span class="op">(</span><span class="va">queries</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

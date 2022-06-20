@@ -61,11 +61,11 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>kwr</dt>
-<dd><p>A kwresearch object.</p></dd>
+<dd><p>A <code><a href="kwresearch.html">kwresearch</a></code> object.</p></dd>
 
 
 <dt>q</dt>
-<dd><p>A regular expression to filter the output data frame.</p></dd>
+<dd><p>An optional regular expression to filter the output queries.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -82,7 +82,7 @@
 <span class="r-in">  volume <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="va">queries</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">kwr</span> |&gt; <span class="fu">kwr_clean_queries</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">kwr_clean_queries</span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   query_normalized n_queries volume   cpc query_original   input source</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>

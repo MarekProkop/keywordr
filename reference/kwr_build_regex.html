@@ -79,22 +79,17 @@
     
 <ol><li><p>Accented letters in a string are replaced with a character class
 containing both the accented letter and the same letter without accent.</p></li>
-<li><p>If <code>and</code> argument is provided, the resulting regex will match both strings
-in any order.</p></li>
+<li><p>If the <code>and</code> argument is provided, the resulting regex will match both
+strings in any order.</p></li>
 </ol></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu">kwr_build_regex</span><span class="op">(</span><span class="st">"vajíčko"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">kwr_build_regex</span><span class="op">(</span><span class="st">"vajíčko"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "vaj[íi][čc]ko"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># "vaj[íi][čc]ko"</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">kwr_build_regex</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"abc"</span>, and <span class="op">=</span> <span class="st">"xyz"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "xyz.+abc|abc.+xyz"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># "xyz.+abc|abc.+xyz"</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

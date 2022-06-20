@@ -61,11 +61,11 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>kwr</dt>
-<dd><p>A kwresearch object.</p></dd>
+<dd><p>A <code><a href="kwresearch.html">kwresearch</a></code> object.</p></dd>
 
 
 <dt>q</dt>
-<dd><p>A regular expression to filter the output data frame.</p></dd>
+<dd><p>An optional regular expression to filter the output queries.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -75,6 +75,34 @@
 <p>A tibble with queries.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">  query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"seo"</span>, <span class="st">"keyword research"</span><span class="op">)</span>,</span>
+<span class="r-in">  volume <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="va">queries</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">recipe_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"my-recipes.yml"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span></span>
+<span class="r-in">  pattern <span class="op">=</span> <span class="st">"seo"</span>,</span>
+<span class="r-in">  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,</span>
+<span class="r-in">  recipe_type <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span class="r-in">  dim_name <span class="op">=</span> <span class="st">"my_label"</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="kwr_classify.html">kwr_classify</a></span><span class="op">(</span><span class="va">kwr</span>, <span class="va">recipe_file</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Label:my_label</span>
+<span class="r-in"><span class="fu">kwr_queries</span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   query_normalized my_label n_queries volume   cpc query_original   input source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> seo              seo              1   <span style="text-decoration: underline;">1</span>000    <span style="color: #BB0000;">NA</span> seo              <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> keyword research <span style="color: #BB0000;">NA</span>               1    500    <span style="color: #BB0000;">NA</span> keyword research <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">recipe_file</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   workflow: workflow.html
   yaml: yaml.html
-last_built: 2022-06-19T16:27Z
+last_built: 2022-06-20T12:18Z
 urls:
   reference: https://marekprokop.github.io/keywordr/reference
   article: https://marekprokop.github.io/keywordr/articles
