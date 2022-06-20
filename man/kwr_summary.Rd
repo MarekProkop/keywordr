@@ -2,16 +2,24 @@
 % Please edit documentation in R/kwresearch.R
 \name{kwr_summary}
 \alias{kwr_summary}
-\title{Shows number of queries in all phases of processing}
+\title{Prints number of queries in all phases of processing}
 \usage{
 kwr_summary(kwr)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 }
 \value{
-Non.
+None.
 }
 \description{
-Shows number of queries in all phases of processing
+Prints number of queries in all phases of processing
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research", "nonsense"),
+  volume = c(1000, 500, 10)
+)
+kwr <- kwresearch(queries)
+kwr_summary(kwr)
 }

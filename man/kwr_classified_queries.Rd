@@ -7,9 +7,9 @@
 kwr_classified_queries(kwr, q = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
-\item{q}{A regular expression to filter the output data frame.}
+\item{q}{An optional regular expression to filter the output queries.}
 }
 \value{
 A tibble.
@@ -23,9 +23,16 @@ queries <- data.frame(
   volume = c(1000, 500)
 )
 kwr <- kwresearch(queries)
-\dontrun{
-kwr |>
-  kwr_classify("C:/Dev/R/Public/keyworder/tests/test-data/recipes.yml") |>
-  kwr_classified_queries()
-}
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr_classified_queries(kwr)
+
+file.remove(recipe_file)
 }

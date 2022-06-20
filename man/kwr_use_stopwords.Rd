@@ -7,7 +7,7 @@
 kwr_use_stopwords(kwr, stopwords = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
 \item{stopwords}{Stopwords as a character vector. You can use the
 kwr_stopwords() function for Czech stopwords. These words will be removed

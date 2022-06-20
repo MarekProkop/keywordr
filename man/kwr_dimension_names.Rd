@@ -2,7 +2,7 @@
 % Please edit documentation in R/kwresearch.R
 \name{kwr_dimension_names}
 \alias{kwr_dimension_names}
-\title{Gets names of all dimensions (flags an labels)}
+\title{Gets the names of all dimensions}
 \usage{
 kwr_dimension_names(df)
 }
@@ -13,5 +13,26 @@ kwr_dimension_names(df)
 A vector of names.
 }
 \description{
-Gets names of all dimensions (flags an labels)
+Gets the names of all dimensions
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr |>
+  kwr_queries() |>
+  kwr_dimension_names()
+
+file.remove(recipe_file)
 }

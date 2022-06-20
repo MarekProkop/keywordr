@@ -5,8 +5,8 @@
 #' 1. Accented letters in a string are replaced with a character class
 #' containing both the accented letter and the same letter without accent.
 #'
-#' 2. If `and` argument is provided, the resulting regex will match both strings
-#' in any order.
+#' 2. If the `and` argument is provided, the resulting regex will match both
+#' strings in any order.
 #'
 #' @param x Input string.
 #' @param and Optional string that should be matched as well.
@@ -15,14 +15,9 @@
 #' @export
 #'
 #' @examples
-#'
 #' kwr_build_regex("vajíčko")
 #'
-#' # "vaj[íi][čc]ko"
-#'
 #' kwr_build_regex(x = "abc", and = "xyz")
-#'
-#' # "xyz.+abc|abc.+xyz"
 kwr_build_regex <- function(x, and = NULL) {
   x <- replace_accents(x)
   if (is.null(and)) {
@@ -36,7 +31,7 @@ kwr_build_regex <- function(x, and = NULL) {
 
 #' Explore a regex pattern applied on queries
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
 #' @param pattern A single regular expression.
 #' @param and A vector of regular expressions. If more than one, they are
 #'   treated as OR.

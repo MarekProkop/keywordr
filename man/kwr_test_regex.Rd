@@ -13,7 +13,7 @@ kwr_test_regex(
 )
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
 \item{pattern}{A single regular expression.}
 

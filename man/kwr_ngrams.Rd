@@ -14,8 +14,8 @@ kwr_ngrams(
 )
 }
 \arguments{
-\item{x}{A kwresearch object, which queries will be n-grams calculated
-from, or a data frame of queries and volume.}
+\item{x}{A \code{\link{kwresearch}} object, which queries will be n-grams
+calculated from, or a data frame of queries and volume.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 
@@ -42,9 +42,9 @@ Generates n-grams from queries
 }
 \examples{
 queries <- data.frame(
-  query = c("seo", "keyword research"),
-  volume = c(1000, 500)
+  query = c("seo", "keyword research", "seo research"),
+  volume = c(1000, 500, 100)
 )
 kwr <- kwresearch(queries)
-kwr |> kwr_ngrams()
+kwr_ngrams(kwr)
 }

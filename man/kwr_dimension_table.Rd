@@ -2,14 +2,14 @@
 % Please edit documentation in R/kwresearch.R
 \name{kwr_dimension_table}
 \alias{kwr_dimension_table}
-\title{Outputs frequency table of a given dimension (label or flag)}
+\title{Outputs frequency table of a given dimension}
 \usage{
 kwr_dimension_table(x, column)
 }
 \arguments{
-\item{x}{A kwresearch object, whose queries are already classified, or a data
-frame of classified queries (e.g. the result of the kwr_classified_queries
-function).}
+\item{x}{A \code{\link{kwresearch}} object, whose queries are already
+classified, or a data frame of classified queries (e.g. the result of the
+\code{\link{kwr_classified_queries}} function).}
 
 \item{column}{A dimension (column) as a name, not a string.}
 }
@@ -17,5 +17,24 @@ function).}
 A tibble.
 }
 \description{
-Outputs frequency table of a given dimension (label or flag)
+Outputs frequency table of a given dimension
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr_dimension_table(kwr, my_label)
+
+file.remove(recipe_file)
 }

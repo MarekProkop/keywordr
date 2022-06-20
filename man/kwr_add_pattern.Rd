@@ -35,7 +35,6 @@ it. If the \code{recipe_file} does not exist, it is created.
 recipe_file <- file.path(tempdir(), "my-recipes.yml")
 
 # Pruning recipe:
-
 kwr_add_pattern(
   pattern = "xyz",
   recipe_file = recipe_file,
@@ -43,7 +42,6 @@ kwr_add_pattern(
 )
 
 # Label recipe:
-
 kwr_add_pattern(
   pattern = "xyz",
   recipe_file = recipe_file,

@@ -7,9 +7,9 @@
 kwr_clean_queries(kwr, q = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
-\item{q}{A regular expression to filter the output data frame.}
+\item{q}{An optional regular expression to filter the output queries.}
 }
 \value{
 A tibble.
@@ -23,5 +23,5 @@ queries <- data.frame(
   volume = c(1000, 500)
 )
 kwr <- kwresearch(queries)
-kwr |> kwr_clean_queries()
+kwr_clean_queries(kwr)
 }

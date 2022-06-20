@@ -7,10 +7,11 @@
 kwr_import(kwr, queries)
 }
 \arguments{
-\item{kwr}{An empty kwresearch object.}
+\item{kwr}{An empty \code{\link{kwresearch}} object.}
 
-\item{queries}{A data frame with at least one column query and possibly with
-additional columns volume, cpc, input and source.}
+\item{queries}{A data frame with at least one column \emph{query} and
+possibly with additional columns \emph{volume}, \emph{cpc}, \emph{input}
+and \emph{source}.}
 }
 \value{
 The provided kwresearch object with imported queries.
@@ -19,11 +20,10 @@ The provided kwresearch object with imported queries.
 Imports queries to a kwresearch object
 }
 \examples{
-kwr <- kwresearch()
-
 queries <- data.frame(
   query = c("seo", "keyword research"),
   volume = c(1000, 500)
 )
-kwr <- kwr_import(kwr, queries)
+kwr <- kwresearch() |>
+  kwr_import(queries)
 }

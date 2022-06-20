@@ -7,13 +7,31 @@
 kwr_pruned_queries(kwr, q = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
-\item{q}{A regular expression to filter the output data frame.}
+\item{q}{An optional regular expression to filter the output queries.}
 }
 \value{
 A tibble.
 }
 \description{
 Outputs pruned queries
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research", "nonsense"),
+  volume = c(1000, 500, 10)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "nonsense",
+  recipe_file = recipe_file,
+  recipe_type = "remove"
+)
+kwr <- kwr_prune(kwr, recipe_file)
+kwr_pruned_queries(kwr)
+
+file.remove(recipe_file)
 }

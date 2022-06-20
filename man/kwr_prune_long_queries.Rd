@@ -7,7 +7,7 @@
 kwr_prune_long_queries(kwr, longer_than = 60)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
 \item{longer_than}{A number.}
 }
@@ -15,5 +15,21 @@ kwr_prune_long_queries(kwr, longer_than = 60)
 A kwresearch object with pruned data and status = 'pruned'.
 }
 \description{
-From pruned data removes queries longer than a specific number of characters
+Very long queries tend to be too specific and you may want to exclude them
+from the analysis. That's what this function is for.
+}
+\examples{
+queries <- data.frame(
+  query = c(
+    "seo",
+    "this is a very long query made up of 67 characters including spaces"
+  ),
+  volume = c(1000, 5)
+)
+kwr <- kwresearch(queries)
+kwr_long_queries(kwr, longer_than = 65)
+kwr <- kwr_prune_long_queries(kwr, longer_than = 65)
+}
+\seealso{
+\code{\link{kwr_long_queries}}
 }

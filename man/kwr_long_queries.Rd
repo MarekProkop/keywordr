@@ -7,14 +7,30 @@
 kwr_long_queries(kwr, longer_than = 60)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
 \item{longer_than}{A number.}
 }
 \value{
-The output of \code{kwr_queries} filtered for queries longer than
-\code{longer_than} characters.
+The output of the \code{\link{kwr_queries}} function filtered for
+queries longer than \code{longer_than} characters.
 }
 \description{
-Outputs queries longer than a specific number of characters
+Very long queries tend to be too specific and you may want to exclude them
+from the analysis. You can use this function to review them before using the
+\code{\link{kwr_prune_long_queries}} function to remove them.
+}
+\examples{
+queries <- data.frame(
+  query = c(
+    "seo",
+    "this is a very long query made up of 67 characters including spaces"
+  ),
+  volume = c(1000, 5)
+)
+kwr <- kwresearch(queries)
+kwr_long_queries(kwr, longer_than = 65)
+}
+\seealso{
+\code{\link{kwr_prune_long_queries}}
 }

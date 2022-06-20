@@ -5,10 +5,11 @@
 #'   and export the final keyword analysis.
 #'
 #' @param queries Queries to import as a data frame with at least two columns:
-#'   query (string) and volume (numeric). Optionally the data frame can contain
-#'   three additional columns: cpc (double), input (char) and source (char). If
-#'   you don't provide this argument, you can import queries later with
-#'   kwr_import or kwr_import_mm.
+#'   \emph{query} (string) and \emph{volume} (numeric). Optionally the data
+#'   frame can contain three additional columns: \emph{cpc} (double),
+#'   \emph{input} (char) and \emph{source} (char). If you don't provide this
+#'   argument, you can import queries later with \code{\link{kwr_import}} or
+#'   \code{\link{kwr_import_mm}}.
 #' @param accentize The import functions tries to add correct accents (diacritic
 #'   marks) to queries without them.
 #' @param normalize The import functions tries to unite queries, which differ
@@ -56,21 +57,21 @@ kwresearch <- function(queries = NULL, accentize = TRUE, normalize = TRUE) {
 
 #' Imports queries to a kwresearch object
 #'
-#' @param kwr An empty kwresearch object.
-#' @param queries A data frame with at least one column query and possibly with
-#'   additional columns volume, cpc, input and source.
+#' @param kwr An empty \code{\link{kwresearch}} object.
+#' @param queries A data frame with at least one column \emph{query} and
+#'   possibly with additional columns \emph{volume}, \emph{cpc}, \emph{input}
+#'   and \emph{source}.
 #'
 #' @return The provided kwresearch object with imported queries.
 #' @export
 #'
 #' @examples
-#' kwr <- kwresearch()
-#'
 #' queries <- data.frame(
 #'   query = c("seo", "keyword research"),
 #'   volume = c(1000, 500)
 #' )
-#' kwr <- kwr_import(kwr, queries)
+#' kwr <- kwresearch() |>
+#'   kwr_import(queries)
 kwr_import <- function(kwr, queries) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, "empty")
@@ -101,8 +102,8 @@ kwr_import <- function(kwr, queries) {
 
 #' Outputs raw, source queries
 #'
-#' @param kwr A kwresearch object.
-#' @param q A regular expression to filter the output data frame.
+#' @param kwr A \code{\link{kwresearch}} object.
+#' @param q An optional regular expression to filter the output queries.
 #'
 #' @return A tibble.
 #' @export
@@ -113,7 +114,7 @@ kwr_import <- function(kwr, queries) {
 #'   volume = c(1000, 500)
 #' )
 #' kwr <- kwresearch(queries)
-#' kwr |> kwr_source_queries()
+#' kwr_source_queries(kwr)
 kwr_source_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
@@ -128,10 +129,10 @@ kwr_source_queries <- function(kwr, q = NULL) {
 
 #' Outputs cleaned (normalized and accentized) queries
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
 #'
 #' @return A tibble.
-#' @param q A regular expression to filter the output data frame.
+#' @param q An optional regular expression to filter the output queries.
 #' @export
 #'
 #' @examples
@@ -140,7 +141,7 @@ kwr_source_queries <- function(kwr, q = NULL) {
 #'   volume = c(1000, 500)
 #' )
 #' kwr <- kwresearch(queries)
-#' kwr |> kwr_clean_queries()
+#' kwr_clean_queries(kwr)
 kwr_clean_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
@@ -155,11 +156,29 @@ kwr_clean_queries <- function(kwr, q = NULL) {
 
 #' Outputs pruned queries
 #'
-#' @param kwr A kwresearch object.
-#' @param q A regular expression to filter the output data frame.
+#' @param kwr A \code{\link{kwresearch}} object.
+#' @param q An optional regular expression to filter the output queries.
 #'
 #' @return A tibble.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research", "nonsense"),
+#'   volume = c(1000, 500, 10)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "nonsense",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "remove"
+#' )
+#' kwr <- kwr_prune(kwr, recipe_file)
+#' kwr_pruned_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_pruned_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("pruned", "classified"))
@@ -174,8 +193,8 @@ kwr_pruned_queries <- function(kwr, q = NULL) {
 
 #' Outputs classified queries
 #'
-#' @param kwr A kwresearch object.
-#' @param q A regular expression to filter the output data frame.
+#' @param kwr A \code{\link{kwresearch}} object.
+#' @param q An optional regular expression to filter the output queries.
 #'
 #' @return A tibble.
 #' @export
@@ -186,11 +205,18 @@ kwr_pruned_queries <- function(kwr, q = NULL) {
 #'   volume = c(1000, 500)
 #' )
 #' kwr <- kwresearch(queries)
-#' \dontrun{
-#' kwr |>
-#'   kwr_classify("C:/Dev/R/Public/keyworder/tests/test-data/recipes.yml") |>
-#'   kwr_classified_queries()
-#' }
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr_classified_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_classified_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_true(kwr$status == "classified")
@@ -204,12 +230,31 @@ kwr_classified_queries <- function(kwr, q = NULL) {
 }
 
 #' Outputs the most processed queries
-#' @param q A regular expression to filter the output data frame.
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
+#' @param q An optional regular expression to filter the output queries.
 #'
 #' @return A tibble with queries.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
@@ -221,16 +266,36 @@ kwr_queries <- function(kwr, q = NULL) {
   )
 }
 
-#' List queries that are not classified in all dimension
+#' List queries that are not classified in all or specified dimensions
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
 #' @param label An optional dimension names as a character vector. If specified,
 #'   classification in only those dimensions is considered.
-#' @param q A regular expression to filter the output data frame.
+#' @param q An optional regular expression to filter the output queries.
 #'
 #' @return A tibble with queries.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr_unclassified_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_unclassified_queries <- function(kwr, label = NULL, q = NULL) {
+  checkmate::assert_class(kwr, "kwresearch")
   df <- kwr |> kwr_classified_queries(q)
   dims <- kwr_dimension_names(df)
   if (is.null(label)) {
@@ -247,11 +312,29 @@ kwr_unclassified_queries <- function(kwr, label = NULL, q = NULL) {
 
 #' Outputs queries removed by kwr_prune
 #'
-#' @param kwr A kwresearch object.
-#' @param q A regular expression to filter the output data frame.
+#' @param kwr A \code{\link{kwresearch}} object.
+#' @param q An optional regular expression to filter the output queries.
 #'
-#' @return A tibble with queries removed by kwr_prune.
+#' @return A tibble with queries removed by \code{\link{kwr_prune}}.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research", "nonsense"),
+#'   volume = c(1000, 500, 10)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "nonsense",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "remove"
+#' )
+#' kwr <- kwr_prune(kwr, recipe_file)
+#' kwr_removed_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_removed_queries <- function(kwr, q = NULL) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("pruned", "classified"))
@@ -270,7 +353,7 @@ kwr_removed_queries <- function(kwr, q = NULL) {
 
 #' Set a stopword list to use with n-gram functions
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
 #' @param stopwords Stopwords as a character vector. You can use the
 #'   kwr_stopwords() function for Czech stopwords. These words will be removed
 #'   from unigram listings. If NULL (default), no stopwords are used.
@@ -288,12 +371,20 @@ kwr_use_stopwords <- function(kwr, stopwords = NULL) {
   kwr
 }
 
-#' Shows number of queries in all phases of processing
+#' Prints number of queries in all phases of processing
 #'
-#' @param kwr A kwresearch object.
+#' @param kwr A \code{\link{kwresearch}} object.
 #'
-#' @return Non.
+#' @return None.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research", "nonsense"),
+#'   volume = c(1000, 500, 10)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr_summary(kwr)
 kwr_summary <- function(kwr) {
   checkmate::assert_class(kwr, "kwresearch")
 
@@ -316,15 +407,34 @@ kwr_summary <- function(kwr) {
 
 }
 
-#' Outputs frequency table of a given dimension (label or flag)
+#' Outputs frequency table of a given dimension
 #'
-#' @param x A kwresearch object, whose queries are already classified, or a data
-#'   frame of classified queries (e.g. the result of the kwr_classified_queries
-#'   function).
+#' @param x A \code{\link{kwresearch}} object, whose queries are already
+#'   classified, or a data frame of classified queries (e.g. the result of the
+#'   \code{\link{kwr_classified_queries}} function).
 #' @param column A dimension (column) as a name, not a string.
 #'
 #' @return A tibble.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr_dimension_table(kwr, my_label)
+#'
+#' file.remove(recipe_file)
 kwr_dimension_table <- function(x, column) {
   checkmate::assert(
     checkmate::check_class(x, "kwresearch"),
@@ -348,12 +458,33 @@ kwr_dimension_table <- function(x, column) {
     dplyr::arrange(dplyr::desc(.data$n))
 }
 
-#' Gets names of all dimensions (flags an labels)
+#' Gets the names of all dimensions
 #'
 #' @param df A data frame to get dimension names from.
 #'
 #' @return A vector of names.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr |>
+#'   kwr_queries() |>
+#'   kwr_dimension_names()
+#'
+#' file.remove(recipe_file)
 kwr_dimension_names <- function(df) {
   checkmate::check_class(df, "data.frame")
   df |>

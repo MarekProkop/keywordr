@@ -4,7 +4,7 @@
 #' pruned data is created from clean data. I pruned data already exists (i.e.
 #' status = 'pruned') then pruned data are pruned again.
 #'
-#' @param kwr A kwresearch object to be pruned.
+#' @param kwr A \code{\link{kwresearch}} object to be pruned.
 #' @param recipe_file A path to a recipe file in YAML format.
 #' @param quiet If TRUE prints no messages.
 #'
@@ -12,9 +12,21 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' kwr <- kwr |> kwr_prune("prune.yml")
-#' }
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research", "nonsense"),
+#'   volume = c(1000, 500, 10)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "nonsense",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "remove"
+#' )
+#' kwr <- kwr_prune(kwr, recipe_file)
+#'
+#' file.remove(recipe_file)
 kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))
@@ -53,12 +65,28 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
 
 #' Outputs queries longer than a specific number of characters
 #'
-#' @param kwr A kwresearch object.
+#' Very long queries tend to be too specific and you may want to exclude them
+#' from the analysis. You can use this function to review them before using the
+#' \code{\link{kwr_prune_long_queries}} function to remove them.
+#'
+#' @param kwr A \code{\link{kwresearch}} object.
 #' @param longer_than A number.
 #'
-#' @return The output of `kwr_queries` filtered for queries longer than
-#'   `longer_than` characters.
+#' @return The output of the \code{\link{kwr_queries}} function filtered for
+#'   queries longer than `longer_than` characters.
+#' @seealso \code{\link{kwr_prune_long_queries}}
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c(
+#'     "seo",
+#'     "this is a very long query made up of 67 characters including spaces"
+#'   ),
+#'   volume = c(1000, 5)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr_long_queries(kwr, longer_than = 65)
 kwr_long_queries <- function(kwr, longer_than = 60) {
   kwr |> kwr_queries() |>
     dplyr::filter(dplyr::if_any(1, ~ stringr::str_length(.) > longer_than)) |>
@@ -68,11 +96,27 @@ kwr_long_queries <- function(kwr, longer_than = 60) {
 
 #' From pruned data removes queries longer than a specific number of characters
 #'
-#' @param kwr A kwresearch object.
+#' Very long queries tend to be too specific and you may want to exclude them
+#' from the analysis. That's what this function is for.
+#'
+#' @param kwr A \code{\link{kwresearch}} object.
 #' @param longer_than A number.
 #'
 #' @return A kwresearch object with pruned data and status = 'pruned'.
+#' @seealso \code{\link{kwr_long_queries}}
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c(
+#'     "seo",
+#'     "this is a very long query made up of 67 characters including spaces"
+#'   ),
+#'   volume = c(1000, 5)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr_long_queries(kwr, longer_than = 65)
+#' kwr <- kwr_prune_long_queries(kwr, longer_than = 65)
 kwr_prune_long_queries <- function(kwr, longer_than = 60) {
   if (kwr$status == "pruned") {
     dataset <- kwr$pruned_data
@@ -92,8 +136,8 @@ kwr_prune_long_queries <- function(kwr, longer_than = 60) {
 
 #' Processes a single pruning recipe
 #'
-#' @param df A data frame from a kwr object (either clean_data, or
-#' pruned_data).
+#' @param df A data frame from a \code{\link{kwresearch}} object (either
+#'   clean_data, or pruned_data).
 #' @param recipe A single pruning recipe (type 'remove').
 #'
 #' @return A data frame with pruned queries.

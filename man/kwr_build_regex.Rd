@@ -21,17 +21,12 @@ The function does the following two things:
 \enumerate{
 \item Accented letters in a string are replaced with a character class
 containing both the accented letter and the same letter without accent.
-\item If \code{and} argument is provided, the resulting regex will match both strings
-in any order.
+\item If the \code{and} argument is provided, the resulting regex will match both
+strings in any order.
 }
 }
 \examples{
-
 kwr_build_regex("vajíčko")
 
-# "vaj[íi][čc]ko"
-
 kwr_build_regex(x = "abc", and = "xyz")
-
-# "xyz.+abc|abc.+xyz"
 }

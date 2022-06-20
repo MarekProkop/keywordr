@@ -2,27 +2,42 @@
 % Please edit documentation in R/classify.R
 \name{kwr_classify}
 \alias{kwr_classify}
-\title{Classifies queries based on recipes}
+\title{Classifies queries based on recipes in a YAML file}
 \usage{
 kwr_classify(kwr, recipe_file = NULL, quiet = FALSE)
 }
 \arguments{
-\item{kwr}{A kwr object containing queries to be classified, and
-classification recipes.}
+\item{kwr}{A \code{\link{kwresearch}} object containing queries to be
+classified.}
 
 \item{recipe_file}{A path to a recipe file in YAML format.}
 
-\item{quiet}{If TRUE prints no messages.}
+\item{quiet}{If \code{TRUE}, prints no messages.}
 }
 \value{
-A kwr object where the queries are classified. Existing
-classification is preserved or updated, new is added.
+A kwresearch object in which the queries are classified according to
+the recipes in the provided YAML file. Any previous classification is
+preserved or updated.
 }
 \description{
-Classifies queries based on recipes
+Classifies queries based on recipes in a YAML file
 }
 \examples{
-\dontrun{
-kwr <- kwr |> kwr_classify()
-}
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr_queries(kwr)
+
+file.remove(recipe_file)
 }

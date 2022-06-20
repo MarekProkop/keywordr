@@ -1,7 +1,7 @@
 #' Generates n-grams from queries
 #'
-#' @param x A kwresearch object, which queries will be n-grams calculated
-#'   from, or a data frame of queries and volume.
+#' @param x A \code{\link{kwresearch}} object, which queries will be n-grams
+#'   calculated from, or a data frame of queries and volume.
 #' @param max_words Maximum number of words in n-grams.
 #' @param min_words Minimum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
@@ -20,11 +20,11 @@
 #'
 #' @examples
 #' queries <- data.frame(
-#'   query = c("seo", "keyword research"),
-#'   volume = c(1000, 500)
+#'   query = c("seo", "keyword research", "seo research"),
+#'   volume = c(1000, 500, 100)
 #' )
 #' kwr <- kwresearch(queries)
-#' kwr |> kwr_ngrams()
+#' kwr_ngrams(kwr)
 kwr_ngrams <- function(
   x,
   max_words = 4, min_words = 1, min_n = 1, min_volume = 0,
@@ -73,8 +73,8 @@ kwr_ngrams <- function(
 #' @description In other words, it lists queries that are contained in other
 #'   queries.
 #'
-#' @param x A kwresearch object, which queries will be n-grams calculated from,
-#'   or a data frame of queries and volume.
+#' @param x A \code{\link{kwresearch}} object, which queries will be n-grams
+#'   calculated from, or a data frame of queries and volume.
 #' @param max_words Maximum number of words in n-grams.
 #' @param min_words Minimum number of words in n-grams.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
@@ -86,6 +86,14 @@ kwr_ngrams <- function(
 #'   search volumes). The n-grams are ordered descendingly by number of queries
 #'   and search volume. Use dplyr::arrange to change order.
 #' @export
+#'
+#' @examples
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research", "seo research"),
+#'   volume = c(1000, 500, 100)
+#' )
+#' kwr <- kwresearch(queries)
+#' kwr_subqueries(kwr)
 kwr_subqueries <- function(
   x, max_words = 5, min_words = 1, min_n = 1, min_volume = 0
 ) {
@@ -124,8 +132,8 @@ kwr_subqueries <- function(
 #' Finds collocations, i.e. multiword phrases that are more likely than their
 #' single words
 #'
-#' @param x A kwresearch object, which queries will be collocations calculated
-#'   from, or a data frame of queries and volume.
+#' @param x A \code{\link{kwresearch}} object, which queries will be
+#'   collocations calculated from, or a data frame of queries and volume.
 #' @param min_volume_prop Minimum proportion.
 #' @param min_n Minimum number of queries. Only the n-grams with at least this
 #'   number of queries will be included.

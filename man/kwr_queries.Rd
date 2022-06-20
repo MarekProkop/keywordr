@@ -7,13 +7,32 @@
 kwr_queries(kwr, q = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
-\item{q}{A regular expression to filter the output data frame.}
+\item{q}{An optional regular expression to filter the output queries.}
 }
 \value{
 A tibble with queries.
 }
 \description{
 Outputs the most processed queries
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr_queries(kwr)
+
+file.remove(recipe_file)
 }

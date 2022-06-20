@@ -8,10 +8,11 @@ kwresearch(queries = NULL, accentize = TRUE, normalize = TRUE)
 }
 \arguments{
 \item{queries}{Queries to import as a data frame with at least two columns:
-query (string) and volume (numeric). Optionally the data frame can contain
-three additional columns: cpc (double), input (char) and source (char). If
-you don't provide this argument, you can import queries later with
-kwr_import or kwr_import_mm.}
+\emph{query} (string) and \emph{volume} (numeric). Optionally the data
+frame can contain three additional columns: \emph{cpc} (double),
+\emph{input} (char) and \emph{source} (char). If you don't provide this
+argument, you can import queries later with \code{\link{kwr_import}} or
+\code{\link{kwr_import_mm}}.}
 
 \item{accentize}{The import functions tries to add correct accents (diacritic
 marks) to queries without them.}

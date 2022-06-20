@@ -7,8 +7,8 @@
 process_prune_recipe(df, recipe)
 }
 \arguments{
-\item{df}{A data frame from a kwr object (either clean_data, or
-pruned_data).}
+\item{df}{A data frame from a \code{\link{kwresearch}} object (either
+clean_data, or pruned_data).}
 
 \item{recipe}{A single pruning recipe (type 'remove').}
 }

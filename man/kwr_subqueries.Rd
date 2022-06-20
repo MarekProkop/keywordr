@@ -8,8 +8,8 @@ query}
 kwr_subqueries(x, max_words = 5, min_words = 1, min_n = 1, min_volume = 0)
 }
 \arguments{
-\item{x}{A kwresearch object, which queries will be n-grams calculated from,
-or a data frame of queries and volume.}
+\item{x}{A \code{\link{kwresearch}} object, which queries will be n-grams
+calculated from, or a data frame of queries and volume.}
 
 \item{max_words}{Maximum number of words in n-grams.}
 
@@ -29,4 +29,12 @@ and search volume. Use dplyr::arrange to change order.
 \description{
 In other words, it lists queries that are contained in other
 queries.
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research", "seo research"),
+  volume = c(1000, 500, 100)
+)
+kwr <- kwresearch(queries)
+kwr_subqueries(kwr)
 }

@@ -1,18 +1,33 @@
-#' Classifies queries based on recipes
+#' Classifies queries based on recipes in a YAML file
 #'
-#' @param kwr A kwr object containing queries to be classified, and
-#'   classification recipes.
-#' @param quiet If TRUE prints no messages.
+#' @param kwr A \code{\link{kwresearch}} object containing queries to be
+#'   classified.
 #' @param recipe_file A path to a recipe file in YAML format.
+#' @param quiet If \code{TRUE}, prints no messages.
 #'
-#' @return A kwr object where the queries are classified. Existing
-#'   classification is preserved or updated, new is added.
+#' @return A kwresearch object in which the queries are classified according to
+#'   the recipes in the provided YAML file. Any previous classification is
+#'   preserved or updated.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' kwr <- kwr |> kwr_classify()
-#' }
+#' queries <- data.frame(
+#'   query = c("seo", "keyword research"),
+#'   volume = c(1000, 500)
+#' )
+#' kwr <- kwresearch(queries)
+#'
+#' recipe_file <- file.path(tempdir(), "my-recipes.yml")
+#' kwr_add_pattern(
+#'   pattern = "seo",
+#'   recipe_file = recipe_file,
+#'   recipe_type = "label",
+#'   dim_name = "my_label"
+#' )
+#' kwr <- kwr_classify(kwr, recipe_file)
+#' kwr_queries(kwr)
+#'
+#' file.remove(recipe_file)
 kwr_classify <- function(kwr, recipe_file = NULL, quiet = FALSE) {
   checkmate::assert_class(kwr, "kwresearch")
   checkmate::assert_choice(kwr$status, c("data", "pruned", "classified"))

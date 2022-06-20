@@ -2,21 +2,40 @@
 % Please edit documentation in R/kwresearch.R
 \name{kwr_unclassified_queries}
 \alias{kwr_unclassified_queries}
-\title{List queries that are not classified in all dimension}
+\title{List queries that are not classified in all or specified dimensions}
 \usage{
 kwr_unclassified_queries(kwr, label = NULL, q = NULL)
 }
 \arguments{
-\item{kwr}{A kwresearch object.}
+\item{kwr}{A \code{\link{kwresearch}} object.}
 
 \item{label}{An optional dimension names as a character vector. If specified,
 classification in only those dimensions is considered.}
 
-\item{q}{A regular expression to filter the output data frame.}
+\item{q}{An optional regular expression to filter the output queries.}
 }
 \value{
 A tibble with queries.
 }
 \description{
-List queries that are not classified in all dimension
+List queries that are not classified in all or specified dimensions
+}
+\examples{
+queries <- data.frame(
+  query = c("seo", "keyword research"),
+  volume = c(1000, 500)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "seo",
+  recipe_file = recipe_file,
+  recipe_type = "label",
+  dim_name = "my_label"
+)
+kwr <- kwr_classify(kwr, recipe_file)
+kwr_unclassified_queries(kwr)
+
+file.remove(recipe_file)
 }

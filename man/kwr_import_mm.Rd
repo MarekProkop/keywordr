@@ -7,7 +7,7 @@
 kwr_import_mm(kwr, path, quiet = FALSE)
 }
 \arguments{
-\item{kwr}{An empty kwresearch object.}
+\item{kwr}{An empty \code{\link{kwresearch}} object.}
 
 \item{path}{Either a single character string containing a path to a folder,
 or a character vector, where each item is a path to a CSV file.}

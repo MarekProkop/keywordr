@@ -8,8 +8,8 @@ single words}
 kwr_collocations(x, min_volume_prop = 0.5, min_n = 2, quanteda = TRUE)
 }
 \arguments{
-\item{x}{A kwresearch object, which queries will be collocations calculated
-from, or a data frame of queries and volume.}
+\item{x}{A \code{\link{kwresearch}} object, which queries will be
+collocations calculated from, or a data frame of queries and volume.}
 
 \item{min_volume_prop}{Minimum proportion.}
 

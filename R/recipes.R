@@ -17,7 +17,6 @@
 #' recipe_file <- file.path(tempdir(), "my-recipes.yml")
 #'
 #' # Pruning recipe:
-#'
 #' kwr_add_pattern(
 #'   pattern = "xyz",
 #'   recipe_file = recipe_file,
@@ -25,7 +24,6 @@
 #' )
 #'
 #' # Label recipe:
-#'
 #' kwr_add_pattern(
 #'   pattern = "xyz",
 #'   recipe_file = recipe_file,

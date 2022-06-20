@@ -7,7 +7,7 @@
 kwr_prune(kwr, recipe_file, quiet = FALSE)
 }
 \arguments{
-\item{kwr}{A kwresearch object to be pruned.}
+\item{kwr}{A \code{\link{kwresearch}} object to be pruned.}
 
 \item{recipe_file}{A path to a recipe file in YAML format.}
 
@@ -22,7 +22,19 @@ pruned data is created from clean data. I pruned data already exists (i.e.
 status = 'pruned') then pruned data are pruned again.
 }
 \examples{
-\dontrun{
-kwr <- kwr |> kwr_prune("prune.yml")
-}
+queries <- data.frame(
+  query = c("seo", "keyword research", "nonsense"),
+  volume = c(1000, 500, 10)
+)
+kwr <- kwresearch(queries)
+
+recipe_file <- file.path(tempdir(), "my-recipes.yml")
+kwr_add_pattern(
+  pattern = "nonsense",
+  recipe_file = recipe_file,
+  recipe_type = "remove"
+)
+kwr <- kwr_prune(kwr, recipe_file)
+
+file.remove(recipe_file)
 }
