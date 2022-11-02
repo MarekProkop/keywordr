@@ -8,8 +8,8 @@
 <meta name="description" content="A framework for keyword research in R.">
 <title>Research and classify search engine queries in R! • keywordr</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Research and classify search engine queries in R!">
@@ -68,14 +68,16 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="the-keywordr-seo-package-for-r">The keywordr SEO package for R<a class="anchor" aria-label="anchor" href="#the-keywordr-seo-package-for-r"></a>
 </h1></div>
-<!-- badges: start --><!-- badges: end --><p>The <em>keywordr</em> package provides an efficient and user-friendly framework for keyword research. The results are typically used to optimize websites for search engines, create content strategy, design information architecture for websites, etc.</p>
+<!-- badges: start -->
+<!-- badges: end -->
+<p>The <em>keywordr</em> package provides an efficient and user-friendly framework for keyword research. The results are typically used to optimize websites for search engines, create content strategy, design information architecture for websites, etc.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of keywordr from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MarekProkop/keywordr"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MarekProkop/keywordr"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note: You must have <a href="https://www.r-bloggers.com/2021/05/new-features-in-r-4-1-0/" class="external-link">R version 4.1.0</a> because the package makes use of the native R pipe and the new syntax for anonymous functions.</p>
 </div>
 <div class="section level2">
@@ -86,136 +88,136 @@
 <h3 id="attache-packages">Attache packages<a class="anchor" aria-label="anchor" href="#attache-packages"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://marekprokop.github.io/keywordr/">keywordr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://marekprokop.github.io/keywordr/">keywordr</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="create-a-kwresearch-object-and-import-queries">Create a <code>kwresearch</code> object and import queries<a class="anchor" aria-label="anchor" href="#create-a-kwresearch-object-and-import-queries"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">input_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-  <span class="op">~</span><span class="va">query</span>,             <span class="op">~</span><span class="va">volume</span>,
-  <span class="st">"seo"</span>,                <span class="fl">96000</span>,
-  <span class="st">"seo ye-ji"</span>,          <span class="fl">22000</span>,
-  <span class="st">"seo meaning"</span>,         <span class="fl">6700</span>,
-  <span class="st">"seo services"</span>,        <span class="fl">6400</span>,
-  <span class="st">"what is a seo"</span>,       <span class="fl">5300</span>,
-  <span class="st">"seo london"</span>,          <span class="fl">5000</span>,
-  <span class="st">"what is seo"</span>,         <span class="fl">4800</span>,
-  <span class="st">"seo agency"</span>,          <span class="fl">4300</span>,
-<span class="op">)</span>
-
-<span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="va">input_data</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">input_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">query</span>,             <span class="op">~</span><span class="va">volume</span>,</span>
+<span>  <span class="st">"seo"</span>,                <span class="fl">96000</span>,</span>
+<span>  <span class="st">"seo ye-ji"</span>,          <span class="fl">22000</span>,</span>
+<span>  <span class="st">"seo meaning"</span>,         <span class="fl">6700</span>,</span>
+<span>  <span class="st">"seo services"</span>,        <span class="fl">6400</span>,</span>
+<span>  <span class="st">"what is a seo"</span>,       <span class="fl">5300</span>,</span>
+<span>  <span class="st">"seo london"</span>,          <span class="fl">5000</span>,</span>
+<span>  <span class="st">"what is seo"</span>,         <span class="fl">4800</span>,</span>
+<span>  <span class="st">"seo agency"</span>,          <span class="fl">4300</span>,</span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kwresearch.html">kwresearch</a></span><span class="op">(</span><span class="va">input_data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="browse-imported-queries">Browse imported queries<a class="anchor" aria-label="anchor" href="#browse-imported-queries"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 8 × 7</span>
-<span class="co">#&gt;   query_normalized n_queries volume   cpc query_original input source</span>
-<span class="co">#&gt;   &lt;chr&gt;                &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; </span>
-<span class="co">#&gt; 1 seo                      1  96000    NA seo            &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 2 seo ye-ji                1  22000    NA seo ye-ji      &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 3 seo meaning              1   6700    NA seo meaning    &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 4 seo services             1   6400    NA seo services   &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 5 what is a seo            1   5300    NA what is a seo  &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 6 seo london               1   5000    NA seo london     &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 7 what is seo              1   4800    NA what is seo    &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 8 seo agency               1   4300    NA seo agency     &lt;NA&gt;  &lt;NA&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 8 × 7</span></span>
+<span><span class="co">#&gt;   query_normalized n_queries volume   cpc query_original input source</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 seo                      1  96000    NA seo            &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 2 seo ye-ji                1  22000    NA seo ye-ji      &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 3 seo meaning              1   6700    NA seo meaning    &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 4 seo services             1   6400    NA seo services   &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 5 what is a seo            1   5300    NA what is a seo  &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 6 seo london               1   5000    NA seo london     &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 7 what is seo              1   4800    NA what is seo    &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 8 seo agency               1   4300    NA seo agency     &lt;NA&gt;  &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="prune-unwanted-queries">Prune unwanted queries<a class="anchor" aria-label="anchor" href="#prune-unwanted-queries"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">recipe_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"recipes.yml"</span><span class="op">)</span>
-
-<span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span><span class="st">"ye-ji"</span>, <span class="va">recipe_file</span>, recipe_type <span class="op">=</span> <span class="st">"remove"</span><span class="op">)</span>
-
-<span class="va">kwr</span> <span class="op">&lt;-</span> <span class="va">kwr</span> |&gt; 
-  <span class="fu"><a href="reference/kwr_prune.html">kwr_prune</a></span><span class="op">(</span><span class="va">recipe_file</span><span class="op">)</span>
-<span class="co">#&gt; Removing queries...</span>
-<span class="co">#&gt; Removed 1 queries out of 8. Duration: 0.006s</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">recipe_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"recipes.yml"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span><span class="st">"ye-ji"</span>, <span class="va">recipe_file</span>, recipe_type <span class="op">=</span> <span class="st">"remove"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="va">kwr</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/kwr_prune.html">kwr_prune</a></span><span class="op">(</span><span class="va">recipe_file</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Removing queries...</span></span>
+<span><span class="co">#&gt; Removed 1 queries out of 8. Duration: 0.006s</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="check-pruned-queries">Check pruned queries<a class="anchor" aria-label="anchor" href="#check-pruned-queries"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 7 × 7</span>
-<span class="co">#&gt;   query_normalized n_queries volume   cpc query_original input source</span>
-<span class="co">#&gt;   &lt;chr&gt;                &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; </span>
-<span class="co">#&gt; 1 seo                      1  96000    NA seo            &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 2 seo meaning              1   6700    NA seo meaning    &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 3 seo services             1   6400    NA seo services   &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 4 what is a seo            1   5300    NA what is a seo  &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 5 seo london               1   5000    NA seo london     &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 6 what is seo              1   4800    NA what is seo    &lt;NA&gt;  &lt;NA&gt;  </span>
-<span class="co">#&gt; 7 seo agency               1   4300    NA seo agency     &lt;NA&gt;  &lt;NA&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 7 × 7</span></span>
+<span><span class="co">#&gt;   query_normalized n_queries volume   cpc query_original input source</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 seo                      1  96000    NA seo            &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 2 seo meaning              1   6700    NA seo meaning    &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 3 seo services             1   6400    NA seo services   &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 4 what is a seo            1   5300    NA what is a seo  &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 5 seo london               1   5000    NA seo london     &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 6 what is seo              1   4800    NA what is seo    &lt;NA&gt;  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 7 seo agency               1   4300    NA seo agency     &lt;NA&gt;  &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="explore-queries">Explore queries<a class="anchor" aria-label="anchor" href="#explore-queries"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">kwr</span> |&gt; <span class="fu"><a href="reference/kwr_ngrams.html">kwr_ngrams</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 8 × 3</span>
-<span class="co">#&gt;   token             n volume</span>
-<span class="co">#&gt;   &lt;chr&gt;         &lt;int&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 seo               7 128500</span>
-<span class="co">#&gt; 2 what is           2  10100</span>
-<span class="co">#&gt; 3 seo meaning       1   6700</span>
-<span class="co">#&gt; 4 seo services      1   6400</span>
-<span class="co">#&gt; 5 what is a seo     1   5300</span>
-<span class="co">#&gt; 6 seo london        1   5000</span>
-<span class="co">#&gt; 7 what is seo       1   4800</span>
-<span class="co">#&gt; 8 seo agency        1   4300</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">kwr</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/kwr_ngrams.html">kwr_ngrams</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 8 × 3</span></span>
+<span><span class="co">#&gt;   token             n volume</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;int&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 seo               7 128500</span></span>
+<span><span class="co">#&gt; 2 what is           2  10100</span></span>
+<span><span class="co">#&gt; 3 seo meaning       1   6700</span></span>
+<span><span class="co">#&gt; 4 seo services      1   6400</span></span>
+<span><span class="co">#&gt; 5 what is a seo     1   5300</span></span>
+<span><span class="co">#&gt; 6 seo london        1   5000</span></span>
+<span><span class="co">#&gt; 7 what is seo       1   4800</span></span>
+<span><span class="co">#&gt; 8 seo agency        1   4300</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="classify-queries">Classify queries<a class="anchor" aria-label="anchor" href="#classify-queries"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span>
-  pattern <span class="op">=</span> <span class="st">"agenc"</span>,
-  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,
-  recipe_type <span class="op">=</span> <span class="st">"label"</span>,
-  dim_name <span class="op">=</span> <span class="st">"bussiness_type"</span>,
-  value <span class="op">=</span> <span class="st">"agency"</span>
-<span class="op">)</span>
-<span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span>
-  pattern <span class="op">=</span> <span class="st">"meaning"</span>,
-  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,
-  recipe_type <span class="op">=</span> <span class="st">"label"</span>,
-  dim_name <span class="op">=</span> <span class="st">"info"</span>
-<span class="op">)</span>
-<span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span>
-  pattern <span class="op">=</span> <span class="st">"what is"</span>,
-  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,
-  recipe_type <span class="op">=</span> <span class="st">"label"</span>,
-  dim_name <span class="op">=</span> <span class="st">"info"</span>
-<span class="op">)</span>
-
-<span class="va">kwr</span> <span class="op">&lt;-</span> <span class="va">kwr</span> |&gt; 
-  <span class="fu"><a href="reference/kwr_classify.html">kwr_classify</a></span><span class="op">(</span><span class="va">recipe_file</span><span class="op">)</span>
-<span class="co">#&gt; Label:bussiness_type</span>
-<span class="co">#&gt;   Value: agency</span>
-<span class="co">#&gt; Label:info</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span></span>
+<span>  pattern <span class="op">=</span> <span class="st">"agenc"</span>,</span>
+<span>  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,</span>
+<span>  recipe_type <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>  dim_name <span class="op">=</span> <span class="st">"bussiness_type"</span>,</span>
+<span>  value <span class="op">=</span> <span class="st">"agency"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span></span>
+<span>  pattern <span class="op">=</span> <span class="st">"meaning"</span>,</span>
+<span>  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,</span>
+<span>  recipe_type <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>  dim_name <span class="op">=</span> <span class="st">"info"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/kwr_add_pattern.html">kwr_add_pattern</a></span><span class="op">(</span></span>
+<span>  pattern <span class="op">=</span> <span class="st">"what is"</span>,</span>
+<span>  recipe_file <span class="op">=</span> <span class="va">recipe_file</span>,</span>
+<span>  recipe_type <span class="op">=</span> <span class="st">"label"</span>,</span>
+<span>  dim_name <span class="op">=</span> <span class="st">"info"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">kwr</span> <span class="op">&lt;-</span> <span class="va">kwr</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/kwr_classify.html">kwr_classify</a></span><span class="op">(</span><span class="va">recipe_file</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Label:bussiness_type</span></span>
+<span><span class="co">#&gt;   Value: agency</span></span>
+<span><span class="co">#&gt; Label:info</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="check-classified-queries">Check classified queries<a class="anchor" aria-label="anchor" href="#check-classified-queries"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 7 × 5</span>
-<span class="co">#&gt;   query_normalized bussiness_type info    n_queries volume</span>
-<span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 seo              &lt;NA&gt;           &lt;NA&gt;            1  96000</span>
-<span class="co">#&gt; 2 seo meaning      &lt;NA&gt;           meaning         1   6700</span>
-<span class="co">#&gt; 3 seo services     &lt;NA&gt;           &lt;NA&gt;            1   6400</span>
-<span class="co">#&gt; 4 what is a seo    &lt;NA&gt;           what is         1   5300</span>
-<span class="co">#&gt; 5 seo london       &lt;NA&gt;           &lt;NA&gt;            1   5000</span>
-<span class="co">#&gt; 6 what is seo      &lt;NA&gt;           what is         1   4800</span>
-<span class="co">#&gt; 7 seo agency       agency         &lt;NA&gt;            1   4300</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/kwr_queries.html">kwr_queries</a></span><span class="op">(</span><span class="va">kwr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 7 × 5</span></span>
+<span><span class="co">#&gt;   query_normalized bussiness_type info    n_queries volume</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 seo              &lt;NA&gt;           &lt;NA&gt;            1  96000</span></span>
+<span><span class="co">#&gt; 2 seo meaning      &lt;NA&gt;           meaning         1   6700</span></span>
+<span><span class="co">#&gt; 3 seo services     &lt;NA&gt;           &lt;NA&gt;            1   6400</span></span>
+<span><span class="co">#&gt; 4 what is a seo    &lt;NA&gt;           what is         1   5300</span></span>
+<span><span class="co">#&gt; 5 seo london       &lt;NA&gt;           &lt;NA&gt;            1   5000</span></span>
+<span><span class="co">#&gt; 6 what is seo      &lt;NA&gt;           what is         1   4800</span></span>
+<span><span class="co">#&gt; 7 seo agency       agency         &lt;NA&gt;            1   4300</span></span></code></pre></div>
 <p>Please see <code><a href="articles/workflow.html">vignette("workflow")</a></code> for a more detailed example.</p>
 </div>
 </div>
@@ -264,7 +266,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>

@@ -1,10 +1,10 @@
-pandoc: 2.14.2
-pkgdown: 2.0.4
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   workflow: workflow.html
   yaml: yaml.html
-last_built: 2022-06-20T12:18Z
+last_built: 2022-11-02T09:21Z
 urls:
   reference: https://marekprokop.github.io/keywordr/reference
   article: https://marekprokop.github.io/keywordr/articles
