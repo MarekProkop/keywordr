@@ -301,7 +301,7 @@ kwr_unclassified_queries <- function(kwr, label = NULL, q = NULL) {
   if (is.null(label)) {
     df |>
       dplyr::filter(dplyr::if_all({{ dims }}, is_unclassified)) |>
-      dplyr::select(.data$query_normalized, .data$n_queries:.data$source)
+      dplyr::select("query_normalized", "n_queries":"source")
   } else {
     df |>
       dplyr::filter(dplyr::across({{ label }}, is_unclassified)) |>
@@ -503,11 +503,11 @@ clean_source_data <- function(source_data, accentize, normalize) {
     result <- source_data |>
       dplyr::mutate(
         query_normalized = accentize_queries(.data$query, .data$volume),
-        .after = .data$query
+        .after = "query"
       )
   } else {
     result <- source_data |>
-      dplyr::mutate(query_normalized = .data$query, .after = .data$query)
+      dplyr::mutate(query_normalized = .data$query, .after = "query")
   }
   if (normalize) {
     result <- result |>
@@ -565,7 +565,7 @@ aggregate_clean_data <- function(mm_data) {
       input = stringr::str_c(unique(.data$input), collapse = ","),
       .groups = "drop"
     ) |>
-    dplyr::relocate(.data$source, .after = .data$input) |>
+    dplyr::relocate("source", .after = "input") |>
     dplyr::group_by(.data$query_normalized) |>
     dplyr::summarise(
       n_queries = dplyr::n_distinct(.data$query),
@@ -575,7 +575,7 @@ aggregate_clean_data <- function(mm_data) {
       input = dplyr::first(.data$input),
       source = stringr::str_c(unique(.data$source), collapse = ",")
     ) |>
-    dplyr::relocate(.data$cpc, .after = .data$volume) |>
+    dplyr::relocate("cpc", .after = "volume") |>
     dplyr::arrange(dplyr::desc(.data$volume), .data$query_normalized)
 }
 

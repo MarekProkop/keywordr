@@ -7,7 +7,7 @@ Description: A framework for keyword research in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 URL: https://marekprokop.github.io/keywordr/,
     https://github.com/MarekProkop/keywordr
 BugReports: https://github.com/MarekProkop/keywordr/issues

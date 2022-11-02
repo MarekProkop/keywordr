@@ -48,7 +48,7 @@ kwr_test_regex <- function(kwr, pattern, and = NULL, except = NULL, stopwords = 
 
   full <- kwr |>
     kwr_queries() |>
-    dplyr::select(.data$query_normalized) |>
+    dplyr::select("query_normalized") |>
     dplyr::filter(stringr::str_detect(.data$query_normalized, pattern))
   if (!is.null(except)) {
     full <- full |>
@@ -80,11 +80,11 @@ kwr_test_regex <- function(kwr, pattern, and = NULL, except = NULL, stopwords = 
       )
     ) |>
     dplyr::select(
-      .data$query_normalized, .data$pred, .data$word, .data$succ, .data$match
+      "query_normalized", "pred", "word", "succ", "match"
     )
   around <- full |>
     tidyr::pivot_longer(
-      cols = c(.data$pred, .data$succ), values_to = "around"
+      cols = c("pred", "succ"), values_to = "around"
     ) |>
     dplyr::filter(.data$around != "") |>
     dplyr::count(.data$around, sort = TRUE)

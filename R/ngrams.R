@@ -47,7 +47,7 @@ kwr_ngrams <- function(
     df <- x
   }
   ngrams <- df |>
-    dplyr::select(.data$query_normalized, .data$volume) |>
+    dplyr::select("query_normalized", "volume") |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
       n = max_words, n_min = min_words, drop = FALSE
@@ -112,7 +112,7 @@ kwr_subqueries <- function(
     df <- x
   }
   df |>
-    dplyr::select(.data$query_normalized, .data$volume) |>
+    dplyr::select("query_normalized", "volume") |>
     tidytext::unnest_ngrams(
       output = "token", input = "query_normalized",
       n = max_words, n_min = min_words, drop = FALSE
@@ -171,11 +171,11 @@ kwr_collocations <- function(
       tibble::as_tibble()
   } else {
     df |>
-      dplyr::select(.data$query_normalized, .data$volume) |>
+      dplyr::select("query_normalized", "volume") |>
       tidytext::unnest_ngrams(
         output = "token", input = "query_normalized", n = 4, n_min = 2
       ) |>
-      dplyr::relocate(.data$volume, .after = .data$token) |>
+      dplyr::relocate("volume", .after = "token") |>
       tidyr::drop_na() |>
       dplyr::add_count(.data$token) |>
       tidytext::unnest_tokens(
@@ -204,9 +204,7 @@ kwr_collocations <- function(
         .data$n >= min_n
       ) |>
       remove_nested_ngrams(4) |>
-      dplyr::select(
-        .data$token, .data$n, .data$volume, .data$n_prop, .data$volume_prop
-      ) |>
+      dplyr::select("token", "n", "volume", "n_prop", "volume_prop") |>
       dplyr::arrange(dplyr::desc(.data$n), dplyr::desc(.data$volume))
   }
 }
@@ -234,7 +232,7 @@ remove_nested_ngrams <- function(df, n) {
       .data$subtoken != .data$token
     ) |>
     dplyr::ungroup() |>
-    dplyr::select(token = .data$subtoken)
+    dplyr::select(token = "subtoken")
 
   df |> dplyr::anti_join(nested, by = "token")
 }

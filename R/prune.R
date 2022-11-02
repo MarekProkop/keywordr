@@ -90,7 +90,7 @@ kwr_prune <- function(kwr, recipe_file, quiet = FALSE) {
 kwr_long_queries <- function(kwr, longer_than = 60) {
   kwr |> kwr_queries() |>
     dplyr::filter(dplyr::if_any(1, ~ stringr::str_length(.) > longer_than)) |>
-    dplyr::select(1, .data$volume)
+    dplyr::select(1, "volume")
 }
 
 
